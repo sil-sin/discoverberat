@@ -6,7 +6,9 @@
   height: 100vh;
 }
 
-.main video {
-  background-color: transparent;
+.main video * {
+  background: var(--background-end-rgb);
   border: none;
+  box-shadow: none;
+  outline: none;
 }
