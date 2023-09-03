@@ -13,3 +13,8 @@
   outline: none;
   filter: none;
 }
+
+.video {
+  cursor: initial;
+  pointer-events: none;
+}

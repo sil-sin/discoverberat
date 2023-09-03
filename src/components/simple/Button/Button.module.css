@@ -1,0 +1,55 @@
+.button {
+    cursor: pointer;
+    border: transparent solid 1px;
+    border-radius: 5px;
+    padding: 10px 20px;
+    margin: 10px
+}
+
+.primary {
+    background-color: green;
+    color: white;
+    font-size: medium;
+}
+
+.primary:hover {
+    background-color: rgba(0, 128, 0, 0.39);
+    border: green 1px solid;
+    color: black;
+}
+
+.secondary {
+    background-color: white;
+    color: black;
+    font-size: medium;
+    border: green 1px solid;
+}
+
+.secondary:hover {
+    background-color: rgba(0, 128, 0, 0.39);
+    border: green 1px solid;
+    color: white;
+}
+
+.link {
+    position: relative;
+    text-decoration: none;
+    color: green;
+    font-size: medium;
+    padding: 5px 10px;
+}
+
+.link::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent 0%, green 0%);
+    transition: width 0.3s ease;
+}
+
+.link:hover::before {
+    width: 100%;
+}
