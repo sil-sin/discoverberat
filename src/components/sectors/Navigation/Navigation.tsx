@@ -1,3 +1,4 @@
+'use client'
 import { FC } from 'react'
 import Image from 'next/image'
 import { HEADER_LINKS } from './utils'
@@ -18,6 +19,13 @@ export const Navigation: FC<{}> = () => {
             <Button variant='link' href={link.href} text={link.title} />
           </li>
         ))}
+        <Button
+          variant='secondary'
+          onClick={() => {
+            console.log('clicked')
+          }}
+          text='Login / Register'
+        />
       </ul>
     </nav>
   )
