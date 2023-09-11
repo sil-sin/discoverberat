@@ -1,0 +1,13 @@
+.navbarContainer {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: auto 20px;
+    box-shadow: 10px 10px 10px 10px rgba(0, 0, 0, 0.2);
+}
+
+.navbarLinksContainer {
+    display: flex;
+    list-style: none;
+    gap: 20px;
+}

@@ -1,6 +1,8 @@
 'use client'
+
 import Button from '@/components/simple/Button'
 import styles from './page.module.css'
+import Card from '@/components/simple/Card'
 export default function Page() {
   return (
     <div className={styles.container}>
@@ -32,6 +34,7 @@ export default function Page() {
         text={'Link'}
         href='/tours'
       />
+      <Card />
     </div>
   )
 }

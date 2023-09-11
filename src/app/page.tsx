@@ -10,7 +10,7 @@ export default function Home() {
     <main className={styles.main}>
       <h2>Discover Berat is coming soon . . .</h2>
       <div className={styles.video}>
-        <ComponentWithNoSSR />
+        {/* <ComponentWithNoSSR /> */}
       </div>
     </main>
   )
