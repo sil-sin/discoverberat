@@ -3,7 +3,7 @@ import styles from './Button.module.css'
 import classnames from 'classnames'
 
 type Props = {
-  onClick: () => void
+  onClick?: () => void
   text: string
   variant?: 'primary' | 'secondary' | 'tertiary' | 'link'
   href?: string
