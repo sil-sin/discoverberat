@@ -7,6 +7,7 @@ type Props = {
   imageSrc?: string
   description?: string
   price?: string
+  isLoading?: boolean
 }
 
 export const Card: FC<Props> = ({
@@ -14,6 +15,7 @@ export const Card: FC<Props> = ({
   imageSrc = '/vercel.svg',
   description,
   price = '100 EUR',
+  isLoading = false,
 }) => {
   description =
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent et felis eget elit ornare luctus. In hac habitasse platea dictumst.s'
@@ -21,7 +23,7 @@ export const Card: FC<Props> = ({
     <>
       <div className={styles.cardContainer}>
         <div className={styles.title}>
-          <h3> {title}</h3>
+          <div> {title}</div>
         </div>
         <Image
           className={styles.image}
@@ -33,7 +35,7 @@ export const Card: FC<Props> = ({
         <p className={styles.description}>{description}</p>
         <p className={styles.price}> Starting from {price}</p>
       </div>
-      <div className={styles.cardSkeleton}></div>
+      {isLoading && <div className={styles.cardSkeleton}></div>}
     </>
   )
 }

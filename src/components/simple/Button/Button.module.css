@@ -62,3 +62,8 @@
 .link:hover::before {
     width: 100%;
 }
+
+.tourButton {
+    font-size: large;
+    margin: 10px;
+}
