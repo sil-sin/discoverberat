@@ -2,6 +2,8 @@ import dynamic from 'next/dynamic'
 import styles from './page.module.css'
 import Hero from '../components/sectors/Hero/index'
 import Tours from '@/components/sectors/Tours/Tours'
+import OurServices from '@/components/sectors/OurServices'
+import Footer from '@/components/sectors/Footer'
 
 export default function Home() {
   const Video = dynamic(() => import('../components/Video'), {
@@ -23,7 +25,9 @@ export default function Home() {
   return (
     <main className={styles.main}>
       <Hero />
+      <OurServices />
       <Tours />
+      <Footer />
     </main>
   )
 }

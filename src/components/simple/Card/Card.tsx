@@ -1,6 +1,7 @@
 import React, { FC } from 'react'
 import styles from './Card.module.css'
 import Image from 'next/image'
+import classNames from 'classnames'
 
 type Props = {
   title?: string
@@ -8,20 +9,20 @@ type Props = {
   description?: string
   price?: string
   isLoading?: boolean
+  className?: string
 }
 
 export const Card: FC<Props> = ({
   title = 'Card Title',
   imageSrc = '/vercel.svg',
   description,
-  price = '100 EUR',
+  price,
   isLoading = false,
+  className,
 }) => {
-  description =
-    'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent et felis eget elit ornare luctus. In hac habitasse platea dictumst.s'
   return (
     <>
-      <div className={styles.cardContainer}>
+      <div className={classNames(styles.cardContainer, className)}>
         <div className={styles.title}>
           <div> {title}</div>
         </div>
@@ -32,8 +33,8 @@ export const Card: FC<Props> = ({
           height={100}
           alt='Explore Berat'
         />
-        <p className={styles.description}>{description}</p>
-        <p className={styles.price}> Starting from {price}</p>
+        {description && <p className={styles.description}>{description}</p>}
+        {price && <p className={styles.price}> Starting from {price}</p>}
       </div>
       {isLoading && <div className={styles.cardSkeleton}></div>}
     </>

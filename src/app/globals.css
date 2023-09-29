@@ -22,9 +22,15 @@ body {
 body {
   color: rgb(var(--foreground-rgb));
   background: rgb(var(--background-end-rgb));
+  margin: 0;
 }
 
 a {
   color: inherit;
   text-decoration: none;
+}
+
+.container{
+  position: relative;
+  top: 90px;
 }
