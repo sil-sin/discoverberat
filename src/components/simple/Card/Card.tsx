@@ -10,6 +10,8 @@ type Props = {
   price?: string
   isLoading?: boolean
   className?: string
+  iconCard?: boolean
+  cardIcon?: any
 }
 
 export const Card: FC<Props> = ({
@@ -19,7 +21,19 @@ export const Card: FC<Props> = ({
   price,
   isLoading = false,
   className,
+  iconCard = false,
+  cardIcon,
 }) => {
+  if (iconCard) {
+    return (
+      <div className={classNames(styles.iconCardContainer, className)}>
+        <div className={styles.cardIcon}>{cardIcon}</div>
+        <div className={styles.iconCardTitle}>
+          <div> {title}</div>
+        </div>
+      </div>
+    )
+  }
   return (
     <>
       <div className={classNames(styles.cardContainer, className)}>

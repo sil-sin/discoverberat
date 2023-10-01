@@ -2,8 +2,8 @@ import { FC } from 'react'
 import styles from './Footer.module.css'
 export const Footer: FC = () => {
   return (
-    <footer className='footer'>
-      <div className='footer-column'>
+    <footer className={styles.footerContainer}>
+      <div className={styles.footerColumn}>
         <h3>Our Services</h3>
         <ul>
           <li>

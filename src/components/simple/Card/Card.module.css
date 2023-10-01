@@ -136,3 +136,30 @@
           left: 180px;
       }
   }
+
+  .iconCardContainer {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background-color: white;
+      width: 200px;
+      border: solid 1px var(--button-color);
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
+      border: solid 1px var(--button-color);
+  }
+
+  .cardIcon {
+      font-size: 2em;
+      color: var(--button-color);
+      padding: 20px 40px;
+  }
+
+  .iconCardTitle {
+      white-space: nowrap;
+      font: inherit;
+      font-size: large;
+      text-align: center;
+      font-weight: 500;
+      padding: 10px;
+  }

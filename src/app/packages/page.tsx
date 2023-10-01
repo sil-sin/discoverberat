@@ -1,27 +1,14 @@
-import { FC } from 'react'
+export default function Packages() {
+  const loading = false
 
-interface TourPackageProps {
-  name: string
-  destination: string
-  duration: string
-  price: number
+  if (loading) {
+    return (
+      <main className={'styles.main'}>
+        <h2>Discover Berat is coming soon . . .</h2>
+        <div className={'styles.video'}>Loading</div>
+      </main>
+    )
+  }
+
+  return <main className={'styles.main'}>packages</main>
 }
-
-// Functional Component for TourPackage
-const TourPackage: FC<TourPackageProps> = ({
-  name,
-  destination,
-  duration,
-  price,
-}) => {
-  return (
-    <div className='tour-package'>
-      <h2>{name}</h2>
-      <p>Destination: {destination}</p>
-      <p>Duration: {duration}</p>
-      <p>Price: ${price}</p>
-    </div>
-  )
-}
-
-export default TourPackage
