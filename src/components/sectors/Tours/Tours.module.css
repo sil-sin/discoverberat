@@ -10,10 +10,11 @@
     align-items: center;
 }
 
-.toursTitle * {
+.toursTitle {
     text-align: center;
     margin-bottom: 40px;
     font-size: 2rem;
+    color: var(--primary-color);
 }
 
 @media (min-width: 900px) {

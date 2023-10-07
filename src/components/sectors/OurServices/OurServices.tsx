@@ -1,7 +1,6 @@
 import Card from '@/components/simple/Card'
 import { FC } from 'react'
 import styles from './OurServices.module.css'
-import { LuPackageOpen } from 'react-icons/lu'
 import {
   MdEmojiTransportation,
   MdOutlineLocalHotel,
@@ -14,17 +13,17 @@ export const OurServices: FC = () => {
     {
       title: 'Tour Packages',
       icon: <MdTravelExplore size={50} />,
-      link: '/tour-packages',
+      link: 'services/tour-packages',
     },
     {
       title: 'Transport and Transfers',
       icon: <MdEmojiTransportation size={50} />,
-      link: '/transport',
+      link: 'services/transport',
     },
     {
       title: 'Accommodation Booking',
       icon: <MdOutlineLocalHotel size={50} />,
-      link: '/accommodation',
+      link: 'services/accommodation',
     },
     {
       title: 'Guided Tours and Activities',
