@@ -1,4 +1,4 @@
-import styles from './page.module.css'
+import styles from './index.module.css'
 import Tours from '@/components/sectors/Tours/Tours'
 export default function Page() {
   return (

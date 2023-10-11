@@ -1,6 +1,6 @@
 {
   "name": "discoverberat",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -9,17 +9,22 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@types/node": "20.5.7",
-    "@types/react": "18.2.21",
-    "@types/react-dom": "18.2.7",
+    "react": "^18",
+    "react-dom": "^18",
+    "next": "13.5.4"
+  },
+  "devDependencies": {
+    "typescript": "^5",
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "eslint": "^8",
+    "eslint-config-next": "13.5.4",
     "classnames": "^2.3.2",
-    "eslint": "8.48.0",
-    "eslint-config-next": "13.4.19",
     "next": "13.4.19",
     "react": "18.2.0",
     "react-content-loader": "^6.2.1",
     "react-dom": "18.2.0",
-    "react-icons": "^4.11.0",
-    "typescript": "5.2.2"
+    "react-icons": "^4.11.0"
   }
 }

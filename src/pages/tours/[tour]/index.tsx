@@ -1,3 +1,4 @@
+import { GetStaticProps } from 'next'
 import Image from 'next/image'
 
 type Tour = {
@@ -34,11 +35,8 @@ const tours: Tour[] = [
     link: 'berat-city-tour',
   },
 ]
-export default function Page({ params }: { params: { tour: string } }) {
-  console.log(tours[0].link, params.tour)
 
-  const tour = tours.filter((tour: Tour) => tour.link === params.tour)[0]
-
+export default function Page({ tour }: { tour: Tour }) {
   if (!tour) {
     return (
       <div>
@@ -48,20 +46,32 @@ export default function Page({ params }: { params: { tour: string } }) {
   }
   return (
     <div>
-      <h1> {tour?.title}</h1>
+      <h1>{tour?.title}</h1>
       <p>{tour?.description}</p>
-      <Image width={200} height={200} alt='image' src={tour?.image} />
+      <Image width={200} height={200} alt='image' src={`/${tour?.image}`} />
     </div>
   )
 }
 
-export function generateStaticParams() {
-  const staticParams = tours.map((tour: Tour) => {
-    console.log(tour.link)
+export const getStaticPaths = async () => {
+  const staticPaths = tours.map((tour: Tour) => {
     return {
-      tour: tour.link,
+      params: {
+        tour: tour.link,
+      },
     }
   })
 
-  return staticParams
+  return {
+    paths: staticPaths,
+    fallback: false,
+  }
+}
+
+export const getStaticProps: GetStaticProps = async ({ params }) => {
+  const tour = tours.find((t: Tour) => t.link === params?.tour) || null
+
+  return {
+    props: { tour },
+  }
 }

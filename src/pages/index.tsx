@@ -1,5 +1,4 @@
 import dynamic from 'next/dynamic'
-import styles from './page.module.css'
 import Hero from '../components/sectors/Hero/index'
 import Tours from '@/components/sectors/Tours/Tours'
 import OurServices from '@/components/sectors/OurServices'
@@ -13,9 +12,9 @@ export default function Home() {
 
   if (loading) {
     return (
-      <main className={styles.main}>
+      <main className={'main'}>
         <h2>Discover Berat is coming soon . . .</h2>
-        <div className={styles.video}>
+        <div className={'video'}>
           <Video />
         </div>
       </main>
@@ -23,7 +22,7 @@ export default function Home() {
   }
 
   return (
-    <main className={styles.main}>
+    <main className={'main'}>
       <Hero />
       <OurServices />
       <Tours />
