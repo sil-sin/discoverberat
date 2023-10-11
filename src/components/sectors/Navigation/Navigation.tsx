@@ -14,7 +14,13 @@ export const Navigation: FC<{}> = () => {
   return (
     <nav className={styles.navbarContainer}>
       <a rel='noopener' className={styles.logo} href='/'>
-        <Image src='/vercel.svg' width={100} height={70} alt='Explore Berat' />
+        <Image
+          src='/main_logo.png'
+          width={200}
+          height={100}
+          className={styles.logoImage}
+          alt='Discover Berat'
+        />
       </a>
       <Button
         className={styles.menuButton}

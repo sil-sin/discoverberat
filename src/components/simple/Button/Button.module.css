@@ -9,14 +9,14 @@
 }
 
 .primary {
-    background-color: green;
+    background-color: var(--primary-color);
     color: white;
     font-size: medium;
 }
 
 .primary:hover {
-    background-color: rgba(0, 128, 0, 0.39);
-    border: green 1px solid;
+    background-color: var(--button-color);
+    border: var(--primary-color) 1px solid;
     color: black;
     transition: background-color 0.4s ease-in-out;
 }
@@ -25,13 +25,14 @@
     background-color: white;
     color: black;
     font-size: medium;
-    border: green 1px solid;
+    border: var(--secondary-color) 1px solid;
 }
 
 .secondary:hover {
-    background-color: rgba(0, 128, 0, 0.39);
+    background-color: #4caf4fb1;
     border: green 1px solid;
     color: white;
+    text-shadow: slategrey 0 0 1px;
     transition: background-color 0.4s ease-in-out;
 }
 
@@ -45,7 +46,7 @@
 }
 
 .link:hover {
-    color: green;
+    color: var(--button-color);
 }
 
 .link::before {
@@ -55,7 +56,7 @@
     left: 0;
     width: 0;
     height: 1px;
-    background: linear-gradient(90deg, transparent 0%, green 40%);
+    background: linear-gradient(90deg, transparent 0%, var(--button-color) 40%);
     transition: width 0.3s ease;
 }
 
