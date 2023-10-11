@@ -1,4 +1,4 @@
-/* eslint-disable react/no-danger-with-children */
+// src/app/services/[service]/page.tsx
 'use client'
 import { useEffect, useState } from 'react'
 import { GiCornerFlag } from 'react-icons/gi'
@@ -7,6 +7,7 @@ import {
   MdEmojiTransportation,
   MdOutlineLocalHotel,
 } from 'react-icons/md'
+import { useRouter } from 'next/router'
 
 type Service = {
   title: string
@@ -36,52 +37,39 @@ const services = [
     link: 'tours',
   },
 ]
-export default function Page({
-  params,
-}: {
-  params: { service: string }
-  props: { services: Service[] }
-}) {
-  const [service, setService] = useState<Service>()
+
+export default function ServicePage() {
+  const router = useRouter()
+  const { service } = router.query
 
   const [content, setContent] = useState('')
 
   useEffect(() => {
-    setService(services.filter((service) => service.link === params.service)[0])
-  }, [params.service])
-
-  useEffect(() => {
-    localStorage.setItem('services', JSON.stringify([...services]))
+    localStorage.setItem('services', JSON.stringify(services))
     setContent(
-      JSON.parse(localStorage.getItem('services') ?? '[{"title":"Not found"}]')
-        .title
+      JSON.parse(
+        localStorage.getItem('services') ?? '[{"title":"Not found"}]'
+      )[0].title
     )
   }, [])
 
-  useEffect(() => {
-    
-  },[content])
   const handleContentChange = (event: React.FocusEvent<any>) => {
-    setService({
-      ...service,
-      title: content,
-      icon: service?.icon,
-      link: params.service,
-    })
-    const newServices = (services.filter(
-      (service) => service.link === params.service
-    )[0].title = event.target.innerHTML)
+    const newTitle = event.target.innerHTML
+    const updatedServices = services.map((s) =>
+      s.link === service ? { ...s, title: newTitle } : s
+    )
 
-    console.log(newServices)
-
-    localStorage.setItem('services', JSON.stringify([...services, service]))
+    localStorage.setItem('services', JSON.stringify(updatedServices))
   }
+
   const admin = true
 
-  if (!service) {
+  const currentService = services.find((s) => s.link === service)
+
+  if (!currentService) {
     return (
       <div>
-        <h1>service not found</h1>
+        <h1>Service not found</h1>
       </div>
     )
   }
@@ -90,23 +78,10 @@ export default function Page({
     <div>
       <h1
         id={'title'}
-        contentEditable={!!admin}
+        contentEditable={admin}
         onBlur={handleContentChange}
-        dangerouslySetInnerHTML={{ __html: service?.title }}
+        dangerouslySetInnerHTML={{ __html: currentService.title }}
       ></h1>
     </div>
   )
-}
-
-export function generateStaticParams() {
-  const staticParams = JSON.parse(localStorage.getItem('service') ?? '[]').map(
-    (service: { link: string }) => {
-      console.log(service.link)
-      return {
-        service: service.link,
-      }
-    }
-  )
-
-  return staticParams
 }
