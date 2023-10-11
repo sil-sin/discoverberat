@@ -6,7 +6,7 @@ import styles from './Navigation.module.css'
 import Button from '@/components/simple/Button'
 import { AiOutlineClose, AiOutlineMenu } from 'react-icons/ai'
 import classNames from 'classnames'
-import {Link} from 'next/link'
+import Link from 'next/link'
 
 type Props = {}
 export const Navigation: FC<{}> = () => {
