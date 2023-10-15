@@ -1,0 +1,15 @@
+.footerContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: var(--background-color-inverse);
+  color: var(--text-color-inverse);
+  padding: 20px auto;
+  width: 100vw;
+}
+
+.footerColumns {
+  display: flex;
+  width: 50%;
+  justify-content: space-between;
+}
