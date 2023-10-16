@@ -1,15 +1,16 @@
 :root {
   --primary-color: #008000;
-  --secondary-color: #36B4BD;
+  --secondary-color: #36b4bd;
   --background-color: #f2f2f2;
+  --background-color-inverse: #000000;
   --text-color: #333333;
-  --button-color: #4CAF50;
-  --link-color: #008CBA;
+  --text-color-inverse: #ffffff;
+  --button-color: #4caf50;
+  --link-color: #008cba;
 }
 
 * {
   box-sizing: border-box;
-
 }
 
 html,

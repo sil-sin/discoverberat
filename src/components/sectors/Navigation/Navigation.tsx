@@ -6,6 +6,7 @@ import styles from './Navigation.module.css'
 import Button from '@/components/simple/Button'
 import { AiOutlineClose, AiOutlineMenu } from 'react-icons/ai'
 import classNames from 'classnames'
+import Link from 'next/link'
 
 type Props = {}
 export const Navigation: FC<{}> = () => {
@@ -13,7 +14,7 @@ export const Navigation: FC<{}> = () => {
 
   return (
     <nav className={styles.navbarContainer}>
-      <a rel='noopener' className={styles.logo} href='/'>
+      <Link rel='noopener' className={styles.logo} href='/'>
         <Image
           src='/main_logo.png'
           width={200}
@@ -21,7 +22,7 @@ export const Navigation: FC<{}> = () => {
           className={styles.logoImage}
           alt='Discover Berat'
         />
-      </a>
+      </Link>
       <Button
         className={styles.menuButton}
         variant='secondary'
