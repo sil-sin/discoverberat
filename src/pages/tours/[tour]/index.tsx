@@ -56,10 +56,14 @@ export default function Page({ tour }: { tour: any }) {
   const imgUrl = image?.fields?.file?.url as string
 
   const paragraphs = description?.content?.map((item: any, index: number) => {
+    const paragraph = item?.content[0]?.value
+    const markType = item?.content[0]?.marks
+
     return item.nodeType === 'paragraph' ? (
       <p key={index} className={styles.paragraph}>
-        {' '}
-        {item?.content[0]?.value}{' '}
+        {markType[0]?.type === 'bold' && <b>{paragraph}</b>}
+        {markType[0]?.type === 'italic' && <i>{paragraph}</i>}{' '}
+        {!markType?.length && paragraph}
       </p>
     ) : (
       item?.content.map((item: any) => (
