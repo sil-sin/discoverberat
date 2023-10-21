@@ -13,33 +13,16 @@
 .heroImage {
     width: 100%;
     margin-bottom: 30px;
-    height: 30vh;
+    height: 400px;
 }
 
-.toursButton,
-.toursButton:hover {
-    background-color: var(--button-color);
-    color: white;
-    font-size: medium;
-    border: transparent solid 1px;
-    -webkit-border-radius: 5px;
-    -moz-border-radius: 5px;
-    border-radius: 5px;
-    padding: 10px 20px;
-    margin: 20px 10px;
-    align-self: center;
-    cursor: pointer;
-    width: 250px;
-    text-align: center;
-    border: solid 2px transparent;
-    outline: transparent solid 1px;
-}
+@media (min-width:580px) {
+    .heroContainer {
+        align-items: center;
+    }
 
-.toursButton:hover::before {
-    width: 0;
-}
-
-.toursButton:hover {
-    border: solid 2px var(--background-color);
-    outline: var(--button-color) solid 1px;
+    .bookTourButton {
+        width: 250px;
+        transition: width ease-in-out 0.2s ease-in-out;
+    }
 }

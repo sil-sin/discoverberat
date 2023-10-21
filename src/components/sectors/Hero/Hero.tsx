@@ -13,8 +13,8 @@ export const Hero: FC = () => {
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img className={styles.heroImage} src='/next.svg' alt='Hero Image' />
       <Button
-        className={styles.toursButton}
-        variant='link'
+        className={styles.bookTourButton}
+        variant='primary'
         onClick={() => {
           window.location.href = '/tours'
         }}

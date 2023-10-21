@@ -1,7 +1,8 @@
-import { getAllEntries } from '@/contentful/contentful'
-import { GetStaticProps } from 'next'
+import { getContentEntries } from '@/contentful/contentful'
+import { GetServerSideProps } from 'next'
 import Image from 'next/image'
 import styles from './tour.module.css'
+import Button from '@/components/simple/Button'
 
 type Tour = {
   title: string
@@ -62,49 +63,42 @@ export default function Page({ tour }: { tour: any }) {
     return item.nodeType === 'paragraph' ? (
       <p key={index} className={styles.paragraph}>
         {markType[0]?.type === 'bold' && <b>{paragraph}</b>}
-        {markType[0]?.type === 'italic' && <i>{paragraph}</i>}{' '}
+        {markType[0]?.type === 'italic' && <i>{paragraph}</i>}
         {!markType?.length && paragraph}
       </p>
     ) : (
       item?.content.map((item: any) => (
         <li key={index} className={styles.includedList}>
-          {item.content[0].content[0].value}{' '}
+          {item.content[0].content[0].value}
         </li>
       ))
     )
   })
 
   return (
-    <div className={styles.container}>
+    <div
+      onContextMenu={(event: React.MouseEvent) => {
+        event.preventDefault()
+      }}
+      className={styles.container}
+    >
       <h1>{title}</h1>
-      <Image width={200} height={200} alt='image' src={`https:${imgUrl}`} />
-      <>{paragraphs}</>
-      <p>
-        Price: {price} {currency} per person
-      </p>
+      <article className={styles.tourContainer}>
+        <Image width={200} height={200} alt='image' src={`https:${imgUrl}`} />
+        <>{paragraphs}</>
+        <p>
+          Price: {price} {currency} per person
+        </p>
+        <Button className={styles.button} variant='primary'>
+          Book Tour
+        </Button>
+      </article>
     </div>
   )
 }
 
-export const getStaticPaths = async () => {
-  const entries = await getAllEntries()
-  const staticPaths = entries.map((entry: any) => {
-    return {
-      params: {
-        tour: entry?.fields?.url,
-      },
-    }
-  })
-
-  return {
-    paths: staticPaths,
-    fallback: false,
-  }
-}
-
-export const getStaticProps: GetStaticProps = async ({ params }) => {
-  const entries = await getAllEntries()
-
+export const getServerSideProps: GetServerSideProps = async ({ params }) => {
+  const entries = await getContentEntries('tourPage')
   const tour = entries.find((e: any) => e?.fields?.url === params?.tour) || null
 
   return {

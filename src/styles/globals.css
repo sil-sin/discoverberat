@@ -1,12 +1,51 @@
 :root {
-  --primary-color: #008000;
-  --secondary-color: #36b4bd;
-  --background-color: #f2f2f2;
-  --background-color-inverse: #000000;
-  --text-color: #333333;
-  --text-color-inverse: #ffffff;
-  --button-color: #4caf50;
-  --link-color: #008cba;
+  /* button colors */
+  --font: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  --button-primary-bg: #51A56A;
+  --button-primary-typo: #fcfcfc;
+  --button-primary-hover-bg: #4A9E60;
+  /* Slightly lighter shade for hover */
+  --button-primary-active-bg: #499E5E;
+  /* Slightly lighter shade for active */
+  --button-secondary-bg: #fff;
+  --button-secondary-typo: #51A56A;
+  --button-secondary-hover-bg: #f4f4f4;
+  --button-secondary-active-bg: #b0b0b0;
+  --button-outline-border: rgba(45, 49, 55, 0.15);
+  --button-secondary-outline-border: #51A56A;
+  --button-outline-typo: #2d3137;
+  --button-outline-hover-border: #4A9E60;
+  /* Slightly lighter shade for hover */
+  --button-outline-active-border: #499E5E;
+  /* Slightly lighter shade for active */
+
+  /* Link Tokens */
+  --link-color: #2d3137;
+  /* Normal link color */
+  --link-hover-color: #4A9E60;
+  /* Link color on hover, slightly lighter */
+  --link-active-color: #499E5E;
+  /* Link color when active, slightly lighter */
+  --link-text-decoration: underline;
+  --link-background: transparent;
+  --link-background-hover: #c8c8c8;
+
+  /* text color */
+  --text-default: #2d3137;
+  --text-secondary: #868686;
+  --text-inverse: #ffffff;
+
+  /* background color */
+  --background-default: #ffffff;
+  --background-secondary: #f4f4f4;
+  --background-inverse: #2d3137;
+  --shadow: rgba(45, 49, 55, 0.3);
+
+  /* font */
+  --primary-font: 500 1.6rem/1.5 var(--font);
+  --secondary-font: italic 400 1rem/1.5 var(--font);
+  --primary-button-font: 450 1.2rem/1.5 var(--font);
+  --secondary-button-font: 450 1rem/1 var(--font);
 }
 
 * {
@@ -21,6 +60,7 @@ body {
 }
 
 body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   color: rgb(var(--foreground-rgb));
   background: rgb(var(--background-end-rgb));
   margin: 0;

@@ -52,7 +52,7 @@ export const Footer: FC = () => {
 
       <div className={styles.footerBottom}>
         <p>
-          &copy; {new Date().getFullYear()} Your Company Name. All rights
+          &copy; {new Date().getFullYear()} Discover Berat. All rights
           reserved.
         </p>
       </div>

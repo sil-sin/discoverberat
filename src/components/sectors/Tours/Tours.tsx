@@ -36,16 +36,19 @@ export default function Tours() {
       <h1 className={styles.toursTitle}>Top tours</h1>
       <div className={styles.tourCardsContainer}>
         {tours.map((tour) => (
-          <div key={tour.link}>
-            <Link href={`/tours/${tour.link}`}>
-              <Card
-                title={tour.title}
-                description={tour.description}
-                imageSrc={tour.image}
-                price={tour.price}
-              />
-            </Link>
-          </div>
+          <Link
+            href={`/tours/${tour.link}`}
+            key={tour.link}
+            className={styles.tourCards}
+          >
+            <Card
+              title={tour.title}
+              description={tour.description}
+              imageSrc={tour.image}
+              price={tour.price}
+              className={styles.tourCard}
+            />
+          </Link>
         ))}
       </div>
     </div>

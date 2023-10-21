@@ -2,14 +2,16 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: var(--background-color-inverse);
-  color: var(--text-color-inverse);
+  background-color: var(--background-inverse);
+  color: var(--text-inverse);
   padding: 20px auto;
   width: 100vw;
 }
 
 .footerColumns {
   display: flex;
-  width: 50%;
-  justify-content: space-between;
+  align-items: start;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+  width: -webkit-fill-available;
 }
