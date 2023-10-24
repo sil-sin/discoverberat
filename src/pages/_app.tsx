@@ -13,7 +13,7 @@ function App({ Component, pageProps }: AppProps) {
 
 App.getInitialProps = async () => {
   // Call your API function to fetch entries
-  const entries = await getContentEntries('tourPage');
+  const entries:any = await getContentEntries('tourPage');
 
   // Return entries along with pageProps
   return { entries };
