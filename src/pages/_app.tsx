@@ -11,7 +11,7 @@ function App({ Component, pageProps }: AppProps) {
   );
 }
 
-MyApp.getInitialProps = async () => {
+App.getInitialProps = async () => {
   // Call your API function to fetch entries
   const entries = await getContentEntries('tourPage');
 
@@ -19,4 +19,4 @@ MyApp.getInitialProps = async () => {
   return { entries };
 };
 
-export default MyApp;
+export default App;
