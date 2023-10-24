@@ -8,7 +8,7 @@ export default function Page({entries}:{entries:any}) {
   return (
     <div className={styles.container}>
       <Tours />
-      <>entries?.[0]?.fields.title</>
+      <>{entries?.[0]?.fields.title}</>
     </div>
   )
 }
