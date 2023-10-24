@@ -3,7 +3,7 @@ import { getContentEntries } from '../contentful/contentful'; // Adjust the impo
 import Layout from '@/components/Layout';
 import '@/styles/globals.css';
 
-function MyApp({ Component, pageProps }) {
+function App({ Component, pageProps }: AppProps) {
   return (
     <Layout>
       <Component {...pageProps} />
