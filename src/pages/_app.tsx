@@ -1,5 +1,5 @@
 import { AppProps } from 'next/app';
-import { getContentEntries } from './src/contentful/contentful'; // Adjust the import path as needed
+import { getContentEntries } from '@contentful/contentful'; // Adjust the import path as needed
 import Layout from '@/components/Layout';
 import '@/styles/globals.css';
 
