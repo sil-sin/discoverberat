@@ -1,11 +1,22 @@
-import Layout from '@/components/Layout'
-import '@/styles/globals.css'
-import type { AppProps } from 'next/app'
+import { AppProps } from 'next/app';
+import { getContentEntries } from './src/contentful/contentful'; // Adjust the import path as needed
+import Layout from '@/components/Layout';
+import '@/styles/globals.css';
 
-export default function App({ Component, pageProps }: AppProps) {
+function MyApp({ Component, pageProps }) {
   return (
     <Layout>
       <Component {...pageProps} />
     </Layout>
-  )
+  );
 }
+
+MyApp.getInitialProps = async () => {
+  // Call your API function to fetch entries
+  const entries = await getContentEntries();
+
+  // Return entries along with pageProps
+  return { entries };
+};
+
+export default MyApp;
