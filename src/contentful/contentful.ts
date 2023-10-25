@@ -13,7 +13,6 @@ export async function getContentEntries(entry: string) {
   const response = await client.getEntries({
     content_type: entry,
   })
-  console.log(response.items)
 
   return response.items
 }

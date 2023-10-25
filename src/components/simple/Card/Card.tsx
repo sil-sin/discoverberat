@@ -7,7 +7,7 @@ type Props = {
   title?: string
   imageSrc?: string
   description?: string
-  price?: string
+  price?: number
   isLoading?: boolean
   className?: string
   iconCard?: boolean

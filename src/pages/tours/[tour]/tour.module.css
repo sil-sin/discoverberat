@@ -1,12 +1,12 @@
 .container * {
     padding: 0 0.5em;
-    align-self: start;
+    align-self: flex-start;
 }
 
 .container {
     display: flex;
     flex-direction: column;
-    align-items: start;
+    align-items: flex-start;
     padding: 10px 0 !important
 }
 
@@ -59,9 +59,11 @@
     width: 200px;
 }
 
-.tourContainer,.tourContainer img{
+.tourContainer,
+.tourContainer img {
     border-radius: 6px;
 }
+
 @media screen and (min-width: 780px) {
     .container>h1 {
         width: 100%;
