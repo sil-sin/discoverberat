@@ -1,11 +1,22 @@
-import Layout from '@/components/Layout'
-import '@/styles/globals.css'
-import type { AppProps } from 'next/app'
+import { AppProps } from 'next/app';
+import { getContentEntries } from '../contentful/contentful'; // Adjust the import path as needed
+import Layout from '@/components/Layout';
+import '@/styles/globals.css';
 
-export default function App({ Component, pageProps }: AppProps) {
+function App({ Component, pageProps }: AppProps) {
   return (
     <Layout>
       <Component {...pageProps} />
     </Layout>
-  )
+  );
 }
+
+App.getInitialProps = async () => {
+  // Call your API function to fetch entries
+  const entries:any = await getContentEntries('tourPage');
+
+  // Return entries along with pageProps
+  return { entries };
+};
+
+export default App;
