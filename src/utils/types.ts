@@ -1,8 +1,10 @@
 export type Tour = {
-  title: string
-  description: string
-  price: number
-  currency: string
-  imgUrl?: string
-  link: string
+  fields: {
+    title: string
+    description: any
+    price: number
+    currency: string
+    image?: any
+    url: string
+  }
 }

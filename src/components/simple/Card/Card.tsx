@@ -12,6 +12,7 @@ type Props = {
   className?: string
   iconCard?: boolean
   cardIcon?: any
+  currency?: string
 }
 
 export const Card: FC<Props> = ({

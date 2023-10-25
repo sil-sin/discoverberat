@@ -12,7 +12,9 @@ export default function Home(props: any) {
   // const entries = props
   const loading = false
   console.log('ere', props)
-
+  const tours = props.entries?.filter(
+    (e: any) => e?.sys.contentType?.sys.id === 'tourPage'
+  )
   if (loading) {
     return (
       <main className={'main'}>
@@ -28,7 +30,7 @@ export default function Home(props: any) {
     <main className={'main'}>
       <Hero />
       <OurServices />
-      {/* {entries && <Tours tours={entries} />} */}
+      <Tours tours={tours} />
     </main>
   )
 }

@@ -1,4 +1,4 @@
-import { getContentEntries } from '@/contentful/contentful'
+import { getAllEntries } from '@/contentful/contentful'
 import { GetServerSideProps } from 'next'
 import Image from 'next/image'
 import styles from './tour.module.css'
@@ -13,38 +13,7 @@ type Tour = {
   url: string
 }
 
-const tours: Tour[] = [
-  {
-    title: 'Osumi Canyon & Bogova Waterfall',
-    description:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent et felis eget elit ornare luctus. In hac habitasse platea dictumst.',
-    imgUrl: 'next.svg',
-    price: 50,
-    currency: '€',
-    url: 'osumi-canyon-and-bogova-waterfall',
-  },
-  {
-    title: 'Tomori Mountain',
-    description:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent et felis eget elit ornare luctus. In hac habitasse platea dictumst.',
-    imgUrl: 'next.svg',
-    price: 50,
-    currency: '€',
-
-    url: 'tomori-mountain',
-  },
-  {
-    title: 'Berat City Tour',
-    description:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent et felis eget elit ornare luctus. In hac habitasse platea dictumst.',
-    imgUrl: 'next.svg',
-    currency: '€',
-    price: 50,
-    url: 'berat-city-tour',
-  },
-]
-
-export default function Page({ tour }: { tour: any }) {
+export default function Page({ tour }: { tour: any; props: any }) {
   if (!tour) {
     return (
       <div>
@@ -52,6 +21,7 @@ export default function Page({ tour }: { tour: any }) {
       </div>
     )
   }
+  console.log(tour)
 
   const { price, title, description, currency, image } = tour?.fields
   const imgUrl = image?.fields?.file?.url as string
@@ -98,8 +68,9 @@ export default function Page({ tour }: { tour: any }) {
 }
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
-  const entries = await getContentEntries('tourPage')
-  const tour = entries.find((e: any) => e?.fields?.url === params?.tour) || null
+  const entries = await getAllEntries()
+  const tour: any =
+    entries?.find((e: any) => e?.fields?.url === params?.tour) || null
 
   return {
     props: { tour },

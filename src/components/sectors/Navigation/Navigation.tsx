@@ -69,9 +69,7 @@ export const Navigation: FC<{}> = () => {
         ))}
         <Button
           variant='secondary'
-          onClick={() => {
-            console.log('clicked')
-          }}
+          onClick={() => {}}
           text='Login / Register'
         />
       </ul>
