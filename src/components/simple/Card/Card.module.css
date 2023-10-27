@@ -8,15 +8,16 @@
       justify-content: space-between;
       width: 350px;
       max-height: 500px;
-
-
   }
 
   .image {
-      object-fit: contain;
+      object-fit: cover;
       padding: 10px;
       box-shadow: solid 3px var(--shadow);
+      max-height: 250px;
+      width: 100%;
   }
+
 
   .title {
       font-size: 1em;

@@ -1,10 +1,8 @@
-import dynamic from 'next/dynamic'
 import Hero from '../components/sectors/Hero/index'
 import OurServices from '@/components/sectors/OurServices'
 
 import Tours from '@/components/sectors/Tours'
-import { createContent, getEntry } from '@/contentful/contentful'
-import { useEffect, useState } from 'react'
+import { getEntry } from '@/contentful/contentful'
 import { GetServerSideProps } from 'next'
 
 export default function Home(props: any) {

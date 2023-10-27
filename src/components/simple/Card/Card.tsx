@@ -43,7 +43,6 @@ export const Card: FC<Props> = ({
             <div> {title}</div>
           </div>
           <Image
-            layout='responsive'
             loading='eager'
             className={styles.image}
             src={imageSrc}

@@ -7,7 +7,6 @@ import { Tour } from '@/utils/types'
 export const Tours: FC<any> = (props: { tours: Tour[] }) => {
   const { tours } = props
 
-
   if (!tours) {
     return (
       <div>
@@ -40,6 +39,7 @@ export const Tours: FC<any> = (props: { tours: Tour[] }) => {
                 price={price}
                 className={styles.tourCard}
                 currency={currency}
+                isLoading={!tours}
               />
             </Link>
           )
