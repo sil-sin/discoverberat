@@ -1,10 +1,13 @@
 import Card from '@/components/simple/Card'
-import React from 'react'
+import React, { FC } from 'react'
 import styles from './Tours.module.css'
 import Link from 'next/link' // Import Link from Next.js
 import { Tour } from '@/utils/types'
 
-export default function Tours({ tours }: any) {
+export const Tours: FC<any> = (props: { tours: Tour[] }) => {
+  const { tours } = props
+
+
   if (!tours) {
     return (
       <div>
@@ -20,7 +23,6 @@ export default function Tours({ tours }: any) {
         {tours?.map((tour: Tour) => {
           const { title, description, price, currency, image, url } =
             tour.fields
-          console.log(url)
 
           const imgUrl = image?.fields?.file?.url as string
           const descriptionParagraphs = description?.content?.map(

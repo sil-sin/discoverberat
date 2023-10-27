@@ -38,18 +38,20 @@ export const Card: FC<Props> = ({
   return (
     <>
       <div className={classNames(styles.cardContainer, className)}>
-        <div>
+        <>
           <div className={styles.title}>
             <div> {title}</div>
           </div>
           <Image
+            layout='responsive'
+            loading='eager'
             className={styles.image}
             src={imageSrc}
-            width={100}
-            height={100}
+            width={400}
+            height={250}
             alt='Explore Berat'
           />
-        </div>
+        </>
         {description && <p className={styles.description}>{description}</p>}
         {price && <p className={styles.price}> Starting from {price}</p>}
       </div>

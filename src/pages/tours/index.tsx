@@ -1,14 +1,30 @@
 import styles from './index.module.css'
-import Tours from '../../components/sectors/Tours/Tours'
+import Tours from '../../components/sectors/Tours'
+import { GetServerSideProps } from 'next'
+import { getEntry } from '@/contentful/contentful'
 
-export default function Page({ entries }: { entries: any }) {
-  !entries && <>No entry</>
-  const tours = entries?.filter(
-    (e: any) => e?.sys.contentType?.sys.id === 'tourPage'
-  )
+export default function Page({ tours }: any) {
+  console.log(tours)
+
   return (
     <div className={styles.container}>
-      <Tours tours={tours} />
-      </div>
+      {tours ? <Tours tours={tours} /> : <>No tours</>}
+    </div>
   )
+}
+
+export const getServerSideProps: GetServerSideProps = async ({ params }) => {
+  try {
+    const entries = await getEntry('tourPage')
+    console.log(entries)
+
+    return {
+      props: { tours: entries },
+    }
+  } catch (error) {
+    console.error('Error fetching data:', error)
+    return {
+      props: { tours: null },
+    }
+  }
 }

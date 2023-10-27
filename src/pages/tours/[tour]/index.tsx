@@ -1,4 +1,4 @@
-import { getAllEntries } from '@/contentful/contentful'
+import { getEntry } from '@/contentful/contentful'
 import { GetServerSideProps } from 'next'
 import Image from 'next/image'
 import styles from './tour.module.css'
@@ -21,7 +21,6 @@ export default function Page({ tour }: { tour: any; props: any }) {
       </div>
     )
   }
-  console.log(tour)
 
   const { price, title, description, currency, image } = tour?.fields
   const imgUrl = image?.fields?.file?.url as string
@@ -54,7 +53,7 @@ export default function Page({ tour }: { tour: any; props: any }) {
     >
       <h1>{title}</h1>
       <article className={styles.tourContainer}>
-        <Image width={200} height={200} alt='image' src={`https:${imgUrl}`} />
+        <Image width={1000} height={1000} alt='image' src={`https:${imgUrl}`} />
         <>{paragraphs}</>
         <p>
           Price: {price} {currency} per person
@@ -68,7 +67,7 @@ export default function Page({ tour }: { tour: any; props: any }) {
 }
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
-  const entries = await getAllEntries()
+  const entries = await getEntry('tourPage')
   const tour: any =
     entries?.find((e: any) => e?.fields?.url === params?.tour) || null
 

@@ -1,30 +1,14 @@
 import dynamic from 'next/dynamic'
 import Hero from '../components/sectors/Hero/index'
-import Tours from '@/components/sectors/Tours/Tours'
 import OurServices from '@/components/sectors/OurServices'
-import Footer from '@/components/sectors/Footer'
-import { Tour } from '@/utils/types'
+
+import Tours from '@/components/sectors/Tours'
+import { createContent, getEntry } from '@/contentful/contentful'
+import { useEffect, useState } from 'react'
+import { GetServerSideProps } from 'next'
 
 export default function Home(props: any) {
-  const Video = dynamic(() => import('../components/Video'), {
-    ssr: false,
-  })
-  // const entries = props
-  const loading = false
-  console.log('ere', props)
-  const tours = props.entries?.filter(
-    (e: any) => e?.sys.contentType?.sys.id === 'tourPage'
-  )
-  if (loading) {
-    return (
-      <main className={'main'}>
-        <h2>Discover Berat is coming soon . . .</h2>
-        <div className={'video'}>
-          <Video />
-        </div>
-      </main>
-    )
-  }
+  const { tours } = props
 
   return (
     <main className={'main'}>
@@ -33,4 +17,19 @@ export default function Home(props: any) {
       <Tours tours={tours} />
     </main>
   )
+}
+
+export const getServerSideProps: GetServerSideProps = async ({ params }) => {
+  try {
+    const entries = await getEntry('tourPage')
+
+    return {
+      props: { tours: entries },
+    }
+  } catch (error) {
+    console.error('Error fetching data:', error)
+    return {
+      props: { tours: null },
+    }
+  }
 }

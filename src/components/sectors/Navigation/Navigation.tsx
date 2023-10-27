@@ -11,31 +11,13 @@ type Props = {}
 
 export const Navigation: FC<{}> = () => {
   const [isMenuShow, setIsMenuShow] = useState(false)
-  // const menuRef = useRef<any>()
-
-  // useEffect(() => {
-  //   // Function to handle clicks outside the <ul>
-  //   const handleClickOutside = (event: MouseEvent) => {
-  //     if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-  //       setIsMenuShow(false)
-  //     }
-  //   }
-
-  //   // Add the event listener when the component mounts
-  //   document.addEventListener('mousedown', handleClickOutside)
-
-  //   // Remove the event listener when the component unmounts
-  //   return () => {
-  //     document.removeEventListener('mousedown', handleClickOutside)
-  //   }
-  // }, [])
 
   return (
     <nav className={styles.navbarContainer}>
       <div className={styles.imageIcon}>
         <Link rel='noopener' className={styles.logo} href='/'>
           <Image
-            src='/main_logo.png'
+            src='/main_logo.svg'
             width={200}
             height={100}
             className={styles.logoImage}
@@ -57,7 +39,6 @@ export const Navigation: FC<{}> = () => {
         </Button>
       </div>
       <ul
-        // ref={menuRef}
         className={classNames(
           isMenuShow ? styles.navbarLinksShow : styles.navbarLinksContainer
         )}
