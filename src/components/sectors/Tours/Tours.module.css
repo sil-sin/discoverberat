@@ -2,15 +2,14 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin: 10px auto;
-    max-width: 1200px;
-    flex-wrap: wrap;
 }
 
 .tourCardsContainer {
     display: flex;
     flex-wrap: wrap;
     width: -webkit-fill-available;
+    margin: 10px auto;
+    max-width: 1200px
 }
 
 .toursTitle {
@@ -41,5 +40,6 @@
         flex-direction: row;
         flex-wrap: wrap;
     }
+
 
 }
