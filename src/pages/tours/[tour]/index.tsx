@@ -53,7 +53,13 @@ export default function Page({ tour }: { tour: any; props: any }) {
     >
       <h1>{title}</h1>
       <article className={styles.tourContainer}>
-        <Image width={1000} height={1000} alt='image' src={`https:${imgUrl}`} />
+        <Image
+          loading='lazy'
+          width={1000}
+          height={1000}
+          alt='image'
+          src={`https:${imgUrl}`}
+        />
         <>{paragraphs}</>
         <p>
           Price: {price} {currency} per person

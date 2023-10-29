@@ -43,7 +43,7 @@ export const Card: FC<Props> = ({
             <div> {title}</div>
           </div>
           <Image
-            loading='eager'
+            loading='lazy'
             className={styles.image}
             src={imageSrc}
             width={400}
@@ -51,7 +51,7 @@ export const Card: FC<Props> = ({
             alt='Explore Berat'
           />
         </>
-        {description && <p className={styles.description}>{description}</p>}
+        {/* {description && <p className={styles.description}>{description}</p>} */}
         {price && <p className={styles.price}> Starting from {price}</p>}
       </div>
       {isLoading && <div className={styles.cardSkeleton}></div>}

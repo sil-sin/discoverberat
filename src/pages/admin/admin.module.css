@@ -6,15 +6,19 @@
 
 .section {
     display: flex;
-
+    justify-content: space-between;
+    width: 100%;
 }
 
-.leftPanel,
-.rightPanel {
+.leftPanel {
 
-    flex-grow: 1;
     flex-basis: 250px;
     display: flex;
     justify-content: stretch;
-    border: 2px solid var(--primary-color);
+    border: 2px solid var(--button-outline-active-border);
+    border-radius: 10px;
+    padding: 10px;
+
+
+
 }

@@ -3,7 +3,8 @@
     flex-direction: column;
     align-items: center;
     margin: 10px auto;
-    width: 1200px
+    max-width: 1200px;
+    flex-wrap: wrap;
 }
 
 .tourCardsContainer {
@@ -33,7 +34,7 @@
     width: 100%;
 }
 
-/* @media (min-width: 780px) {
+@media (min-width: 780px) {
     .tourCardsContainer {
         display: flex;
         align-items: center;
@@ -41,5 +42,4 @@
         flex-wrap: wrap;
     }
 
-
-} */
+}
