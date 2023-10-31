@@ -1,6 +1,7 @@
 import { createClient } from 'contentful'
 const contentful = require('contentful-management')
 import contentfulConfig from './contentfulConfig'
+import { documentToHtmlString } from '@contentful/rich-text-html-renderer'
 
 const client = createClient({
   space: contentfulConfig.space,
@@ -17,9 +18,7 @@ export async function getEntry(entry: string) {
   return response.items
 }
 
-export async function createContent(input: string) {
-  console.log(input)
-
+export async function createContent(entryType: string, fields: any) {
   const clientEdit = contentful.createClient({
     accessToken: 'CFPAT-Juzn-HgMDO36houFXIhe3rHi2cmekD3SzU-9y2UO99E',
     space: contentfulConfig.space,
@@ -29,16 +28,8 @@ export async function createContent(input: string) {
     .getSpace(contentfulConfig.space)
     .then((space: any) => space.getEnvironment('master'))
     .then((environment: any) => {
-      console.log('environment')
-
-      return environment.createEntryWithId('tourPage', `${Math.random()}`, {
-        fields: {
-          title: {
-            'en-US': input,
-          },
-
-          url: { 'en-US': input.toLowerCase().split(' ').join('-') },
-        },
+      return environment.createEntry(entryType, {
+        fields,
       })
     })
     .then((entry: { update: () => any }) => {
@@ -54,5 +45,3 @@ export async function createContent(input: string) {
     })
     .catch(console.error)
 }
-
-

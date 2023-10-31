@@ -1,27 +1,33 @@
-import client from '@/contentful/contentful'
+import client, { createContent } from '@/contentful/contentful'
 import React, { useState, useEffect } from 'react'
+import dynamic from 'next/dynamic'
+import { FormEvent } from 'react'
+import { ChangeEvent } from 'react'
+import RichTextEditor from './RichtextInput'
 
 const EditCreateTab: React.FC = () => {
   const [mode, setMode] = useState<'create' | 'edit'>('create')
   const [selectedContentType, setSelectedContentType] = useState<string>('')
   const [formData, setFormData] = useState({})
-
   const [contentTypes, setContentTypes] = useState<any>([{ name: '', id: '' }])
+  const [richTextContent, setRichTextContent] = useState('')
+  const [dynamicFields, setDynamicFields] = useState([])
+
+  const handleRichTextChange = (content: string) => {
+    setRichTextContent(content)
+  }
 
   useEffect(() => {
     client
       .getContentTypes()
       .then((response) => {
         const contentTypes = response.items.map((contentType) => {
-          console.log(contentType)
-
           return {
             name: contentType.name,
             id: contentType.sys.id,
             fields: contentType.fields,
           }
         })
-        //   setFormData({{id: contentTypes}})
         setContentTypes(contentTypes)
       })
       .catch((error) => {
@@ -29,28 +35,56 @@ const EditCreateTab: React.FC = () => {
       })
   }, [])
 
-  const handleContentTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleContentTypeChange = (e: ChangeEvent<HTMLSelectElement>) => {
     setSelectedContentType(e.target.value)
+
+    // Create dynamic form fields based on selected content type's fields
+    const selectedContentTypeFields = contentTypes
+      .find((contentType: any) => contentType.id === e.target.value)
+      .fields.map((field: any) => {
+        if (field.type === 'RichText') {
+          return {
+            id: field.id,
+            name: field.name,
+            type: 'RichText',
+          }
+        } else {
+          return {
+            id: field.id,
+            name: field.name,
+            type: field.type,
+          }
+        }
+      })
+    console.log(selectedContentTypeFields)
+
+    const filtered = selectedContentTypeFields.filter(
+      (field: any) => field.type === 'Symbol' || field.type === 'Number'
+    )
+    console.log(filtered)
+
+    setDynamicFields(filtered)
   }
 
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
-    setFormData((prevData) => ({ ...prevData, [name]: value }))
+    console.log({ [name]: { 'en-US': value } })
+
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: { 'en-US': +value ? +value : value },
+    }))
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault()
-    console.log(formData)
-  }
-
-  useEffect(() => {
-    if (mode === 'edit') {
-      // You can fetch the data for the selected content type and pre-fill the formData
-      // Example:
-      // const data = fetchDataForSelectedContentType(selectedContentType);
-      // setFormData(data);
+    const filledFormData = {
+      ...formData,
+      description: richTextContent,
     }
-  }, [mode, selectedContentType])
+
+    createContent(selectedContentType, formData)
+  }
 
   return (
     <div>
@@ -77,24 +111,29 @@ const EditCreateTab: React.FC = () => {
           </select>
         </div>
 
-        {selectedContentType &&
-          contentTypes
-            .filter(
-              (contentType: any) => contentType.id === selectedContentType
-            )[0]
-            .fields.map((formData: any) => (
-              <>
-                <div>
-                  <label htmlFor={formData.id}>{formData.name}</label>
-                  <input
-                    type='text'
-                    id={formData.id}
-                    name={formData.id}
-                    onChange={handleFormChange}
-                  />
-                </div>
-              </>
-            ))}
+        {dynamicFields.map((field: any) => (
+          <div key={field.id}>
+            {field.type === 'RichText' ? (
+              <div>
+                <label htmlFor={field.id}>{field.name}</label>
+                {/* <RichTextEditor
+                  value={richTextContent}
+                  onChange={handleRichTextChange}
+                /> */}
+              </div>
+            ) : (
+              <div>
+                <label htmlFor={field.id}>{field.name}</label>
+                <input
+                  type={field.type}
+                  id={field.id}
+                  name={field.id}
+                  onChange={handleFormChange}
+                />
+              </div>
+            )}
+          </div>
+        ))}
 
         <button type='submit'>{mode === 'create' ? 'Create' : 'Save'}</button>
       </form>

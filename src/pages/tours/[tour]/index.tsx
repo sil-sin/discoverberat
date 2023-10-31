@@ -21,6 +21,7 @@ export default function Page({ tour }: { tour: any; props: any }) {
       </div>
     )
   }
+  console.log(tour)
 
   const { price, title, description, currency, image } = tour?.fields
   const imgUrl = image?.fields?.file?.url as string
