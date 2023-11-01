@@ -33,7 +33,8 @@
     margin: 0;
 }
 
-.container p>i {
+.container p>i,
+.container p>em {
     font: var(--secondary-font);
     padding: .5rem;
     margin: 0;

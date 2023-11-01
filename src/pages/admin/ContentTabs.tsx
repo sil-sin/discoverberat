@@ -3,7 +3,8 @@ import React, { useState, useEffect } from 'react'
 import dynamic from 'next/dynamic'
 import { FormEvent } from 'react'
 import { ChangeEvent } from 'react'
-import RichTextEditor from './RichtextInput'
+import { documentToHtmlString } from '@contentful/rich-text-html-renderer'
+import TurndownService from 'turndown'
 
 const EditCreateTab: React.FC = () => {
   const [mode, setMode] = useState<'create' | 'edit'>('create')
@@ -12,6 +13,10 @@ const EditCreateTab: React.FC = () => {
   const [contentTypes, setContentTypes] = useState<any>([{ name: '', id: '' }])
   const [richTextContent, setRichTextContent] = useState('')
   const [dynamicFields, setDynamicFields] = useState([])
+
+  const RichTextEditor = dynamic(() => import('./RichtextInput'), {
+    ssr: false,
+  })
 
   const handleRichTextChange = (content: string) => {
     setRichTextContent(content)
@@ -42,33 +47,22 @@ const EditCreateTab: React.FC = () => {
     const selectedContentTypeFields = contentTypes
       .find((contentType: any) => contentType.id === e.target.value)
       .fields.map((field: any) => {
-        if (field.type === 'RichText') {
-          return {
-            id: field.id,
-            name: field.name,
-            type: 'RichText',
-          }
-        } else {
-          return {
-            id: field.id,
-            name: field.name,
-            type: field.type,
-          }
+        return {
+          id: field.id,
+          name: field.name,
+          type: field.type,
         }
       })
-    console.log(selectedContentTypeFields)
 
     const filtered = selectedContentTypeFields.filter(
-      (field: any) => field.type === 'Symbol' || field.type === 'Number'
+      (field: any) => field.type !== 'Link'
     )
-    console.log(filtered)
 
     setDynamicFields(filtered)
   }
 
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
-    console.log({ [name]: { 'en-US': value } })
 
     setFormData((prevData) => ({
       ...prevData,
@@ -76,14 +70,22 @@ const EditCreateTab: React.FC = () => {
     }))
   }
 
+  function htmlToMarkdown(htmlText: string) {
+    const turndownService = new TurndownService()
+
+    // Use the 'turndown' library to convert HTML to Markdown
+    const markdownText = turndownService.turndown(htmlText)
+
+    return markdownText
+  }
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault()
     const filledFormData = {
       ...formData,
-      description: richTextContent,
+      description: { 'en-US': htmlToMarkdown(richTextContent) },
     }
 
-    createContent(selectedContentType, formData)
+    createContent(selectedContentType, filledFormData)
   }
 
   return (
@@ -116,10 +118,10 @@ const EditCreateTab: React.FC = () => {
             {field.type === 'RichText' ? (
               <div>
                 <label htmlFor={field.id}>{field.name}</label>
-                {/* <RichTextEditor
+                <RichTextEditor
                   value={richTextContent}
                   onChange={handleRichTextChange}
-                /> */}
+                />
               </div>
             ) : (
               <div>

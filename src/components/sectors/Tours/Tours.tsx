@@ -19,18 +19,12 @@ export const Tours: FC<any> = (props: { tours: Tour[] }) => {
       const { title, description, price, currency, image, url } = tour.fields
 
       const imgUrl = image?.fields?.file?.url as string
-      const descriptionParagraphs = description?.content?.map(
-        (item: any, index: number) => {
-          const paragraph = item?.content[0]?.value
-          const markType = item?.content[0]?.marks
-        }
-      )
 
       return (
         <Link href={`/tours/${url}`} key={url} className={styles.tourCards}>
           <Card
             title={title}
-            description={descriptionParagraphs}
+            description={description}
             imageSrc={imgUrl ? 'https:' + imgUrl : ''}
             price={price}
             className={styles.tourCard}

@@ -1,7 +1,6 @@
 import { createClient } from 'contentful'
 const contentful = require('contentful-management')
 import contentfulConfig from './contentfulConfig'
-import { documentToHtmlString } from '@contentful/rich-text-html-renderer'
 
 const client = createClient({
   space: contentfulConfig.space,

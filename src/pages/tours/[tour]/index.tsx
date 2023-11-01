@@ -3,6 +3,7 @@ import { GetServerSideProps } from 'next'
 import Image from 'next/image'
 import styles from './tour.module.css'
 import Button from '@/components/simple/Button'
+import { marked } from 'marked'
 
 type Tour = {
   title: string
@@ -25,25 +26,7 @@ export default function Page({ tour }: { tour: any; props: any }) {
 
   const { price, title, description, currency, image } = tour?.fields
   const imgUrl = image?.fields?.file?.url as string
-
-  const paragraphs = description?.content?.map((item: any, index: number) => {
-    const paragraph = item?.content[0]?.value
-    const markType = item?.content[0]?.marks
-
-    return item.nodeType === 'paragraph' ? (
-      <p key={index} className={styles.paragraph}>
-        {markType[0]?.type === 'bold' && <b>{paragraph}</b>}
-        {markType[0]?.type === 'italic' && <i>{paragraph}</i>}
-        {!markType?.length && paragraph}
-      </p>
-    ) : (
-      item?.content.map((item: any) => (
-        <li key={index} className={styles.includedList}>
-          {item.content[0].content[0].value}
-        </li>
-      ))
-    )
-  })
+  const htmlTextField = marked(description)
 
   return (
     <div
@@ -61,7 +44,7 @@ export default function Page({ tour }: { tour: any; props: any }) {
           alt='image'
           src={`https:${imgUrl}`}
         />
-        <>{paragraphs}</>
+        <div dangerouslySetInnerHTML={{ __html: htmlTextField }} />
         <p>
           Price: {price} {currency} per person
         </p>
