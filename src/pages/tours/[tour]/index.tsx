@@ -1,4 +1,4 @@
-import { getEntry } from '@/contentful/contentful'
+import { getEntry } from '@/utils/contentful/contentful'
 import { GetServerSideProps } from 'next'
 import Image from 'next/image'
 import styles from './tour.module.css'
@@ -26,7 +26,7 @@ export default function Page({ tour }: { tour: any; props: any }) {
 
   const { price, title, description, currency, image } = tour?.fields
   const imgUrl = image?.fields?.file?.url as string
-  const htmlTextField = marked(description)
+  const htmlTextField = marked(description ?? '')
 
   return (
     <div

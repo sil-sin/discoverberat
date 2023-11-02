@@ -7,8 +7,4 @@ declare module 'quill' {
       }[]
     >
   }
-
-  class Quill {
-    // Define Quill methods and properties as needed for your usage
-  }
 }

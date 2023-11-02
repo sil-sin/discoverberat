@@ -1,28 +1,34 @@
-import client, { createContent } from '@/contentful/contentful'
-import React, { useState, useEffect } from 'react'
+'use client'
+import client, { createContent } from '@/utils/contentful/contentful'
+import { useState, useEffect, FC } from 'react'
 import dynamic from 'next/dynamic'
 import { FormEvent } from 'react'
 import { ChangeEvent } from 'react'
-import { documentToHtmlString } from '@contentful/rich-text-html-renderer'
 import TurndownService from 'turndown'
+import Upload from '@/utils/cloudinary/CloudinaryUpload'
+import { uploadImage } from '@/utils/contentful/uploadImage'
+import Button from '@/components/simple/Button'
+import ReactQuill from 'react-quill'
+import 'react-quill/dist/quill.snow.css'
 
-const EditCreateTab: React.FC = () => {
+const EditCreateTab: FC = () => {
   const [mode, setMode] = useState<'create' | 'edit'>('create')
   const [selectedContentType, setSelectedContentType] = useState<string>('')
-  const [formData, setFormData] = useState({})
+  const [formData, setFormData] = useState<any>()
   const [contentTypes, setContentTypes] = useState<any>([{ name: '', id: '' }])
-  const [richTextContent, setRichTextContent] = useState('')
+  const [richTextContent, setRichTextContent] = useState<string | undefined>()
   const [dynamicFields, setDynamicFields] = useState([])
 
-  const RichTextEditor = dynamic(() => import('./RichtextInput'), {
-    ssr: false,
-  })
+  const [imgUrl, setImgUrl] = useState('')
 
   const handleRichTextChange = (content: string) => {
     setRichTextContent(content)
   }
 
   useEffect(() => {
+    if (typeof window === 'undefined' && typeof document === 'undefined') {
+      return
+    }
     client
       .getContentTypes()
       .then((response) => {
@@ -54,17 +60,13 @@ const EditCreateTab: React.FC = () => {
         }
       })
 
-    const filtered = selectedContentTypeFields.filter(
-      (field: any) => field.type !== 'Link'
-    )
-
-    setDynamicFields(filtered)
+    setDynamicFields(selectedContentTypeFields)
   }
 
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
 
-    setFormData((prevData) => ({
+    setFormData((prevData: any) => ({
       ...prevData,
       [name]: { 'en-US': +value ? +value : value },
     }))
@@ -78,21 +80,42 @@ const EditCreateTab: React.FC = () => {
 
     return markdownText
   }
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
+    const image = await uploadImage(imgUrl)
+    const imageFields = {
+      'en-US': {
+        sys: {
+          type: 'Link',
+          linkType: 'Asset',
+          id: image?.sys.id,
+        },
+      },
+    }
     const filledFormData = {
       ...formData,
-      description: { 'en-US': htmlToMarkdown(richTextContent) },
+      description: { 'en-US': htmlToMarkdown(richTextContent ?? '') },
+      image: imageFields,
     }
 
     createContent(selectedContentType, filledFormData)
   }
-
+  const customStyles = {
+    fontWeight: 'normal', // Remove bold text
+    textTransform: 'none', // Remove any text transformation
+    wordWrap: 'break-word',
+    width: '450px', // Wrap text within the parent container
+    /* Add any other styles as needed */
+  }
   return (
     <div>
       <div>
-        <button onClick={() => setMode('create')}>Create</button>
-        <button onClick={() => setMode('edit')}>Edit</button>
+        <Button variant='secondary' onClick={() => setMode('create')}>
+          Create
+        </Button>
+        <Button variant='secondary' onClick={() => setMode('edit')}>
+          Edit
+        </Button>
       </div>
 
       <form onSubmit={handleSubmit}>
@@ -115,13 +138,21 @@ const EditCreateTab: React.FC = () => {
 
         {dynamicFields.map((field: any) => (
           <div key={field.id}>
-            {field.type === 'RichText' ? (
+            {field.type === 'Text' && ReactQuill ? (
               <div>
                 <label htmlFor={field.id}>{field.name}</label>
-                <RichTextEditor
-                  value={richTextContent}
+                <ReactQuill
+                  theme='snow'
+                  value={richTextContent ?? ''}
                   onChange={handleRichTextChange}
+                  style={customStyles as any}
                 />
+              </div>
+            ) : field.type === 'Link' ? (
+              // Render the Upload component when field.type is 'Link'
+              <div>
+                <label htmlFor={field.id}>{field.name}</label>
+                <Upload getImgUrl={(imageUrl: string) => setImgUrl(imageUrl)} />
               </div>
             ) : (
               <div>

@@ -11,14 +11,12 @@
 }
 
 .leftPanel {
-
     flex-basis: 250px;
     display: flex;
+    flex-direction: column;
     justify-content: stretch;
+    align-items: baseline;
     border: 2px solid var(--button-outline-active-border);
     border-radius: 10px;
     padding: 10px;
-
-
-
 }

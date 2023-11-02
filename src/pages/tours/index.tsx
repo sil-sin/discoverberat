@@ -1,7 +1,7 @@
 import styles from './index.module.css'
 import Tours from '../../components/sectors/Tours'
 import { GetServerSideProps } from 'next'
-import { getEntry } from '@/contentful/contentful'
+import { getEntry } from '@/utils/contentful/contentful'
 
 export default function Page({ tours }: any) {
   console.log(tours)

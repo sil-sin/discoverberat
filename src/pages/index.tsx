@@ -2,7 +2,7 @@ import Hero from '../components/sectors/Hero/index'
 import OurServices from '@/components/sectors/OurServices'
 
 import Tours from '@/components/sectors/Tours'
-import { getEntry } from '@/contentful/contentful'
+import { getEntry } from '@/utils/contentful/contentful'
 import { GetServerSideProps } from 'next'
 
 export default function Home(props: any) {

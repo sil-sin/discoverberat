@@ -1,7 +1,12 @@
 import React from 'react'
 import styles from './admin.module.css'
-import EditCreateTab from './ContentTabs'
+
+import dynamic from 'next/dynamic'
 export default function index() {
+  const EditCreateTab = dynamic(() => import('./ContentTabs'), {
+    ssr: false,
+  })
+
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>Admin Panel</h1>
