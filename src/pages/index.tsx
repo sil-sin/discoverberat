@@ -2,7 +2,7 @@ import Hero from '../components/sectors/Hero/index'
 import OurServices from '@/components/sectors/OurServices'
 
 import Tours from '@/components/sectors/Tours'
-import { getEntry } from '@/utils/contentful/contentful'
+import { getEntriesByType } from '@/utils/contentful/contentful'
 import { GetServerSideProps } from 'next'
 
 export default function Home(props: any) {
@@ -19,7 +19,7 @@ export default function Home(props: any) {
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   try {
-    const entries = await getEntry('tourPage')
+    const entries = await getEntriesByType('tourPage')
 
     return {
       props: { tours: entries },

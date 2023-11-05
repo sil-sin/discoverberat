@@ -1,19 +1,31 @@
-// components/RichTextEditor.tsx
-import React from 'react'
+import React, { useState } from 'react'
 import ReactQuill from 'react-quill'
-import 'react-quill/dist/quill.core.css'
-
+import 'react-quill/dist/quill.snow.css' // Import the Snow theme CSS
+import styles from './admin.module.css'
 interface RichTextEditorProps {
-  value: string
   onChange: (value: string) => void
 }
 
-const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, onChange }) => {
+const RichTextEditor: React.FC<RichTextEditorProps> = ({ onChange }) => {
+  const [editorValue, setEditorValue] = useState('')
+
+  const handleEditorChange = (newValue: string) => {
+    setEditorValue(newValue)
+    onChange(newValue) // Notify the parent component of the change
+  }
+  const customStyles = {
+    fontWeight: 'normal',
+    textTransform: 'none',
+    wordWrap: 'break-word',
+    width: '450px',
+    /* Add any other styles as needed */
+  }
   return (
     <ReactQuill
-      theme='core'
-      value={value}
-      onChange={(newValue) => onChange(newValue)}
+      style={customStyles as any}
+      theme='snow'
+      value={editorValue}
+      onChange={handleEditorChange}
     />
   )
 }

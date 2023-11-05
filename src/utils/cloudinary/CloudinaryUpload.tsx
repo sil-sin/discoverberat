@@ -47,8 +47,11 @@ export default function Upload({
 
   return (
     <div>
-      <h1>Upload an Image</h1>
-      <button className={styles.uploadButton} type='button' onClick={openUploadWidget}>
+      <button
+        className={styles.uploadButton}
+        type='button'
+        onClick={openUploadWidget}
+      >
         Upload Image
       </button>
     </div>
