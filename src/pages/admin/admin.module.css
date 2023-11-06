@@ -45,3 +45,9 @@
     background-color: var(--background-secondary);
     color: var(--text-default);
 }
+
+.richTextEditor>div:first-child {
+    display: flex;
+    flex-direction: row;
+
+}

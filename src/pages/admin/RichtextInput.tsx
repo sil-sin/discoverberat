@@ -1,5 +1,5 @@
-import { useState, useMemo } from "react";
-import dynamic from "next/dynamic";
+import { useState, useMemo } from 'react'
+import dynamic from 'next/dynamic'
 import 'react-quill/dist/quill.snow.css' // Import the Snow theme CSS
 import styles from './admin.module.css'
 
@@ -10,7 +10,10 @@ interface RichTextEditorProps {
 const RichTextEditor: React.FC<RichTextEditorProps> = ({ onChange }) => {
   const [editorValue, setEditorValue] = useState('')
 
-const ReactQuill = useMemo(() => dynamic(() => import('react-quill'), { ssr: false }),[]);
+  const ReactQuill = useMemo(
+    () => dynamic(() => import('react-quill'), { ssr: false }),
+    []
+  )
 
   const handleEditorChange = (newValue: string) => {
     setEditorValue(newValue)
@@ -21,10 +24,10 @@ const ReactQuill = useMemo(() => dynamic(() => import('react-quill'), { ssr: fal
     textTransform: 'none',
     wordWrap: 'break-word',
     width: '450px',
-    /* Add any other styles as needed */
   }
   return (
     <ReactQuill
+      className={styles.richTextEditor}
       style={customStyles as any}
       theme='snow'
       value={editorValue}

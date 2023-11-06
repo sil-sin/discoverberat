@@ -144,7 +144,7 @@ const EditCreateTab: React.FC<{
 
         {dynamicFields.map((field: any) => (
           <div key={field.id}>
-            {field.type === 'Text' && ReactQuill ? (
+            {field.type === 'Text' ? (
               <div>
                 <label htmlFor={field.id}>{field.name}</label>
                 <ReachTextEditor onChange={setRichTextContent} />
