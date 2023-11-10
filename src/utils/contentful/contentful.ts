@@ -3,7 +3,7 @@ const contentful = require('contentful-management')
 import contentfulConfig from './contentfulConfig'
 
 const client = createClient({
-  space: contentfulConfig.space,
+  space: contentfulConfig.space,  
   accessToken: contentfulConfig.accessToken,
 })
 
@@ -48,26 +48,21 @@ export async function createContent(entryType: string, fields: any) {
     .catch(console.error)
 }
 
-// export const createDraft = async (entryType: string, fields: any) => {
-//   clientEdit
-//     .getSpace(contentfulConfig.space)
-//     .then((space: any) => space.getEnvironment('master'))
-//     .then((environment: any) => {
-//       return environment.createEntry(entryType, {
-//         fields,
-//       })
-//     })
-//     .then((entry: { update: () => any }) => {
-//       console.log('Entry:', entry)
-
-//       // Save the entry with its content
-//       return entry.update()
-//     })
-//     .then((publishedEntry: any) => {
-//       console.log('Published Entry:', publishedEntry)
-//     })
-//     .catch(console.error)
-// }
+export const editEntry = async (entryId: string, fields: any) => {
+  clientEdit
+    .getSpace(contentfulConfig.space)
+    .then((space: any) => space.getEnvironment('master'))
+    .then((environment: any) => environment.getEntry(entryId))
+    .then((entry: { update: () => any; fields: any }) => {
+      console.log('Entry:', entry)
+      entry.fields = fields
+      return entry.update()
+    })
+    .then((publishedEntry: any) => {
+      console.log('Published Entry:', publishedEntry)
+    })
+    .catch(console.error)
+}
 
 // export async function publishEntry(entryId: any) {
 //   try {

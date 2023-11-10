@@ -1,0 +1,11 @@
+.transfersContainer {
+    display: flex;
+    gap: 30px;
+    max-width: 1200px;
+    width: 100%;
+    margin: 40px auto;
+    flex-wrap: wrap;
+    padding: 5px;
+    justify-content: center;
+
+}
