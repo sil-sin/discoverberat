@@ -6,10 +6,14 @@ import Button from '@/components/simple/Button'
 import { AiOutlineClose, AiOutlineMenu } from 'react-icons/ai'
 import classNames from 'classnames'
 import Link from 'next/link'
+import { googleProvider } from '@/utils/firebase/auth/googleProvider'
 
-type Props = {}
+type Props = {
+  userName: string
+  isLoggedIn: boolean
+}
 
-export const Navigation: FC<{}> = () => {
+export const Navigation: FC<Props> = ({ userName, isLoggedIn }) => {
   const [isMenuShow, setIsMenuShow] = useState(false)
 
   return (
@@ -50,8 +54,10 @@ export const Navigation: FC<{}> = () => {
         ))}
         <Button
           variant='secondary'
-          onClick={() => {}}
-          text='Login / Register'
+          onClick={() => {
+            googleProvider()
+          }}
+          text={isLoggedIn ? userName : 'Login / Register'}
         />
       </ul>
     </nav>

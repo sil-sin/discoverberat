@@ -5,7 +5,7 @@ import { FC, ReactNode, useMemo } from 'react'
 import { Footer } from '../sectors/Footer/Footer'
 import Head from 'next/head'
 import React from 'react'
-
+import { User } from 'firebase/auth'
 
 export const metadata: Metadata = {
   title: 'Discover Berat',
@@ -15,9 +15,10 @@ export const metadata: Metadata = {
 type Props = {
   children: ReactNode
   pageTitle?: string
+  user: User | null
 }
 
-export const Layout: FC<Props> = ({ children, pageTitle }) => {
+export const Layout: FC<Props> = ({ children, pageTitle, user }) => {
   const title = useMemo(() => pageTitle || 'Discover Berat', [pageTitle])
 
   return (
@@ -26,7 +27,7 @@ export const Layout: FC<Props> = ({ children, pageTitle }) => {
         <title>{title}</title>
         <link rel='shortcut icon' href='/favicon.ico' />
       </Head>
-      <Navigation />
+      <Navigation userName={user?.displayName ?? ''} isLoggedIn={!!user} />
       {children}
       <Footer />
     </main>

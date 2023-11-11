@@ -4,11 +4,14 @@ import OurServices from '@/components/sectors/OurServices'
 import Tours from '@/components/sectors/Tours'
 import { Transfers } from '@/components/sectors/Transfers/Transfers'
 import { getEntriesByType } from '@/utils/contentful/contentful'
+import { useAuthContext } from '@/utils/firebase/auth/useAuth'
 import { GetServerSideProps } from 'next'
+import { withLayout } from '../utils/firebase/auth/PageWrapper'
 
-export default function Home(props: any) {
+function Home(props: any, user: any) {
   const { tours, transfers } = props
-  console.log('transfers:', typeof transfers, { transfers })
+
+  console.log({ props, user })
 
   return (
     <main className={'main'}>
@@ -25,7 +28,6 @@ export const getServerSideProps: GetServerSideProps = async ({}) => {
     const tours = await getEntriesByType('tourPage')
     const transfers = await getEntriesByType('transfers')
     const services = await getEntriesByType('serviceCard')
-    console.log('here', transfers)
 
     return {
       props: { tours, transfers, services },
@@ -37,3 +39,5 @@ export const getServerSideProps: GetServerSideProps = async ({}) => {
     }
   }
 }
+
+export default withLayout(Home, false, 'Discover Berat')

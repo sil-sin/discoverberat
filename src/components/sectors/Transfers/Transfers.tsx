@@ -3,7 +3,7 @@ import styles from './Transfers.module.css'
 import TransfersCard from '@/components/simple/TransferCards'
 
 export const Transfers: FC<any> = (props: any) => {
-  console.log(props.transfers)
+
 
   if (!props.transfers) {
     return (

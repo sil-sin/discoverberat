@@ -5,7 +5,7 @@ import styles from './Tour.module.css'
 import Button from '../simple/Button'
 export function Tour({ tour }: { tour: any }) {
   const { price, title, description, currency, imgUrl } = tour
-  console.log({ imgUrl })
+
   const imageUrl = imgUrl.includes('https://') ? imgUrl : `https:${imgUrl}`
 
   const htmlTextField = marked(description ?? '')
