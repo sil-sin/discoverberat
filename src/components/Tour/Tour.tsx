@@ -6,7 +6,11 @@ import Button from '../simple/Button'
 export function Tour({ tour }: { tour: any }) {
   const { price, title, description, currency, imgUrl } = tour
 
-  const imageUrl = imgUrl.includes('https://') ? imgUrl : `https:${imgUrl}`
+  const imageUrl = imgUrl
+    ? imgUrl.includes('https://')
+      ? imgUrl
+      : `https:${imgUrl}`
+    : 'vercel.svg'
 
   const htmlTextField = marked(description ?? '')
   return (
@@ -20,8 +24,8 @@ export function Tour({ tour }: { tour: any }) {
       >
         <Image
           loading='lazy'
-          width={1000}
-          height={1000}
+          width={800}
+          height={800}
           alt={title + 'image'}
           src={imageUrl}
         />

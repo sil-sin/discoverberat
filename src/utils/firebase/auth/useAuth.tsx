@@ -5,8 +5,13 @@ import {
   useEffect,
   useState,
 } from 'react'
-import { User, onAuthStateChanged, getAuth } from 'firebase/auth'
+import {
+  User,
+  getAuth,
+  onIdTokenChanged,
+} from 'firebase/auth'
 import app from '../firebaseConfig'
+import nookies from 'nookies'
 
 type AuthContextType = {
   user: User | null
@@ -29,16 +34,32 @@ type AuthProviderProps = {
 
 export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<User | null>(null)
-  const [loading, setLoading] = useState(true) // Initialize with loading state
+  const [loading, setLoading] = useState(true)
   const auth = getAuth(app)
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (authUser) => {
-      setUser(authUser)
-      setLoading(false)
+    const unsubscribe = onIdTokenChanged(auth, async (user) => {
+      if (user) {
+        setUser(user)
+        const token = await user.getIdToken()
+        nookies.set(undefined, 'token', token, { path: '/' })
+      } else {
+        setUser(null)
+        nookies.set(undefined, 'token', '', { path: '/' })
+      }
     })
-    return () => unsubscribe()
+
+    return unsubscribe
   }, [auth])
+
+  useEffect(() => {
+    const handle = setInterval(async () => {
+      const user = auth.currentUser
+      if (user) await user.getIdToken(true)
+    }, 10 * 60 * 1000)
+
+    return () => clearInterval(handle)
+  }, [auth.currentUser])
 
   return (
     <AuthContext.Provider value={{ user, loading }}>

@@ -4,12 +4,16 @@ import styles from './admin.module.css'
 import PreviewTab from './Preview'
 import dynamic from 'next/dynamic'
 import classNames from 'classnames'
+import withLayout from '@/utils/firebase/auth/withLayout'
+import { adminSDK } from '../api/adminConfig'
+import { GetServerSidePropsContext } from 'next'
+import nookies from 'nookies'
 
 const EditCreateTab = dynamic(() => import('./ContentTabs'), {
   ssr: false,
 })
 
-export default function Index() {
+function Index() {
   const [selectedContentType, setSelectedContentType] = useState<any>()
   const [previewContent, setPreviewContent] = useState<any>()
   const [previewLoading, setPreviewLoading] = useState(false)
@@ -62,3 +66,37 @@ export default function Index() {
     </div>
   )
 }
+
+export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
+  try {
+    const cookies = nookies.get(ctx)
+
+    const adminToken = await adminSDK.auth().verifyIdToken(cookies.token)
+    // the user is authenticated!
+    const { uid, email } = adminToken
+    console.log({ message: `Your email is ${email} and your UID is ${uid}.` })
+
+    return {
+      props: { message: `Your email is ${email} and your UID is ${uid}.` },
+    }
+  } catch (err: any) {
+    // either the `token` cookie didn't exist
+    // or token verification failed
+    // either way: redirect to the login page
+    ctx.res.writeHead(302, { Location: '/' })
+    ctx.res.end()
+
+    // `as never` prevents inference issues
+    // with InferGetServerSidePropsType.
+    // The props returned here don't matter because we've
+    // already redirected the user.
+
+    return {
+      props: {
+        message: err.message ?? '',
+      },
+    }
+  }
+}
+
+export default withLayout(Index, true, 'Admin panel')

@@ -6,12 +6,10 @@ import { Transfers } from '@/components/sectors/Transfers/Transfers'
 import { getEntriesByType } from '@/utils/contentful/contentful'
 import { useAuthContext } from '@/utils/firebase/auth/useAuth'
 import { GetServerSideProps } from 'next'
-import { withLayout } from '../utils/firebase/auth/PageWrapper'
+import withLayout from '../utils/firebase/auth/withLayout'
 
 function Home(props: any, user: any) {
   const { tours, transfers } = props
-
-  console.log({ props, user })
 
   return (
     <main className={'main'}>

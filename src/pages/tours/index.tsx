@@ -2,8 +2,9 @@ import styles from './index.module.css'
 import Tours from '../../components/sectors/Tours'
 import { GetServerSideProps } from 'next'
 import { getEntriesByType } from '@/utils/contentful/contentful'
+import withLayout from '@/utils/firebase/auth/withLayout'
 
-export default function Page({ tours }: any) {
+function Page({ tours }: any) {
   return (
     <div className={styles.container}>
       {tours ? <Tours tours={tours} /> : <>No tours</>}
@@ -25,3 +26,5 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
     }
   }
 }
+
+export default withLayout(Page, true, 'Tours')
