@@ -12,6 +12,9 @@ export const googleProvider = () => {
 
       const token = credential?.accessToken
       const user = result.user
+      window.location.replace(
+        '/user/profile/' + user.displayName?.split(' ').join('-').toLowerCase()
+      )
     })
     .catch((error) => {
       // Handle Errors here.
@@ -22,5 +25,6 @@ export const googleProvider = () => {
       // The AuthCredential type that was used.
       const credential = GoogleAuthProvider.credentialFromError(error)
       // ...
+      console.error(errorCode, errorMessage)
     })
 }

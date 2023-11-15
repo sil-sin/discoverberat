@@ -7,7 +7,7 @@ export default function App({ Component, pageProps }: AppProps) {
   console.log(pageProps)
 
   return (
-    <AuthProvider session={pageProps}>
+    <AuthProvider>
       <Component {...pageProps} />
     </AuthProvider>
   )

@@ -8,6 +8,7 @@ import {
 import { User, getAuth, onIdTokenChanged } from 'firebase/auth'
 import app from '../firebase/firebaseConfig'
 import nookies from 'nookies'
+import { useRouter } from 'next/router'
 
 type AuthContextType = {
   user: User | null
@@ -26,13 +27,13 @@ export function useAuthContext() {
 
 type AuthProviderProps = {
   children: ReactNode
-  session: any
 }
 
-export function AuthProvider({ children, session }: AuthProviderProps) {
+export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
   const auth = getAuth(app)
+  const router = useRouter()
 
   useEffect(() => {
     setLoading(true)
@@ -50,7 +51,7 @@ export function AuthProvider({ children, session }: AuthProviderProps) {
     })
 
     return unsubscribe
-  }, [auth])
+  }, [auth, router])
 
   useEffect(() => {
     const handle = setInterval(async () => {
