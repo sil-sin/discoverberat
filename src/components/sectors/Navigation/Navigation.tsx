@@ -6,14 +6,16 @@ import Button from '@/components/simple/Button'
 import { AiOutlineClose, AiOutlineMenu } from 'react-icons/ai'
 import classNames from 'classnames'
 import Link from 'next/link'
-import { googleProvider } from '@/utils/firebase/auth/googleProvider'
+import { googleProvider } from '@/utils/auth/googleProvider'
+import { signOutUser } from '@/utils/auth/signOut'
 
 type Props = {
   userName: string
   isLoggedIn: boolean
+  isLoading?: boolean
 }
 
-export const Navigation: FC<Props> = ({ userName, isLoggedIn }) => {
+export const Navigation: FC<Props> = ({ userName, isLoggedIn, isLoading }) => {
   const [isMenuShow, setIsMenuShow] = useState(false)
 
   return (
@@ -52,13 +54,17 @@ export const Navigation: FC<Props> = ({ userName, isLoggedIn }) => {
             <Button variant='link' href={link.href} text={link.title} />
           </li>
         ))}
-        <Button
-          variant='secondary'
-          onClick={() => {
-            googleProvider()
-          }}
-          text={isLoggedIn ? userName : 'Login / Register'}
-        />
+        <li>
+          <Button
+            variant='secondary'
+            onClick={() => {
+              isLoggedIn ? signOutUser() : googleProvider()
+            }}
+            text={
+              isLoading ? '...' : isLoggedIn ? userName : 'Login / Register'
+            }
+          />
+        </li>
       </ul>
     </nav>
   )

@@ -4,9 +4,9 @@ import OurServices from '@/components/sectors/OurServices'
 import Tours from '@/components/sectors/Tours'
 import { Transfers } from '@/components/sectors/Transfers/Transfers'
 import { getEntriesByType } from '@/utils/contentful/contentful'
-import { useAuthContext } from '@/utils/firebase/auth/useAuth'
+import { useAuthContext } from '@/utils/auth/useAuth'
 import { GetServerSideProps } from 'next'
-import withLayout from '../utils/firebase/auth/withLayout'
+import withLayout from '../utils/auth/withLayout'
 
 function Home(props: any, user: any) {
   const { tours, transfers } = props

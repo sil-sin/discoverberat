@@ -16,9 +16,10 @@ type Props = {
   children: ReactNode
   pageTitle?: string
   user: User | null
+  loading: boolean
 }
 
-export const Layout: FC<Props> = ({ children, pageTitle, user }) => {
+export const Layout: FC<Props> = ({ children, pageTitle, user, loading }) => {
   const title = useMemo(() => pageTitle || 'Discover Berat', [pageTitle])
 
   return (
@@ -27,7 +28,11 @@ export const Layout: FC<Props> = ({ children, pageTitle, user }) => {
         <title>{title}</title>
         <link rel='shortcut icon' href='/favicon.ico' />
       </Head>
-      <Navigation userName={user?.displayName ?? ''} isLoggedIn={!!user} />
+      <Navigation
+        userName={user?.displayName ?? ''}
+        isLoggedIn={!!user}
+        isLoading={loading}
+      />
       {children}
       <Footer />
     </main>

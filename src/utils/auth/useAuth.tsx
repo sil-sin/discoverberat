@@ -5,12 +5,8 @@ import {
   useEffect,
   useState,
 } from 'react'
-import {
-  User,
-  getAuth,
-  onIdTokenChanged,
-} from 'firebase/auth'
-import app from '../firebaseConfig'
+import { User, getAuth, onIdTokenChanged } from 'firebase/auth'
+import app from '../firebase/firebaseConfig'
 import nookies from 'nookies'
 
 type AuthContextType = {
@@ -30,22 +26,26 @@ export function useAuthContext() {
 
 type AuthProviderProps = {
   children: ReactNode
+  session: any
 }
 
-export function AuthProvider({ children }: AuthProviderProps) {
+export function AuthProvider({ children, session }: AuthProviderProps) {
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
   const auth = getAuth(app)
 
   useEffect(() => {
+    setLoading(true)
     const unsubscribe = onIdTokenChanged(auth, async (user) => {
       if (user) {
         setUser(user)
         const token = await user.getIdToken()
         nookies.set(undefined, 'token', token, { path: '/' })
+        setLoading(false)
       } else {
         setUser(null)
         nookies.set(undefined, 'token', '', { path: '/' })
+        setLoading(false)
       }
     })
 

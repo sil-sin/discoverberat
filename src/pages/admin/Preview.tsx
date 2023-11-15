@@ -4,6 +4,7 @@ import Card from '@/components/simple/Card'
 
 import { useContentfulLiveUpdates } from '@contentful/live-preview/react'
 import Tour from '@/components/Tour'
+import TransfersCard from '@/components/simple/TransferCards'
 const PreviewTab = ({
   entryId,
   previewLoading,
@@ -23,15 +24,21 @@ const PreviewTab = ({
   }
 
   const tour: { [key: string]: string | number } = previewContent
-    ? Object.keys(previewContent).reduce((result: any, key) => {
-        if (previewContent[key] && previewContent[key]['en-US']) {
-          result[key] = previewContent[key]['en-US'] as string | number
-        }
-        return previewContent.imgUrl
-          ? { ...result, imgUrl: previewContent.imgUrl }
-          : result
-      }, {})
+    ? {
+        ...Object.entries(previewContent).reduce(
+          (result: any, [key, value]: any) => {
+            if (value && value['en-US']) {
+              result[key] = value['en-US'] as string | number
+            }
+            return result
+          },
+          {}
+        ),
+        imgUrl: previewContent.imgUrl,
+        description: previewContent.description,
+      }
     : {}
+  console.log(entryId)
 
   return (
     <div>
@@ -76,6 +83,19 @@ const PreviewTab = ({
                 <Tour tour={tour} />
               )}
             </>
+          )}
+          {entryId === 'transfers' && (
+            <TransfersCard
+              transfer={{
+                from: fields?.from?.['en-US'],
+                to: fields?.to?.['en-US'],
+                price: fields?.price?.['en-US'],
+                distance: fields?.distance?.['en-US'],
+              }}
+            />
+          )}
+          {entryId === 'serviceCard' && (
+            <>Service card component tba</>
           )}
         </div>
       )}

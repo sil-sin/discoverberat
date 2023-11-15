@@ -4,10 +4,11 @@ import styles from './admin.module.css'
 import PreviewTab from './Preview'
 import dynamic from 'next/dynamic'
 import classNames from 'classnames'
-import withLayout from '@/utils/firebase/auth/withLayout'
+import withLayout from '@/utils/auth/withLayout'
 import { adminSDK } from '../api/adminConfig'
 import { GetServerSidePropsContext } from 'next'
 import nookies from 'nookies'
+import * as admin from 'firebase-admin'
 
 const EditCreateTab = dynamic(() => import('./ContentTabs'), {
   ssr: false,
@@ -74,10 +75,17 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
     const adminToken = await adminSDK.auth().verifyIdToken(cookies.token)
     // the user is authenticated!
     const { uid, email } = adminToken
-    console.log({ message: `Your email is ${email} and your UID is ${uid}.` })
 
-    return {
-      props: { message: `Your email is ${email} and your UID is ${uid}.` },
+    if (email === process.env.NEXT_PUBLIC_ADMIN) {
+      return {
+        props: {
+          message: `Your email is ${email} and your UID is ${uid}.`,
+          uid,
+          adminToken,
+        },
+      }
+    } else {
+      return { redirect: { destination: '/', permanent: false } }
     }
   } catch (err: any) {
     // either the `token` cookie didn't exist

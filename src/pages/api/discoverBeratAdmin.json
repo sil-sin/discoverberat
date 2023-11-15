@@ -1,13 +1,13 @@
 {
   "type": "service_account",
-  "project_id": "discover-berat",
-  "private_key_id": "9c789a9ea376ad7c94ed3287e8d462d22d0769fb",
-  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQC+jIJE91WU1/ZJ\nXUfb12WW0cZlyaMVtoGsqZaZQDVmncXYTG8qPKKZTIjVMr9fjDpOYmn5nQ5P+RYq\n2MdKJs6Wi7uWt5ww/FYLmEZiCc01Zctoi8nQerYB3JNV3esROLZ3ZAN5PdWxnYhg\nK4rt+B62qh8Qa1Dtm6bUkgroqSfyLxiksPmBTpwGFgObT6T4OLJFLRjRnIy+O5xy\nyBxPcmBGbomqesOqihBDw5JjNT0xjbXSsuHk3LP04auXOfhiKLa7/gMZkqOiA7z8\np3pyp+o/wLZjdLvTmT9mhA+6cExG/UzqE1idwt7NPMdhmXWbq4jtOaF/HZz6OvqP\ne0goWt39AgMBAAECggEAPDPkjKmgbnB1LeS86WZ6gFYy2sIENr385nKGVFEHDi7W\n7WnozW1u6gRWTxXDhQqm+VD6rpTCit3l9Q+cl37/Um0/jXThclCnVu57fkoefbp1\ns8hGsQm0K45nNn/w3vYOIFaHCm1Q8NcW2Vuof1sfSRMi0Ws2nHvLD+o8bBnVtxxB\ndk/HJzt5nE7gh2CKBjdsP2BVr4fs1sXXqjn/rlwGSroIRl3s4l3gzsS0mEgnob2g\npzSgdgQXa2bACh/iDCyTNcLee9/NPSFeRlen6Kmcenr+HyBaVXTKrRHIFli19UpK\nUR0QU2FWRtOXus7Rb3kl53+jKuX7GesN7uZgEO4l+QKBgQD6/vVyNKY5jdKaI7k8\naM59rzbtLjn0tRTTBKCWlfLIqG3BXYsrOmISlqGvrrZR4ojYgCpJApg2MQtLhKAa\nNO6ddUlZyz2SmVBDYiCuSbz1sh2qrFJ7YFpFH+LD02SkODdY9aOLVAyxPe9oXoE0\nWUTCADgGpEDcZJ1NGzqQvGOLMwKBgQDCWQnSPCHbzvmwp0XhK3mBei+S4CtS/SzW\n7jIU/TrLFv0o7eHhk82l77qCYXPqqsQMw3JSek7POPFosQ2wCP526edfqM4qkMqt\nKcvhysmb58YZ9OvI2O9OIJgVbVQnFLq7T/Whz+jyb2flf318Gzn6q/RxG+FmpzHr\nJhx6s1NyDwKBgQD36q/Ln590h9Y2tAR6W9diI5gwTBGo2Nf52r84HmJRurO2ZExb\nZW6Lh8eqvPqPBSBAINAjj3GDTYwnipeNay0p0DikffCShebWt+0p2eHQGZ/d/hn2\njWR8lJMq8/mbj39z2iUxMNLcmx2HTJl4eJhGu2qbfNAoISWSjMubPMliKwKBgARt\nbNjaP9c3Ft8cYG4pxGHbu7u32aTRWbUnxgJOZol745aMHMo7yMKP/Iq915sv+rlj\ntnYEjUkRPgapietJuSpSV9AJE3FKzSM2wYtKSF+B3zR2LOztbD42ZeCPFgyx3zMn\nNixShTcIrLBAwEYUhLSeODpfbToecvetbZaqASunAoGBALPcMM7MKIMtx+1tfiBa\niUP4xY4QeMzpZTg0eG4B54bcfONLOaNiWg1cfppTYKMWSOUNU0ze0Wm9cG1qs7tE\n5oTcpIoCAuAM00pzZGUVGNwjsuKo89nA49Hs6ERVVVp4kIl15miSBfe2WhZ8Dht8\nj+xYWGpPde7//0aweFqGCM2M\n-----END PRIVATE KEY-----\n",
-  "client_email": "firebase-adminsdk-xel93@discover-berat.iam.gserviceaccount.com",
-  "client_id": "117969970513906289077",
+  "project_id": "${NEXT_PUBLIC_FIREBASE_PROJECT_ID}",
+  "private_key_id": "${NEXT_PUBLIC_FIREBASE_PRIVATE_KEY_ID}",
+  "private_key": "${NEXT_PUBLIC_FIREBASE_PRIVATE_KEY}",
+  "client_email": "${NEXT_PUBLIC_FIREBASE_CLIENT_EMAIL}",
+  "client_id": "${NEXT_PUBLIC_FIREBASE_CLIENT_ID}",
   "auth_uri": "https://accounts.google.com/o/oauth2/auth",
   "token_uri": "https://oauth2.googleapis.com/token",
   "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-xel93%40discover-berat.iam.gserviceaccount.com",
+  "client_x509_cert_url": "${NEXT_PUBLIC_FIREBASE_CLIENT_X509_CERT_URL}",
   "universe_domain": "googleapis.com"
 }
