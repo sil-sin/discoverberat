@@ -5,7 +5,12 @@ import {
   useEffect,
   useState,
 } from 'react'
-import { User, getAuth, onAuthStateChanged, onIdTokenChanged } from 'firebase/auth'
+import {
+  User,
+  getAuth,
+  onAuthStateChanged,
+  onIdTokenChanged,
+} from 'firebase/auth'
 import app from '../firebase/firebaseConfig'
 import nookies from 'nookies'
 import { useRouter } from 'next/router'
@@ -32,10 +37,11 @@ type AuthProviderProps = {
 export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
-  const auth = getAuth(app)
-  const router = useRouter()
 
   useEffect(() => {
+    const auth = getAuth(app)
+    console.log('auth', auth)
+
     setLoading(true)
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
@@ -51,16 +57,16 @@ export function AuthProvider({ children }: AuthProviderProps) {
     })
 
     return unsubscribe
-  }, [auth, router])
+  }, [])
 
-  useEffect(() => {
-    const handle = setInterval(async () => {
-      const user = auth.currentUser
-      if (user) await user.getIdToken(true)
-    }, 10 * 60 * 1000)
+  // useEffect(() => {
+  //   const handle = setInterval(async () => {
+  //     const user = auth.currentUser
+  //     if (user) await user.getIdToken(true)
+  //   }, 10 * 60 * 1000)
 
-    return () => clearInterval(handle)
-  }, [auth.currentUser])
+  //   return () => clearInterval(handle)
+  // }, [auth.currentUser])
 
   return (
     <AuthContext.Provider value={{ user, loading }}>

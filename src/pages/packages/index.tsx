@@ -1,4 +1,5 @@
-export default function Packages() {
+
+ function Packages() {
   const loading = false
 
   if (loading) {
@@ -12,3 +13,4 @@ export default function Packages() {
 
   return <main className={'styles.main'}>packages</main>
 }
+export default Packages

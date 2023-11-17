@@ -4,7 +4,6 @@ import styles from './admin.module.css'
 import PreviewTab from './Preview'
 import dynamic from 'next/dynamic'
 import classNames from 'classnames'
-import withLayout from '@/utils/auth/withLayout'
 import { adminSDK } from '../api/adminConfig'
 import { GetServerSidePropsContext } from 'next'
 import nookies from 'nookies'
@@ -107,4 +106,4 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   }
 }
 
-export default withLayout(Index, true, 'Admin panel')
+export default Index

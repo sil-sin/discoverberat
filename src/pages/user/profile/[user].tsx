@@ -1,52 +1,19 @@
 import React, { useState, useEffect } from 'react'
 import styles from './user.module.css'
 
-import withLayout from '@/utils/auth/withLayout'
-
 import { GetServerSideProps, GetServerSidePropsContext } from 'next'
 import nookies from 'nookies'
 import Image from 'next/image'
 import { adminSDK } from '@/pages/api/adminConfig'
+import { getFirestore } from 'firebase-admin/firestore'
 
-import {
-  collection,
-  getDocs,
-  getFirestore,
-  query,
-  where,
-} from 'firebase/firestore'
-import app from '@/utils/firebase/firebaseConfig'
+const ProfilePage = ({ user, error, data }: any) => {
+  if (!user) {
+    return null
+  }
 
-const ProfilePage = ({ user }: any) => {
-  const [data, setData] = useState<{ id: string; [key: string]: any }[]>([])
-  const db = getFirestore(app)
+  const dateTime = new Date(data?.date)
 
-  useEffect(() => {
-    const getDb = async () => {
-      try {
-        // Create a query to filter documents based on the 'uid' field
-        const q = query(
-          collection(db, 'bookings'),
-          where('uid', '==', user.uid)
-        )
-
-        const querySnapshot = await getDocs(q)
-
-        const data = querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }))
-
-        setData(data)
-      } catch (error) {
-        console.error('Error fetching data:', error)
-      }
-    }
-
-    getDb()
-  }, [db, user.uid])
-
-  const dateTime = new Date(data[0]?.date)
   return (
     <div className={styles.container}>
       <div className={styles.userContainer}>
@@ -58,40 +25,79 @@ const ProfilePage = ({ user }: any) => {
 
       <div className={styles.bookingsContainer}>
         <h2>Bookings</h2>
-        <ul>
-          <li key={data[0]?.id}>
-            <h3>{data[0]?.title}</h3>
-            <p>{data[0]?.type}</p>
-            <p>{data[0]?.price}</p>
-            <p>
-              Starts at :
-              <span>
-                {dateTime.toLocaleString('en-US', { timeZoneName: 'short' })}
-              </span>
-            </p>
-          </li>
-        </ul>
+        {data ? (
+          <ul>
+            <li key={data.id}>
+              <p>
+                You have booked the {data.title} {data.type}
+              </p>
+              <p>
+                Price of the booking : {data.price} (
+                {data.paid ? 'Paid' : 'Payment pending'})
+              </p>
+              <p>
+                Starts at :
+                <span>
+                  {dateTime.toLocaleString('en-US', { timeZoneName: 'short' })}
+                </span>
+              </p>
+            </li>
+          </ul>
+        ) : (
+          <p>You have no bookings</p>
+        )}
       </div>
     </div>
   )
 }
 
-export const getServerSideProps: GetServerSideProps = async (
-  ctx: GetServerSidePropsContext
-) => {
+export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   try {
     const cookies = nookies.get(ctx)
     const authenticatedUser = await adminSDK.auth().verifyIdToken(cookies.token)
 
+    if (
+      ctx.params?.user !==
+      authenticatedUser.name.split(' ').join('-').toLowerCase()
+    ) {
+      return {
+        redirect: {
+          destination:
+            '/user/profile/' +
+            authenticatedUser.name.split(' ').join('-').toLowerCase(),
+          permanent: false,
+        },
+      }
+    }
+
+    const db = getFirestore()
+    // Execute the query
+    const query = db.collectionGroup('bookings')
+    let data = null
+    await query.get().then((querySnapshot) => {
+      return querySnapshot.forEach((documentSnapshot) => {
+        console.log(documentSnapshot.data())
+
+        data =
+          authenticatedUser.uid === documentSnapshot.data().uid
+            ? documentSnapshot.data()
+            : null
+      })
+    })
+    console.log({ data })
+
     return {
       props: {
         user: authenticatedUser,
+        data,
       },
     }
   } catch (error) {
-    console.error('Error in getServerSideProps:', error)
+    console.log({ error })
 
-    ctx.res.writeHead(302, { Location: '/' })
+    ctx.res.writeHead(302, {
+      Location: '/authenticate?callback=' + ctx.req.url,
+    })
     ctx.res.end()
 
     return {
@@ -102,4 +108,4 @@ export const getServerSideProps: GetServerSideProps = async (
   }
 }
 
-export default withLayout(ProfilePage, true, 'Profile')
+export default ProfilePage

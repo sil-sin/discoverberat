@@ -6,7 +6,6 @@ import { Transfers } from '@/components/sectors/Transfers/Transfers'
 import { getEntriesByType } from '@/utils/contentful/contentful'
 import { useAuthContext } from '@/utils/auth/useAuth'
 import { GetServerSideProps } from 'next'
-import withLayout from '../utils/auth/withLayout'
 
 function Home(props: any, user: any) {
   const { tours, transfers } = props
@@ -38,4 +37,4 @@ export const getServerSideProps: GetServerSideProps = async ({}) => {
   }
 }
 
-export default withLayout(Home, false, 'Discover Berat')
+export default Home

@@ -1,11 +1,5 @@
 import { GetStaticPaths, GetStaticProps } from 'next'
 import { useEffect, useState } from 'react'
-import { GiCornerFlag } from 'react-icons/gi'
-import {
-  MdTravelExplore,
-  MdEmojiTransportation,
-  MdOutlineLocalHotel,
-} from 'react-icons/md'
 
 type Service = {
   title: string
@@ -31,13 +25,7 @@ const services: Service[] = [
   },
 ]
 
-export default function Page({
-  service,
-  admin,
-}: {
-  service: Service | null
-  admin: boolean
-}) {
+function Page({ service, admin }: { service: Service | null; admin: boolean }) {
   const [content, setContent] = useState('')
 
   const handleContentChange = (event: React.FocusEvent<any>) => {
@@ -87,3 +75,5 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     props: { service: selectedService, admin },
   }
 }
+
+export default Page
