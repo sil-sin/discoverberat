@@ -5,7 +5,7 @@ import {
   useEffect,
   useState,
 } from 'react'
-import { User, getAuth, onIdTokenChanged } from 'firebase/auth'
+import { User, getAuth, onAuthStateChanged, onIdTokenChanged } from 'firebase/auth'
 import app from '../firebase/firebaseConfig'
 import nookies from 'nookies'
 import { useRouter } from 'next/router'
@@ -37,7 +37,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   useEffect(() => {
     setLoading(true)
-    const unsubscribe = onIdTokenChanged(auth, async (user) => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
         setUser(user)
         const token = await user.getIdToken()
