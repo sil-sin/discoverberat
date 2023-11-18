@@ -2,14 +2,14 @@ import { AppProps } from 'next/app'
 
 import '@/styles/globals.css'
 import { AuthProvider } from '@/utils/auth/auth-provider'
-import PageWrapper from '@/utils/auth/PageWrapper'
+import Layout from '@/components/Layout'
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <AuthProvider>
-      <PageWrapper>
+      <Layout>
         <Component {...pageProps} />
-      </PageWrapper>
+      </Layout>
     </AuthProvider>
   )
 }
