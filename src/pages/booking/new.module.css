@@ -1,0 +1,16 @@
+.bookingOptions {
+    display: flex;
+    flex-direction: column;
+
+}
+
+.bookingOptions>div{
+    display: flex;
+    
+}
+@media screen and (min-width: 780px) {
+    .bookingOptions {
+        flex-direction: row;
+    }
+}
+

@@ -14,8 +14,6 @@ export const Navigation: FC<{}> = () => {
   const [isMenuShow, setIsMenuShow] = useState(false)
   const { user, loading } = useAuthContext()
 
-  if (!user) return
-
   return (
     <nav className={styles.navbarContainer}>
       <div className={styles.imageIcon}>
