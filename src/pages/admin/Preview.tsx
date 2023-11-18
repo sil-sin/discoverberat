@@ -38,7 +38,7 @@ const PreviewTab = ({
         description: previewContent.description,
       }
     : {}
-  console.log(entryId)
+
 
   return (
     <div>

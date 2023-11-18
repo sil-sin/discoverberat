@@ -3,11 +3,12 @@ import nookies from 'nookies'
 
 const auth = getAuth()
 export const signOutUser = () =>
+  
   signOut(auth)
     .then(() => {
+      window.location.href = '/'
       nookies.destroy(null, 'token')
-      window.location.reload()
     })
     .catch((error) => {
-      console.log(error)
+      console.error(error)
     })

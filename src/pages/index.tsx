@@ -4,11 +4,12 @@ import OurServices from '@/components/sectors/OurServices'
 import Tours from '@/components/sectors/Tours'
 import { Transfers } from '@/components/sectors/Transfers/Transfers'
 import { getEntriesByType } from '@/utils/contentful/contentful'
-import { useAuthContext } from '@/utils/auth/useAuth'
+import { useAuthContext } from '@/utils/auth/auth-provider'
 import { GetServerSideProps } from 'next'
 
-function Home(props: any, user: any) {
+function Home(props: any) {
   const { tours, transfers } = props
+  if (!tours || !transfers) return
 
   return (
     <main className={'main'}>

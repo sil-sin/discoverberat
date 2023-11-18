@@ -71,20 +71,17 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
     }
 
     const db = getFirestore()
-    // Execute the query
+
     const query = db.collectionGroup('bookings')
     let data = null
     await query.get().then((querySnapshot) => {
       return querySnapshot.forEach((documentSnapshot) => {
-        console.log(documentSnapshot.data())
-
         data =
           authenticatedUser.uid === documentSnapshot.data().uid
             ? documentSnapshot.data()
             : null
       })
     })
-    console.log({ data })
 
     return {
       props: {
@@ -93,13 +90,10 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
       },
     }
   } catch (error) {
-    console.log({ error })
-
     ctx.res.writeHead(302, {
       Location: '/authenticate?callback=' + ctx.req.url,
     })
     ctx.res.end()
-
     return {
       props: {
         error: 'Authentication failed. ' + error,

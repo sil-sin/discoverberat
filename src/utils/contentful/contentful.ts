@@ -3,7 +3,7 @@ const contentful = require('contentful-management')
 import contentfulConfig from './contentfulConfig'
 
 const client = createClient({
-  space: contentfulConfig.space,  
+  space: contentfulConfig.space,
   accessToken: contentfulConfig.accessToken,
 })
 
@@ -43,7 +43,7 @@ export async function createContent(entryType: string, fields: any) {
       return entry.publish()
     })
     .then((publishedEntry: any) => {
-      console.log('Published Entry:', publishedEntry)
+      alert('Published Entry: ' + publishedEntry)
     })
     .catch(console.error)
 }
@@ -54,7 +54,6 @@ export const editEntry = async (entryId: string, fields: any) => {
     .then((space: any) => space.getEnvironment('master'))
     .then((environment: any) => environment.getEntry(entryId))
     .then((entry: { update: () => any; fields: any }) => {
-      console.log('Entry:', entry)
       entry.fields = fields
       return entry.update()
     })

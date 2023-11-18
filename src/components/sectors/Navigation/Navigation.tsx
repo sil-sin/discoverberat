@@ -8,15 +8,13 @@ import classNames from 'classnames'
 import Link from 'next/link'
 import { googleProvider } from '@/utils/auth/googleProvider'
 import { signOutUser } from '@/utils/auth/signOut'
+import { useAuthContext } from '@/utils/auth/auth-provider'
 
-type Props = {
-  userName: string
-  isLoggedIn: boolean
-  isLoading?: boolean
-}
-
-export const Navigation: FC<Props> = ({ userName, isLoggedIn, isLoading }) => {
+export const Navigation: FC<{}> = () => {
   const [isMenuShow, setIsMenuShow] = useState(false)
+  const { user, loading } = useAuthContext()
+
+  if (!user) return
 
   return (
     <nav className={styles.navbarContainer}>
@@ -58,10 +56,14 @@ export const Navigation: FC<Props> = ({ userName, isLoggedIn, isLoading }) => {
           <Button
             variant='secondary'
             onClick={() => {
-              isLoggedIn ? signOutUser() : googleProvider()
+              user ? signOutUser() : googleProvider()
             }}
             text={
-              isLoading ? '...' : isLoggedIn ? userName : 'Login / Register'
+              loading
+                ? '...'
+                : user
+                ? user?.displayName ?? ''
+                : 'Login / Register'
             }
           />
         </li>

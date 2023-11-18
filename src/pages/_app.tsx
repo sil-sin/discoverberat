@@ -1,7 +1,7 @@
 import { AppProps } from 'next/app'
 
 import '@/styles/globals.css'
-import { AuthProvider } from '@/utils/auth/useAuth'
+import { AuthProvider } from '@/utils/auth/auth-provider'
 import PageWrapper from '@/utils/auth/PageWrapper'
 
 export default function App({ Component, pageProps }: AppProps) {

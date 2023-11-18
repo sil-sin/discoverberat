@@ -1,5 +1,5 @@
 import { signUpWithEmail } from '@/utils/auth/emailSignUp'
-import { useAuthContext } from '@/utils/auth/useAuth'
+import { useAuthContext } from '@/utils/auth/auth-provider'
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth'
 import { Url } from 'next/dist/shared/lib/router/router'
 import { useRouter } from 'next/router'
@@ -13,7 +13,7 @@ const AuthPage = () => {
 
     if (user) {
       const profilePath = user.displayName?.split(' ').join('-').toLowerCase()
-      console.log(user, profilePath)
+
 
       router.push(callbackUrl ?? '/user/profile/' + profilePath)
     }

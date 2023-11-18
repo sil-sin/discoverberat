@@ -17,7 +17,7 @@ export const signUpWithEmail = (
       await updateProfile(user, { displayName })
     })
     .catch((error) => {
-      console.log(error)
+
       return error
     })
 }

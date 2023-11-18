@@ -13,7 +13,7 @@ export function Tour({ tour }: { tour: any }) {
     : 'vercel.svg'
 
   const htmlTextField = marked(description ?? '')
-  console.log({ description })
+
 
   return (
     <div className={styles.container}>
