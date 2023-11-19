@@ -1,16 +1,38 @@
 .bookingOptions {
     display: flex;
     flex-direction: column;
+    gap: 16px
+}
+
+.link {
+    text-decoration: underline;
 
 }
 
-.bookingOptions>div{
+.link:hover {
+    cursor: pointer;
+    text-decoration: none;
+    border: none
+}
+
+.bookOption {
     display: flex;
-    
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 8px;
+    border: 1px solid;
+    border-radius: 8px;
 }
+
 @media screen and (min-width: 780px) {
     .bookingOptions {
         flex-direction: row;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    .bookOption {
+        max-width: 200px;
+        padding: 10px;
     }
 }
-

@@ -21,7 +21,7 @@ export const Tours: FC<any> = (props: { tours: Tour[] }) => {
       const imgUrl = image?.fields?.file?.url as string
 
       return (
-        <Link href={`/tours/${url}`} key={url} className={styles.tourCards}>
+        <div key={title} className={styles.tourCards}>
           <Card
             title={title}
             description={description}
@@ -30,8 +30,12 @@ export const Tours: FC<any> = (props: { tours: Tour[] }) => {
             className={styles.tourCard}
             currency={currency}
             isLoading={!tours}
+            learnMoreLink={`/tours/${url}`}
+            onClick={() => {
+              window.location.href = `/booking/new?tour=${url}`
+            }}
           />
-        </Link>
+        </div>
       )
     })
 

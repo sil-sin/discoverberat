@@ -6,13 +6,12 @@ import nookies from 'nookies'
 import Image from 'next/image'
 import { adminSDK } from '@/pages/api/adminConfig'
 import { getFirestore } from 'firebase-admin/firestore'
+import { table } from 'console'
 
-const ProfilePage = ({ user, error, data }: any) => {
+const ProfilePage = ({ user, savedItems, data }: any) => {
   if (!user) {
     return null
   }
-
-  const dateTime = new Date(data?.date)
 
   return (
     <div className={styles.container}>
@@ -27,24 +26,40 @@ const ProfilePage = ({ user, error, data }: any) => {
         <h2>Bookings</h2>
         {data ? (
           <ul>
-            <li key={data.id}>
-              <p>
-                You have booked the {data.title} {data.type}
-              </p>
-              <p>
-                Price of the booking : {data.price} (
-                {data.paid ? 'Paid' : 'Payment pending'})
-              </p>
-              <p>
-                Starts at :
-                <span>
-                  {dateTime.toLocaleString('en-US', { timeZoneName: 'short' })}
-                </span>
-              </p>
-            </li>
+            {data.map((item: any) => (
+              <li key={item.id}>
+                <p>
+                  You have booked the {item.title} {item.type}
+                </p>
+                <p>
+                  Price of the booking : {item.price} (
+                  {item.paid ? 'Paid' : 'Payment pending'})
+                </p>
+                <p>
+                  Starts at :
+                  <span>
+                    {new Date(item?.date).toLocaleString('en-US', {
+                      timeZoneName: 'short',
+                    })}
+                  </span>
+                </p>
+              </li>
+            ))}
           </ul>
         ) : (
           <p>You have no bookings</p>
+        )}
+      </div>
+      <div className={styles.savedItems}>
+        <h2>Saved items</h2>
+        {savedItems ? (
+          <ul>
+            {savedItems.map((item: any) => (
+              <li key={item.id}>{item.title}</li>
+            ))}
+          </ul>
+        ) : (
+          <p>You have no saved items</p>
         )}
       </div>
     </div>
@@ -72,14 +87,26 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 
     const db = getFirestore()
 
-    const query = db.collectionGroup('bookings')
-    let data = null
-    await query.get().then((querySnapshot) => {
+    const bookingQuery = db.collectionGroup('bookings')
+    const savedItemsQuery = db.collectionGroup('savedBooking')
+
+    let data: FirebaseFirestore.DocumentData[] = []
+
+    //Todo: Add logic for duplicate bookings
+
+    await bookingQuery.get().then((querySnapshot) => {
       return querySnapshot.forEach((documentSnapshot) => {
-        data =
-          authenticatedUser.uid === documentSnapshot.data().uid
-            ? documentSnapshot.data()
-            : null
+        authenticatedUser.uid === documentSnapshot.data().uid &&
+          data.push(documentSnapshot.data())
+      })
+    })
+
+    const savedItems: any[] = []
+    await savedItemsQuery.get().then((querySnapshot) => {
+      return querySnapshot.forEach((documentSnapshot) => {
+        authenticatedUser.uid === documentSnapshot.data().uid
+          ? savedItems.push(documentSnapshot.data())
+          : null
       })
     })
 
@@ -87,6 +114,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
       props: {
         user: authenticatedUser,
         data,
+        savedItems: savedItems || null,
       },
     }
   } catch (error) {

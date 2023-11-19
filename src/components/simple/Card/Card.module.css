@@ -8,26 +8,31 @@
       justify-content: space-between;
       width: 350px;
       max-height: 500px;
+      position: relative;
   }
 
   .image {
-      object-fit: cover;
-      padding: 10px;
+      border-radius: 10px 10px 0 0;
       box-shadow: solid 3px var(--shadow);
-      max-height: 250px;
+      max-height: 200px;
       width: 100%;
   }
 
+  .button {
+      padding: 0.2em 1em;
+      font-weight: 400;
+      text-shadow: 0.7px 0 0 black;
+  }
 
   .title {
       font-size: 1em;
-      color: var(--text-inverse);
-      background-color: var(--button-primary-active-bg);
-      width: 100%;
       padding: 10px;
-      border-radius: 10px 10px 0 0;
+      border-radius: 0 30px 0 0;
       font: var(--primary-button-font);
-      height: 70px;
+      background-color: rgba(245, 245, 245, 0.561);
+      position: absolute;
+      top: 152px;
+      left: 0;
   }
 
   .description {
@@ -40,10 +45,20 @@
   }
 
   .price {
-      font-size: 0.7em;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 1em;
       margin: 10px;
-      align-self: end;
-      font-weight: 600;
+      font-weight: 400;
+      width: 100%;
+      padding-right: 10px;
+  }
+
+  .priceSpan {
+      padding: 5px;
+      font-size: larger;
+      font-weight: bold;
   }
 
   .cardSkeleton {
