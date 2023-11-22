@@ -5,35 +5,32 @@ import { useRouter } from 'next/router'
 
 import { GetServerSidePropsContext } from 'next'
 import { getEntriesByType, getEntry } from '@/utils/contentful/contentful'
-import {
-  addDoc,
-  collection,
-  doc,
-  getFirestore,
-  setDoc,
-} from 'firebase/firestore'
+import { addDoc, collection, getFirestore } from 'firebase/firestore'
 import app from '@/utils/firebase/firebaseConfig'
 import { useAuthContext } from '@/utils/auth/auth-provider'
 function New({ booking }: any) {
   const { user } = useAuthContext()
+  const router = useRouter()
+
   if (!booking || !user) return null
-
-
 
   const { title, price, currency = '€', description, url } = booking
 
+  //Todo: Add function to utils to perform save items
   const handleSaveLater = async () => {
-
     const db = getFirestore(app)
 
-    // Assuming 'user' is a variable containing user information, and you want to associate the UID with the saved booking.
     await addDoc(collection(db, 'savedBooking'), {
       ...booking,
       uid: user?.uid,
     })
 
-    // You might want to handle success or provide feedback to the user.
+    // Todo : Add notification
     console.log('Document successfully written!')
+  }
+
+  const handleBookNow = async () => {
+    router.push(`/booking/new/payment?service=${url}`)
   }
 
   return (
@@ -44,20 +41,53 @@ function New({ booking }: any) {
         <Button className={styles.link} variant='link' href={`/tours/${url}`}>
           Read more
         </Button>
+        <ul>
+          Included :<li>item</li>
+          <li>item</li>
+          <li>item</li>
+          <li>item</li>
+          <li>item</li>
+        </ul>
       </p>
-
+      <div>Calendar here </div>
       <div className={styles.bookingOptions}>
         <div className={styles.bookOption}>
-          <p>Book now with online payment </p>
-          <Button variant='primary'>
-            Book for {currency}
-            {price}
+          <div>
+            <h3>
+              PRIVATE TOUR
+              <br />
+              {currency}
+              {price}.00
+              <br />
+              PER PERSON
+              <hr />
+            </h3>
+            <div>
+              <p>Minimum booking requirement: 2 persons.</p>
+              <hr />
+              <p>Online payment option available for your convenience.</p>
+            </div>
+          </div>
+          <Button variant='primary' onClick={handleBookNow}>
+            Book Now
           </Button>
         </div>
         <div className={styles.bookOption}>
-          <p>Reserve your spot now and pay directly at our physical office </p>
-          <Button variant='secondary'>Reserve now , pay later</Button>
+          <p>
+            Reserve your spot on <b>{title}</b> for {currency}
+            {price}/person (group tour).
+            <br />
+            <p>Individual bookings available with no minimum requirement.</p>
+            <p>
+              Please note: Price may decrease if more participants join. Online
+              payment is not available for this option.
+            </p>
+          </p>
+          <Button variant='primary' onClick={handleBookNow}>
+            Reserve Now
+          </Button>
         </div>
+
         <div className={styles.bookOption}>
           <p>
             Save for later (
@@ -67,6 +97,10 @@ function New({ booking }: any) {
             Save for later
           </Button>
         </div>
+      </div>
+      <div>
+        <br />
+        <br />
       </div>
     </div>
   )

@@ -76,3 +76,19 @@
     font-size: large;
     margin: 10px;
 }
+
+
+.disabled {
+    cursor: not-allowed;
+    background-color: var(--button-disabled-bg);
+    color: var(--button-disabled-typo);
+    border: none;
+    outline: none;
+}
+
+.disabled:hover {
+    background-color: var(--button-disabled-bg);
+    color: var(--button-disabled-typo);
+    border: none;
+    outline: none;
+}

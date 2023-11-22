@@ -92,7 +92,9 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 
     let data: FirebaseFirestore.DocumentData[] = []
 
-    //Todo: Add logic for duplicate bookings
+    //Todo: Add logic for duplicate saved items
+    //Todo: Add logic for delete saved items
+    //Todo: Move them to utils functions
 
     await bookingQuery.get().then((querySnapshot) => {
       return querySnapshot.forEach((documentSnapshot) => {

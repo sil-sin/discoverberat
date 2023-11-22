@@ -42,7 +42,7 @@ export const Card: FC<Props> = ({
   }
   return (
     <>
-      <div className={classNames(styles.cardContainer, className)}>
+      <div className={classNames(styles.zXF, className)}>
         <Image
           loading='lazy'
           className={styles.image}
