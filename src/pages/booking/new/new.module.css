@@ -35,4 +35,67 @@
         max-width: 200px;
         padding: 10px;
     }
+
+    .calendar {
+        max-width: 360px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        /* border: solid 1px var(--button-secondary-outline-border); */
+    }
+
+    .calendar button {
+        background-color: var(--button-secondary-background);
+        border: 1px solid var(--button-outline-active-border);
+        padding: 10px;
+        color: var(--button-secondary-typo) !important;
+        outline: none;
+    }
+
+    .calendar button:focus,
+    .calendar button:active {
+        box-shadow: 1px 1px 1px var(--shadow), -1px -1px 1px var(--shadow);
+        background-color: var(--button-primary-active-bg) !important;
+        color: var(--button-primary-typo) !important;
+        border: 1px solid var(--button-primary-active-border) !important;
+        border-radius: 5px;
+    }
+
+    .calendar button[class*="react-calendar__month-view__days__day--neighboringMonth"] {
+        background-color: var(--button-secondary-hover-bg);
+        color: var(--button-primary-active-bg);
+    }
+
+    .calendar button:hover {
+        background-color: var(--button-primary-active-bg) !important;
+        color: var(--button-primary-typo) !important;
+        border: 1px solid var(--button-primary-active-border) !important;
+    }
+
+    .calendar button:disabled,
+    .calendar button:disabled:hover {
+        background-color: var(--button-disabled-bg) !important;
+        color: var(--button-disabled-typo) !important;
+        cursor: not-allowed;
+    }
+
+
+    .calendar div {
+        font: 400 16px var(--primary-font);
+        text-align: center;
+    }
+
+    .times {
+        color: black;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        z-index: 10;
+    }
+
+    .paypal {
+
+
+        width: 300px
+    }
 }

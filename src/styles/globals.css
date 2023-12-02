@@ -18,8 +18,8 @@
   /* Slightly lighter shade for hover */
   --button-outline-active-border: #499E5E;
   /* Slightly lighter shade for active */
-  --button-disabled-bg: #b0b0b0;
-  --button-disabled-typo: #ffffff;
+  --button-disabled-bg: #b0b0b092;
+  --button-disabled-typo: #ffffffcc;
   /* Link Tokens */
   --link-color: #2d3137;
   /* Normal link color */
@@ -76,3 +76,4 @@ a {
   position: relative;
   top: 90px;
 }
+

@@ -9,15 +9,17 @@ import Link from 'next/link'
 import { googleProvider } from '@/utils/auth/googleProvider'
 import { signOutUser } from '@/utils/auth/signOut'
 import { useAuthContext } from '@/utils/auth/auth-provider'
+import { useRouter } from 'next/router'
 
 export const Navigation: FC<{}> = () => {
   const [isMenuShow, setIsMenuShow] = useState(false)
   const { user, loading } = useAuthContext()
+  const router = useRouter()
 
   return (
     <nav className={styles.navbarContainer}>
       <div className={styles.imageIcon}>
-        <Link rel='noopener' className={styles.logo} href='/'>
+        <Link className={styles.logo} href='/'>
           <Image
             src='/main_logo.svg'
             width={200}
@@ -54,14 +56,14 @@ export const Navigation: FC<{}> = () => {
           <Button
             variant='secondary'
             onClick={() => {
-              user ? signOutUser() : googleProvider()
+              user ? signOutUser() : router.push('/authenticate')
             }}
             text={
               loading
                 ? '...'
                 : user
-                ? user?.displayName ?? ''
-                : 'Login / Register'
+                ? user?.displayName?.split(' ')[0] ?? ''
+                : 'Sign in'
             }
           />
         </li>

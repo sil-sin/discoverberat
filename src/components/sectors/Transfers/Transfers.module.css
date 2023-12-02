@@ -1,11 +1,42 @@
 .transfersContainer {
     display: flex;
-    gap: 30px;
-    max-width: 1200px;
+    max-width: 1130px;
     width: 100%;
     margin: 40px auto;
     flex-wrap: wrap;
     padding: 5px;
-    justify-content: center;
+    justify-content: start;
+    row-gap: 50px;
+}
 
+.transfersContainer {
+    justify-content: center;
+    flex-direction: column;
+    column-gap: 50px;
+    width: 100%;
+}
+
+.transfersContainer div {
+    width: 100%;
+    margin: 0;
+}
+
+@media screen and (min-width: 780px) {
+    .transfersContainer {
+        display: flex;
+        flex-direction: row;
+        max-width: 1130px;
+        width: 100%;
+        margin: 40px auto;
+        flex-wrap: wrap;
+        padding: 5px;
+        justify-content: start;
+        row-gap: 50px;
+        column-gap: 0;
+    }
+
+    .transfersContainer>div {
+        width: 200px;
+        margin: 0 30px;
+    }
 }

@@ -17,7 +17,7 @@ export const TransfersCard: FC<any> = (props: { transfer: any }) => {
     <div className={styles.transfersContainer}>
       <div className={styles.transfer}>
         <p>{transfer.from}</p>
-        <MdEast size={24} />
+        <MdEast size={24}  />
         <p>{transfer.to}</p>
       </div>
       <div className={styles.priceDistance}>

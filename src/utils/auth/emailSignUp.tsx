@@ -1,7 +1,6 @@
 import {
   getAuth,
   createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
   updateProfile,
 } from 'firebase/auth'
 
@@ -17,7 +16,6 @@ export const signUpWithEmail = (
       await updateProfile(user, { displayName })
     })
     .catch((error) => {
-
       return error
     })
 }

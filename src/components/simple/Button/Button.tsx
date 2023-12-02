@@ -10,6 +10,7 @@ type Props = {
   children?: ReactNode
   className?: string
   isDisabled?: boolean
+  type?:'submit'|'reset'|'button'
 }
 export const Button: FC<Props> = ({
   onClick,

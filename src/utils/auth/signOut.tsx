@@ -6,7 +6,7 @@ export const signOutUser = () =>
   
   signOut(auth)
     .then(() => {
-      window.location.href = '/'
+      window.location.href = '/authenticate'
       nookies.destroy(null, 'token')
     })
     .catch((error) => {
