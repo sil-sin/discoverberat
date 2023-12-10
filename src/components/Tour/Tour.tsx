@@ -4,7 +4,7 @@ import Image from 'next/image'
 import styles from './Tour.module.css'
 import Button from '../simple/Button'
 export function Tour({ tour }: { tour: any }) {
-  const { price, title, description, currency, imgUrl } = tour
+  const { price, title, description, currency, imgUrl, url } = tour
 
   const imageUrl = imgUrl
     ? imgUrl.includes('https://')
@@ -13,7 +13,6 @@ export function Tour({ tour }: { tour: any }) {
     : 'vercel.svg'
 
   const htmlTextField = marked(description ?? '')
-
 
   return (
     <div className={styles.container}>
@@ -35,7 +34,13 @@ export function Tour({ tour }: { tour: any }) {
         <p>
           Price: {price} {currency} per person
         </p>
-        <Button className={styles.button} variant='primary'>
+        <Button
+          className={styles.button}
+          onClick={() => {
+            window.location.href = `/booking/new?tour=${url}`
+          }}
+          variant='primary'
+        >
           Book Tour
         </Button>
       </article>

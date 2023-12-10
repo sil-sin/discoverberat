@@ -1,8 +1,9 @@
-import { signUpWithEmail } from '@/utils/auth/emailSignUp'
 import classnames from 'classnames'
-import { FC } from 'react'
+import { FC, useEffect } from 'react'
 import styles from '../Auth.module.css'
 import { SubmitHandler, useForm } from 'react-hook-form'
+import Button from '@/components/simple/Button'
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth'
 
 type SignUpProps = {
   className?: string
@@ -16,30 +17,21 @@ export const SignIn: FC<SignUpProps> = ({ className }) => {
   const {
     register,
     handleSubmit,
-    watch,
     setError,
     formState: { errors, isValid },
   } = useForm<Inputs>()
 
+  const auth = getAuth()
+  const firebaseErrorMap: any = {
+    'auth/invalid-login-credentials': 'password', // Map the Firebase error to the corresponding field
+  }
   const inputRefs: any = {
     email: register('email', { required: 'Email is required' }),
     password: register('password', {
       required: 'Password is required',
-      minLength: {
-        value: 8,
-        message: 'Password must be at least 8 characters long',
-      },
-      pattern: {
-        value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/,
-        message:
-          'Password must contain at least one lowercase letter, one uppercase letter, and one number',
-      },
     }),
   }
   const onSubmit: SubmitHandler<Inputs> = async (data: any) => {
-    console.log(data)
-    console.log(isValid)
-
     for (const fieldName in inputRefs) {
       if (!data[fieldName]) {
         setError(fieldName as keyof Inputs, {
@@ -53,15 +45,34 @@ export const SignIn: FC<SignUpProps> = ({ className }) => {
         if (inputRefs[fieldName].current) {
           inputRefs[fieldName].current.focus()
         }
-
         return
       }
     }
-    // signInWithEmailAndPassword(
-    //   data.target.email.value,
-    //   data.target.password.value,
-    // )
+    signInWithEmailAndPassword(auth, data.email, data.password)
+      .then((result) => {
+        console.log(result)
+      })
+      .catch((err) => {
+        const errorCode = err.code
+
+        // Check if there is a mapped field for the Firebase error code
+        const fieldName = firebaseErrorMap[errorCode]
+
+        if (fieldName) {
+          setError(fieldName as keyof Inputs, {
+            type: 'manual',
+            message: 'Invalid login credentials',
+          })
+        } else {
+          // If no mapping is found, set a general error
+          setError('email', {
+            type: 'manual',
+            message: 'Invalid login credentials',
+          })
+        }
+      })
   }
+
   return (
     <div className={classnames(styles.formContainer, className)}>
       <form
@@ -76,7 +87,7 @@ export const SignIn: FC<SignUpProps> = ({ className }) => {
               {fieldName.charAt(0).toUpperCase() + fieldName.slice(1)}
             </label>
             <input
-              required
+              className={errors[fieldName as keyof Inputs] && styles.errorInput}
               type={fieldName === 'password' ? 'password' : 'text'}
               id={fieldName}
               placeholder={
@@ -92,7 +103,12 @@ export const SignIn: FC<SignUpProps> = ({ className }) => {
           </div>
         ))}
 
-        <input type='submit' value={'Sign in'} />
+        <Button
+          type='submit'
+          text={'Sign in'}
+          className={styles.formButton}
+          variant='primary'
+        />
       </form>
     </div>
   )

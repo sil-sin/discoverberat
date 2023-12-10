@@ -78,11 +78,12 @@ export const SignUp: FC<SignUpProps> = ({ className }) => {
         return
       }
     }
-    // signUpWithEmail(
-    //   data.target.email.value,
-    //   data.target.password.value,
-    //   data.target.firstName.value + ' ' + e.target.lastName.value
-    // )
+    
+    signUpWithEmail(
+      data.target.email.value,
+      data.target.password.value,
+      data.target.firstName.value + ' ' + data.target.lastName.value
+    )
   }
   return (
     <div className={classnames(styles.formContainer, className)}>

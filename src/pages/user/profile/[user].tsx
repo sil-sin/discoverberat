@@ -7,11 +7,13 @@ import Image from 'next/image'
 import { adminSDK } from '@/pages/api/adminConfig'
 import { getFirestore } from 'firebase-admin/firestore'
 import { table } from 'console'
+import Button from '@/components/simple/Button'
 
 const ProfilePage = ({ user, savedItems, data }: any) => {
   if (!user) {
     return null
   }
+  console.log(data)
 
   return (
     <div className={styles.container}>
@@ -24,17 +26,19 @@ const ProfilePage = ({ user, savedItems, data }: any) => {
 
       <div className={styles.bookingsContainer}>
         <h2>Bookings</h2>
-        {data ? (
+        {data.length ? (
           <ul>
             {data.map((item: any) => (
               <li key={item.id}>
                 <p>
-                  You have booked the {item.title} {item.type}
+                  You have booked <q>{item.title}</q> {item.type}
                 </p>
                 <p>
-                  Price of the booking : {item.price} (
-                  {item.paid ? 'Paid' : 'Payment pending'})
+                  Price of the booking :{item.currency}
+                  {item.price}{' '}
+                  <span>({item.isPaid ? 'Paid' : 'Pay on location'})</span>
                 </p>
+                <p>For {item.guestNumber} guest(s)</p>
                 <p>
                   Starts at :
                   <span>
@@ -47,7 +51,12 @@ const ProfilePage = ({ user, savedItems, data }: any) => {
             ))}
           </ul>
         ) : (
-          <p>You have no bookings</p>
+          <p>
+            You have no bookings
+            <Button variant='link' href='/tours'>
+              Book a tour
+            </Button>
+          </p>
         )}
       </div>
       <div className={styles.savedItems}>

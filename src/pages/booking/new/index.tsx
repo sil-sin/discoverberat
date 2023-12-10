@@ -1,10 +1,11 @@
+'use client'
 import Button from '@/components/simple/Button'
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import styles from './new.module.css'
 
 import { GetServerSidePropsContext } from 'next'
 import { getEntriesByType } from '@/utils/contentful/contentful'
-import { addDoc, collection, getFirestore } from 'firebase/firestore'
+import { addDoc, collection, getDocs, getFirestore } from 'firebase/firestore'
 import app from '@/utils/firebase/firebaseConfig'
 import { useAuthContext } from '@/utils/auth/auth-provider'
 
@@ -12,30 +13,49 @@ import ReactCalendar from 'react-calendar'
 import 'react-calendar/dist/Calendar.css'
 import { getTimes } from '@/helpers/getTimes'
 import BookingForm from '@/components/sectors/BookingForm/BookingForm'
-function New({ booking }: any) {
-  const [selectedDate, setSelectedDate] = React.useState<Date | null>(null)
-  const [availableTimes, setAvailableTimes] = React.useState<any>([])
+import { getFirestore as getFirestoreAdmin } from 'firebase-admin/firestore'
+import { useRouter } from 'next/router'
+import { fetchData } from '@/helpers/getDisabledDates'
+import { useForm } from 'react-hook-form'
 
-  const bookingFormRef = React.useRef<any>()
+function New({ booking, unavailableDates }: any) {
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null)
+  const [availableTimes, setAvailableTimes] = useState<any>([])
+  const [isPrivate, setIsPrivate] = useState<boolean>(false)
+  const router = useRouter()
+
+  const bookingFormRef = useRef<any>()
   const { user } = useAuthContext()
-
   const currentDay = new Date().setDate(new Date().getDate() + 1)
-  const allDayTour = false
+
+  const {
+    title,
+    price,
+    currency = '€',
+    description,
+    url,
+    isDayTrip,
+    type,
+  } = booking
 
   useEffect(() => {
     if (!selectedDate) return
 
-    const times: any = getTimes()
-    setAvailableTimes(times)
-  }, [selectedDate])
+    if (!isDayTrip) {
+      const times: any = getTimes(selectedDate)
 
-  if (!booking || !user) return
-
-  const { title, price, currency = '€', description, url } = booking
+      setAvailableTimes(times)
+    }
+  }, [isDayTrip, selectedDate])
 
   //Todo: Add function to utils to perform save items
   const handleSaveLater = async () => {
-    if (!user) return
+    if (!user) {
+      return router.replace(
+        '/authenticate?callbackUrl=/booking/new?tour=' + url
+      )
+    }
+
     const db = getFirestore(app)
 
     await addDoc(collection(db, 'savedBooking'), {
@@ -48,105 +68,133 @@ function New({ booking }: any) {
   }
 
   const handleBookNow = async () => {
+    if (!user) {
+      return router.replace(
+        '/authenticate?callbackUrl=/booking/new?tour=' + url
+      )
+    }
+
     const formData = await bookingFormRef.current.getFormData()
 
-    const unavailableDates = JSON.parse(
-      localStorage.getItem('unavailableDates') || '[]'
-    )
+    const db = getFirestore(app)
+    console.log(formData)
+
+    const isInvalid = !formData.booker || !formData.guestNumber
+    if (!selectedDate) return alert('Please select a date')
+    if (isInvalid) return alert('Please fill in all fields')
 
     if (
-      !unavailableDates?.find(
-        (date: any) => date === selectedDate?.toDateString()
-      )
+      unavailableDates?.filter(
+        (date: any) => date === selectedDate?.toLocaleString()
+      ).length <= 2
     ) {
-      console.log('here', unavailableDates, selectedDate?.toDateString())
-
-      localStorage.setItem(
-        'unavailableDates',
-        JSON.stringify([...unavailableDates, selectedDate?.toDateString()])
-      )
-    } else {
-      alert('There is no availability on this date')
+      await addDoc(collection(db, 'unavailableDates'), {
+        uid: user?.uid,
+        date: selectedDate?.toLocaleString('en-US'),
+      })
     }
-    console.log({ selectedDate })
 
-    const db = getFirestore(app)
-    await addDoc(collection(db, 'bookings'), {
-      ...booking,
-      ...formData,
-      uid: user?.uid,
-      date: selectedDate?.toLocaleString('en-US'),
-    })
+    sessionStorage.setItem(
+      'bookingData',
+      JSON.stringify({
+        type,
+        title,
+        price,
+        currency,
+        isPaid: false,
+        ...formData,
+        uid: user?.uid,
+        date: selectedDate?.toLocaleString('en-US'),
+      })
+    )
+
+    if (isPrivate) {
+      // addDoc(collection(db, 'bookings'), {
+      console.log({
+        formData,
+      })
+      // })
+
+      router.push('/booking/new/payment')
+    } else {
+      await addDoc(collection(db, 'bookings'), {
+        type,
+        title,
+        price,
+        currency,
+        isPaid: false,
+        ...formData,
+        uid: user?.uid,
+        date: selectedDate?.toLocaleString('en-US'),
+      })
+
+      return router.replace(
+        '/user/profile/' +
+          user.displayName?.split(' ').join('-').toLocaleLowerCase()
+      )
+    }
   }
 
   const handleAvailability = (date: Date) => {
     setSelectedDate(date)
-    if (!allDayTour && selectedDate) return
-    const times: any = getTimes()
-
-    setAvailableTimes(times)
   }
 
   const nextDay = new Date(currentDay)
 
   return (
     <div>
-      <div className={styles.bookingForm}>
-        <BookingForm
-          // @ts-ignore
-          ref={bookingFormRef}
-          booker={user.displayName ?? ''}
-          onSubmit={handleBookNow}
-          onBack={function (): void {
-            throw new Error('Function not implemented.')
-          }}
-          onContinue={function (): void {
-            throw new Error('Function not implemented.')
-          }}
-          guestNumber={0}
-          isValid={false}
-        />
-      </div>
       <div>
         <h2> {title} </h2>
-        <p>
-          {description?.split('.')[0]}.
-          <Button className={styles.link} variant='link' href={`/tours/${url}`}>
-            Read more
-          </Button>
-          <ul>
-            Included :<li>item</li>
-            <li>item</li>
-            <li>item</li>
-            <li>item</li>
-            <li>item</li>
-          </ul>
-        </p>
+        <div>
+          <div>
+            {description?.split('.')[0]}.
+            <Button
+              className={styles.link}
+              variant='link'
+              href={`/tours/${url}`}
+            >
+              Read more
+            </Button>
+          </div>
+        </div>
+
+        <div className={styles.bookingForm}>
+          <BookingForm
+            // @ts-ignore
+            ref={bookingFormRef}
+            booker={user?.displayName ?? ''}
+            onSubmit={handleBookNow}
+            onBack={function (): void {
+              throw new Error('Function not implemented.')
+            }}
+            onContinue={function (): void {
+              throw new Error('Function not implemented.')
+            }}
+            guestNumber={0}
+            isValid={false}
+            isPrivate={isPrivate}
+          />
+        </div>
         <div className={styles.calendar}>
           <ReactCalendar
             tileDisabled={({ date }) => {
-              const unavailableDates = JSON.parse(
-                localStorage.getItem('unavailableDates') || '[]'
-              )
-              return unavailableDates.find(
-                (d: any) => d === date.toDateString()
-              )
+              return unavailableDates.filter(
+                (d: any) => d === date.toLocaleString('en-US')
+              ).length
             }}
             value={selectedDate}
             minDate={nextDay}
             onClickDay={handleAvailability}
           />
           {selectedDate && availableTimes && availableTimes.length && (
-            <select className={styles.times}>
-              <option value='' disabled selected>
+            <select defaultValue='empty' className={styles.times}>
+              <option value='empty' disabled>
                 Select starting time
               </option>
               {availableTimes?.map((time: string, index: number) => (
-                <>
-                  <option key={index} value={time}>
-                    {time}
-                  </option>
-                </>
+                <option key={index} value={time}>
+                  {time}
+                </option>
               ))}
             </select>
           )}
@@ -169,12 +217,18 @@ function New({ booking }: any) {
                 <p>Online payment option available for your convenience.</p>
               </div>
             </div>
-            <Button variant='primary' onClick={handleBookNow}>
+            <Button
+              variant='primary'
+              onClick={() => {
+                setIsPrivate(true)
+                handleBookNow()
+              }}
+            >
               Book Now
             </Button>
           </div>
           <div className={styles.bookOption}>
-            <p>
+            <div>
               Reserve your spot on <b>{title}</b> for {currency}
               {price}/person (group tour).
               <br />
@@ -183,8 +237,14 @@ function New({ booking }: any) {
                 Please note: Price may decrease if more participants join.
                 Online payment is not available for this option.
               </p>
-            </p>
-            <Button variant='primary' onClick={handleBookNow}>
+            </div>
+            <Button
+              variant='primary'
+              onClick={() => {
+                setIsPrivate(false)
+                handleBookNow()
+              }}
+            >
               Reserve Now
             </Button>
           </div>
@@ -226,18 +286,46 @@ export const getServerSideProps = async ({
       (service) => service.fields.url === query.service
     )
 
+  const db = getFirestoreAdmin()
+  const unavailableDatesCollection = db.collectionGroup('unavailableDates')
+
+  const unavailableDates = await unavailableDatesCollection.get()
+
+  const dateCountMap = new Map()
+
+  unavailableDates.docs.forEach((doc) => {
+    const date = doc.data().date
+
+    if (dateCountMap.has(date)) {
+      dateCountMap.set(date, dateCountMap.get(date) + 1)
+    } else {
+      dateCountMap.set(date, 1)
+    }
+  })
+
+  const datesWithMoreThanTwoOccurrences = Array.from(dateCountMap.entries())
+    .filter(([date, count]) => count > 2)
+    .map(([date]) => date)
+
   if (serviceData) {
     return {
       props: {
-        booking: { ...serviceData.fields, id: serviceData.sys.id },
+        booking: {
+          ...serviceData.fields,
+          id: serviceData.sys.id,
+          type: 'service',
+        },
+        unavailableDates: datesWithMoreThanTwoOccurrences,
       },
     }
   }
-
-  return {
-    props: {
-      booking: { ...tourData.fields, id: tourData.sys.id },
-    },
+  if (tourData) {
+    return {
+      props: {
+        booking: { ...tourData.fields, id: tourData.sys.id, type: 'tour' },
+        unavailableDates: datesWithMoreThanTwoOccurrences,
+      },
+    }
   }
 }
 

@@ -1,50 +1,70 @@
-import React, {
-  FC,
-  forwardRef,
-  useImperativeHandle,
-  useState,
-  ChangeEvent,
-} from 'react'
+import React, { FC, forwardRef, useImperativeHandle, useEffect } from 'react'
+import { useForm } from 'react-hook-form'
+import { GiVikingLonghouse } from 'react-icons/gi'
+import { CustomError } from '@/utils/types'
+import { useAuthContext } from '@/utils/auth/auth-provider'
 
 interface BookingFormProps {
   className?: string
   onSubmit: (formData: any) => void
-  onBack: () => void
-  onContinue: () => void
+  error: CustomError
   isLoading?: boolean
   booker?: string
   guestNumber: number
-  isValid: boolean
   isPrivate?: boolean
 }
 
 const BookingForm: FC<BookingFormProps> = forwardRef((props, ref) => {
-  const {
-    className,
-    booker = '',
-    guestNumber = 2,
-    onSubmit,
-    onBack,
-    onContinue,
-    isLoading = true,
-    isValid = false,
-    isPrivate = true,
-  } = props
+  const { className, onSubmit, isPrivate } = props
+  const { user } = useAuthContext()
 
-  const [formData, setFormData] = useState({
-    booker: booker,
-    guestNumber: isPrivate ? 2 : 1,
-    isPrivate: true,
+  const {
+    register,
+    handleSubmit,
+    watch,
+    setValue,
+    setError,
+    formState: { errors },
+  } = useForm<BookingFormProps>({
+    defaultValues: {
+      booker: user?.displayName ?? '',
+      guestNumber: 1,
+      isPrivate: isPrivate || false,
+    },
   })
 
-  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    })
-  }
+  const [booker, guestNumber] = watch(['booker', 'guestNumber'])
 
-  const getFormData = () => formData
+  useEffect(() => {
+    if (user?.displayName) {
+      setValue('booker', user?.displayName)
+    }
+  }, [user?.displayName])
+
+  useEffect(() => {
+    if (!guestNumber || (isPrivate && guestNumber < 2)) {
+      setError('guestNumber', {
+        type: 'custom',
+        message: `Guests must be at least ${isPrivate ? '2' : '1'}`,
+      })
+    } else {
+      setError('guestNumber', {})
+    }
+    if (!booker) {
+      setError('booker', {
+        type: 'custom',
+        message: 'Booker field is required',
+      })
+    } else {
+      setError('booker', {})
+    }
+  }, [booker, guestNumber, isPrivate, setError])
+
+  const getFormData = () => ({
+    booker,
+    guestNumber,
+    isPrivate,
+  })
 
   useImperativeHandle(ref, () => ({
     getFormData,
@@ -53,57 +73,32 @@ const BookingForm: FC<BookingFormProps> = forwardRef((props, ref) => {
   return (
     <div className={className}>
       <h2>Booking information</h2>
-      <form>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <label htmlFor='booker'>Booker:</label>
         <input
           type='text'
           id='booker'
-          name='booker'
-          value={formData.booker}
-          onChange={handleInputChange}
+          {...register('booker', { required: 'Booker field is required' })}
         />
+        {errors.booker && <p>{errors.booker.message}</p>}
         <div>
-          <input
-            type='radio'
-            id='privateTour'
-            name='tourType'
-            value='private'
-            defaultChecked={true}
-            onChange={handleInputChange}
-          />
-          <label htmlFor='privateTour'>
-            Private Tour
-            <p>
-              Exclusive experience for you and your group. Minimum booking for 2
-              people.
-            </p>
-          </label>
-        </div>
-
-        <div>
-          <input
-            type='radio'
-            id='nonPrivateTour'
-            name='tourType'
-            value='nonPrivate'
-            onChange={handleInputChange}
-          />
-          <label htmlFor='nonPrivateTour'>
-            Non-Private Tour
-            <p>
-              This option allows you to join other participants, and you might
-              enjoy price reductions. (Online payment not available)
-            </p>
-          </label>
           <label htmlFor='guestNumber'> Guests:</label>
           <input
-            type='number'
             min={isPrivate ? 2 : 1}
+            type='number'
+            list='guestNumbers'
+            {...register('guestNumber')}
             id='guestNumber'
-            name='guestNumber'
-            value={formData.guestNumber}
-            onChange={handleInputChange}
           />
+          <datalist id='guestNumbers'>
+            {!isPrivate && <option value={1} />}
+            {[...Array(isPrivate ? 9 : 8)].map((_, index) => (
+              <option key={index + 2} value={index + 2}>
+                {index + 2}
+              </option>
+            ))}
+          </datalist>
+          {errors.guestNumber && <p>{errors.guestNumber.message}</p>}
         </div>
       </form>
     </div>

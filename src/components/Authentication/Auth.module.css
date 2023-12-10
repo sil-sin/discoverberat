@@ -29,6 +29,7 @@
     outline: var(--button-outline-active-border) 1px solid;
 }
 
-.errorInput {
+.errorInput,
+.errorInput:focus {
     outline: 1px solid red;
 }

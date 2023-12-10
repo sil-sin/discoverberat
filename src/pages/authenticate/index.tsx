@@ -11,7 +11,6 @@ import Button from '@/components/simple/Button'
 import Image from 'next/image'
 import SignIn from '@/components/Authentication/SignIn'
 import classNames from 'classnames'
-import { motion } from 'framer-motion'
 
 const AuthPage = () => {
   const [isSignUp, setIsSignUp] = useState<boolean>(true)
@@ -29,8 +28,8 @@ const AuthPage = () => {
   }, [router, router.query.callback, user])
 
   return (
-    <motion.div className={styles.container}>
-      <motion.div  className={styles.formContainer}>
+    <div className={styles.container}>
+      <div className={styles.formContainer}>
         <div className={styles.tabButtons}>
           <Button
             onClick={() => setIsSignUp(true)}
@@ -68,22 +67,22 @@ const AuthPage = () => {
             <SignIn className={styles.signInForm} />
           </>
         )}
-      <div className={styles.orSeparator}>
-        <div />
-        or
-        <div />
-      </div>
-      <Button onClick={googleProvider} className={styles.googleButton}>
-        <Image
-          src='/google-icon.svg'
-          height={20}
-          width={20}
-          alt='google-icon'
+        <div className={styles.orSeparator}>
+          <div />
+          or
+          <div />
+        </div>
+        <Button onClick={googleProvider} className={styles.googleButton}>
+          <Image
+            src='/google-icon.svg'
+            height={20}
+            width={20}
+            alt='google-icon'
           />
-        Sign in with Google
-      </Button>
-          </motion.div>
-    </motion.div>
+          Sign in with Google
+        </Button>
+      </div>
+    </div>
   )
 }
 export default AuthPage
