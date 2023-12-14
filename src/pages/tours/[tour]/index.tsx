@@ -23,7 +23,6 @@ export default function Page({ tour }: { tour: any }) {
       </div>
     )
   }
-  console.log('tour:', tour)
 
   return (
     <Tour

@@ -59,8 +59,7 @@ export const SignUp: FC<SignUpProps> = ({ className }) => {
     },
   }
   const onSubmit: SubmitHandler<Inputs> = async (data: any) => {
-    console.log(data)
-    console.log(isValid)
+  
 
     for (const fieldName in inputRefs) {
       if (!data[fieldName]) {

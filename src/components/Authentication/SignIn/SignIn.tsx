@@ -4,6 +4,7 @@ import styles from '../Auth.module.css'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import Button from '@/components/simple/Button'
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth'
+import { useRouter } from 'next/router'
 
 type SignUpProps = {
   className?: string
@@ -20,7 +21,8 @@ export const SignIn: FC<SignUpProps> = ({ className }) => {
     setError,
     formState: { errors, isValid },
   } = useForm<Inputs>()
-
+  const router = useRouter()
+  const { callbackUrl } = router.query
   const auth = getAuth()
   const firebaseErrorMap: any = {
     'auth/invalid-login-credentials': 'password', // Map the Firebase error to the corresponding field
@@ -50,7 +52,7 @@ export const SignIn: FC<SignUpProps> = ({ className }) => {
     }
     signInWithEmailAndPassword(auth, data.email, data.password)
       .then((result) => {
-        console.log(result)
+        router.push((callbackUrl as string) ?? '/user/profile/')
       })
       .catch((err) => {
         const errorCode = err.code

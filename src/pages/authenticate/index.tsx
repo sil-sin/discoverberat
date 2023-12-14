@@ -17,8 +17,9 @@ const AuthPage = () => {
 
   const router = useRouter()
   const { user, loading } = useAuthContext()
+
   useEffect(() => {
-    const callbackUrl = router.query.callback as Url
+    const callbackUrl = router.query.callbackUrl as string
 
     if (user) {
       const profilePath = user.displayName?.split(' ').join('-').toLowerCase()
@@ -63,7 +64,7 @@ const AuthPage = () => {
           </>
         ) : (
           <>
-            <div>Already have an account? Sign in to get started .</div>
+            <h3>Sign in</h3>
             <SignIn className={styles.signInForm} />
           </>
         )}

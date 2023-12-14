@@ -2,16 +2,22 @@ import React, { useState } from 'react'
 import styles from './new.module.css'
 import Button from '../../../components/simple/Button/index'
 import PaypalCheckoutButton from '@/utils/payment/paypal'
+import { getEntry } from '@/utils/contentful/contentful'
+import { getFirestore, addDoc, collection } from 'firebase/firestore'
+import app from '@/utils/firebase/firebaseConfig'
+import { useAuthContext } from '@/utils/auth/auth-provider'
+import { useRouter } from 'next/router'
 
 export default function Payment({ service }: any) {
   const [disableCheckout, setDisableCheckout] = useState(true)
-
-  const onSuccess = (success: boolean) => {
-    setDisableCheckout(!success)
-  }
-
-  if (disableCheckout) {
-    console.log('true')
+  const router = useRouter()
+  const onSuccess = async (data: any) => {
+    console.log(data)
+    const db = getFirestore(app)
+    await addDoc(collection(db, 'bookings'), {
+      ...data,
+    })
+    setDisableCheckout(!data)
   }
 
   return (
@@ -27,25 +33,25 @@ export default function Payment({ service }: any) {
         className={styles.button}
         variant='primary'
         onClick={() => {
-          console.log('clicked')
+          router.replace('/user/profile/user')
         }}
         isDisabled={disableCheckout}
       >
-        Proceed to checkout
+        Booking details
       </Button>
       <sup>Please select a payment method</sup>
     </div>
   )
 }
 
-export const getServerSideProps = async () => {
+export const getServerSideProps = async (params: any) => {
+  const service = params.query
+  const bookingEntry = await getEntry(service.bookingId, {
+    content_type: service.type === 'tour' ? 'tourPage' : 'serviceCard',
+    select: 'fields.price',
+  })
+  const price = bookingEntry.fields.price
   return {
-    props: {
-      service: {
-        title: 'test',
-        price: 1,
-        uid: 'test',
-      },
-    },
+    props: { service: { ...service, price } },
   }
 }

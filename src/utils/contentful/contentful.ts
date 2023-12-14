@@ -21,8 +21,10 @@ export async function getEntriesByType(entry: string) {
 
   return response.items
 }
-export async function getEntry(entryId: string) {
-  const response = await client.getEntry(entryId)
+export async function getEntry(entryId: string, query?: {}) {
+  const response = query
+    ? await client.getEntry(entryId, query)
+    : await client.getEntry(entryId)
   return response
 }
 export async function createContent(entryType: string, fields: any) {

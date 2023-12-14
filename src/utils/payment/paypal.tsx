@@ -2,23 +2,28 @@ import { PayPalButtons } from '@paypal/react-paypal-js'
 import { FC, useState } from 'react'
 
 type Props = {
-  onSubmit: (success: boolean) => void
+  onSubmit: (data: any) => void
   products: {
     title: string
     price: number
+    currency: string
+    id: string
+    uid: string
+    guestNumber: number
+    type: string
+    isPaid: boolean
   }
 }
 const PaypalCheckoutButton: FC<Props> = ({ products, onSubmit }) => {
   const [paidFor, setPaidFor] = useState(false)
 
   const handleApprove = (orderId: any) => {
-    onSubmit(true)
     setPaidFor(true)
+    onSubmit({ orderId, ...products, isPaid: true })
   }
 
   if (paidFor) {
     return <p>Payment valid</p>
-    return null
   }
 
   return (
@@ -36,14 +41,13 @@ const PaypalCheckoutButton: FC<Props> = ({ products, onSubmit }) => {
           actions.resolve()
         }}
         createOrder={(data, actions) => {
-          console.log('create order')
-
           return actions.order.create({
             purchase_units: [
               {
+                reference_id: products.uid,
                 description: products.title,
                 amount: {
-                  value: `${products.price.toFixed(2)}`,
+                  value: `${products.price * products.guestNumber}`,
                 },
               },
             ],
@@ -72,7 +76,7 @@ const PaypalCheckoutButton: FC<Props> = ({ products, onSubmit }) => {
                 description: products.title,
                 amount: {
                   currency_code: 'EUR',
-                  value: `${products.price}`,
+                  value: `${products.price * products.guestNumber}`,
                 },
               },
             ],

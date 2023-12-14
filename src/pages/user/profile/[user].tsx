@@ -1,19 +1,18 @@
-import React, { useState, useEffect } from 'react'
+import { FC } from 'react'
 import styles from './user.module.css'
 
-import { GetServerSideProps, GetServerSidePropsContext } from 'next'
+import { GetServerSidePropsContext } from 'next'
 import nookies from 'nookies'
 import Image from 'next/image'
 import { adminSDK } from '@/pages/api/adminConfig'
 import { getFirestore } from 'firebase-admin/firestore'
-import { table } from 'console'
+
 import Button from '@/components/simple/Button'
 
-const ProfilePage = ({ user, savedItems, data }: any) => {
+const ProfilePage: FC = ({ user, savedItems, data }: any) => {
   if (!user) {
     return null
   }
-  console.log(data)
 
   return (
     <div className={styles.container}>

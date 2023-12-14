@@ -1,8 +1,6 @@
 import { add } from 'date-fns'
 
-export const getTimes = (selectedDate?: Date) => {
-  console.log(selectedDate)
-
+export const getTimes = (selectedDate: Date | null) => {
   if (!selectedDate) return null
   const startingTime = add(selectedDate, { hours: 9 })
 
@@ -15,10 +13,13 @@ export const getTimes = (selectedDate?: Date) => {
     i = add(i, { minutes: interval })
   ) {
     times.push(
-      i?.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
+      i?.toLocaleTimeString('en-US', {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false,
+      })
     )
   }
-  console.log(times)
 
   return times
 }
