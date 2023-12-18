@@ -1,0 +1,35 @@
+.bookingFormContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    margin: 10px auto;
+}
+
+.bookingFormContainer label {
+    color: var(--button-outline-active-border);
+    font-weight: 500;
+}
+
+.bookingFormContainer input {
+    color: var(--button-outline-active-border);
+
+    margin: 5px;
+    padding: 15px 10px;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    background-color: var(--background-secondary);
+}
+
+.bookingFormContainer input:focus {
+    appearance: textfield;
+    outline: 1px var(--button-outline-active-border) solid;
+}
+
+.bookingFormContainer input[type=number]::-webkit-inner-spin-button,
+.bookingFormContainer input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    margin: 0;
+}

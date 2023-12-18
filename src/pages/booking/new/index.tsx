@@ -174,7 +174,6 @@ function New({ booking, unavailableDates }: any) {
                       selectedDate.getTime() +
                         (+hours * 3600000 + +minutes.split(' ')[0] * 60000)
                     )
-
                     setSelectedDateTime(date)
                   }}
                 >

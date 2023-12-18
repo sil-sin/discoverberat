@@ -63,13 +63,21 @@
     }
 
     .paypal {
-
-
-        width: 300px
+        display: flex;
+        flex-direction: column;
+        width: 300px;
+        margin: 0 auto
     }
+
+
 }
 
-
+.paymentContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px
+}
 
 .calendar button {
     background-color: var(--button-secondary-background);
@@ -77,6 +85,21 @@
     padding: 10px;
     color: var(--button-secondary-typo) !important;
     outline: none;
+}
+
+.bookingDetailsTable table {
+    border-spacing: 0;
+    width: 100%;
+    table-layout: fixed;
+}
+
+.bookingDetailsTable * {
+    padding: 5px 10px;
+    text-align: start;
+}
+
+.bookingDetailsTable th {
+    background-color: var(--background-secondary);
 }
 
 .calendar button:is(:focus, :active) {

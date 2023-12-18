@@ -1,9 +1,9 @@
 import React, { FC, forwardRef, useImperativeHandle, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
-import { GiVikingLonghouse } from 'react-icons/gi'
 import { CustomError } from '@/utils/types'
 import { useAuthContext } from '@/utils/auth/auth-provider'
-
+import classnames from 'classnames'
+import styles from './BookingForm.module.css'
 interface BookingFormProps {
   className?: string
   onSubmit: (formData: any) => void
@@ -11,11 +11,12 @@ interface BookingFormProps {
   isLoading?: boolean
   booker?: string
   guestNumber: number
+  pickup?: string
   isPrivate?: boolean
 }
 
 const BookingForm: FC<BookingFormProps> = forwardRef((props, ref) => {
-  const { className, onSubmit, isPrivate } = props
+  const { className, onSubmit, isPrivate, pickup } = props
   const { user } = useAuthContext()
 
   const {
@@ -30,6 +31,7 @@ const BookingForm: FC<BookingFormProps> = forwardRef((props, ref) => {
       booker: user?.displayName ?? '',
       guestNumber: 1,
       isPrivate: isPrivate || false,
+      pickup: 'Discover Berat office',
     },
   })
 
@@ -64,6 +66,7 @@ const BookingForm: FC<BookingFormProps> = forwardRef((props, ref) => {
     booker,
     guestNumber,
     isPrivate,
+    pickup,
   })
 
   useImperativeHandle(ref, () => ({
@@ -71,7 +74,7 @@ const BookingForm: FC<BookingFormProps> = forwardRef((props, ref) => {
   }))
 
   return (
-    <div className={className}>
+    <div className={classnames(styles.bookingFormContainer, className)}>
       <h2>Booking information</h2>
       <form onSubmit={handleSubmit(onSubmit)}>
         <label htmlFor='booker'>Booker:</label>
@@ -81,13 +84,22 @@ const BookingForm: FC<BookingFormProps> = forwardRef((props, ref) => {
           {...register('booker', { required: 'Booker field is required' })}
         />
         {errors.booker && <p>{errors.booker.message}</p>}
+        <label htmlFor='pickup'>Pickup place:</label>
+        <input
+          type='text'
+          id='pickup'
+          {...register('pickup', { required: 'Pickup field is required' })}
+        />
+        {errors.pickup && <p>{errors.pickup.message}</p>}
         <div>
           <label htmlFor='guestNumber'> Guests:</label>
           <input
             min={isPrivate ? 2 : 1}
             type='number'
             list='guestNumbers'
-            {...register('guestNumber')}
+            {...register('guestNumber', {
+              required: 'Guest number field is required',
+            })}
             id='guestNumber'
           />
           <datalist id='guestNumbers'>

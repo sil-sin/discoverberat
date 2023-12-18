@@ -11,25 +11,55 @@ import { useRouter } from 'next/router'
 export default function Payment({ service }: any) {
   const [disableCheckout, setDisableCheckout] = useState(true)
   const router = useRouter()
+  const { price, currency, guestNumber, title, type } = service
+  const priceWithCurrency = currency + price
+  const totalPrice = currency + price * guestNumber
+
   const onSuccess = async (data: any) => {
-    console.log(data)
     const db = getFirestore(app)
+    console.log('sil:', { data })
+
     await addDoc(collection(db, 'bookings'), {
       ...data,
-    })
+    }).then((res) => router.push('thank-you?id=' + res.id))
     setDisableCheckout(!data)
   }
 
   return (
-    <div>
+    <div className={styles.paymentContainer}>
+      <h3 className={styles.pay}>Booking details</h3>
+      <em>
+        ! Please check your booking details before choosing a payment method
+      </em>
+      <div className={styles.bookingDetailsTable}>
+        <table>
+          <thead>
+            <tr>
+              <th>Booking</th>
+              <th>Price per person</th>
+              <th>Guest(s)</th>
+              <th>Total price</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>{title}</td>
+              <td>{priceWithCurrency}</td>
+              <td>{guestNumber}</td>
+              <td>{totalPrice}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
       <div className={styles.paypal}>
+        <p>Select a payment method</p>
         {disableCheckout && (
           <PaypalCheckoutButton products={service} onSubmit={onSuccess} />
         )}
       </div>
-      <div>Pay now </div>
-      <div className={styles.pay}>Reserve your spot now and pay latter</div>
-      <Button
+
+      {/* <Button
         className={styles.button}
         variant='primary'
         onClick={() => {
@@ -37,9 +67,8 @@ export default function Payment({ service }: any) {
         }}
         isDisabled={disableCheckout}
       >
-        Booking details
-      </Button>
-      <sup>Please select a payment method</sup>
+        Done
+      </Button> */}
     </div>
   )
 }

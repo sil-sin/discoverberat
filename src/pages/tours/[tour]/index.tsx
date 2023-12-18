@@ -1,9 +1,6 @@
 import { getEntriesByType } from '@/utils/contentful/contentful'
 import { GetServerSideProps } from 'next'
-import styles from './tour.module.css'
-import Button from '@/components/simple/Button'
 
-import Link from 'next/link'
 import Tour from '@/components/Tour'
 
 type Tour = {

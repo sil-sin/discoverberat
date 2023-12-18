@@ -1,11 +1,13 @@
 import { marked } from 'marked'
-import React from 'react'
+import React, { FC } from 'react'
 import Image from 'next/image'
 import styles from './Tour.module.css'
 import Button from '../simple/Button'
-export function Tour({ tour }: { tour: any }) {
-  const { price, title, description, currency, imgUrl, url } = tour
+import { useRouter } from 'next/router'
 
+export const Tour: FC<{ tour: any }> = ({ tour }) => {
+  const { price, title, description, currency, imgUrl, url } = tour
+  const router = useRouter()
   const imageUrl = imgUrl
     ? imgUrl.includes('https://')
       ? imgUrl
@@ -24,7 +26,7 @@ export function Tour({ tour }: { tour: any }) {
         className={styles.tourContainer}
       >
         <Image
-          loading='lazy'
+          priority
           width={800}
           height={800}
           alt={title + 'image'}
@@ -37,7 +39,7 @@ export function Tour({ tour }: { tour: any }) {
         <Button
           className={styles.button}
           onClick={() => {
-            window.location.href = `/booking/new?tour=${url}`
+            router.push(`/booking/new?tour=${url}`)
           }}
           variant='primary'
         >

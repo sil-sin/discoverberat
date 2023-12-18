@@ -1,4 +1,6 @@
 import { PayPalButtons } from '@paypal/react-paypal-js'
+import { useRouter } from 'next/router'
+import { stringify } from 'querystring'
 import { FC, useState } from 'react'
 
 type Props = {
@@ -16,10 +18,12 @@ type Props = {
 }
 const PaypalCheckoutButton: FC<Props> = ({ products, onSubmit }) => {
   const [paidFor, setPaidFor] = useState(false)
-
+  const router = useRouter()
   const handleApprove = (orderId: any) => {
     setPaidFor(true)
     onSubmit({ orderId, ...products, isPaid: true })
+    // const queryString = stringify({ orderId, ...products, isPaid: true })
+    // router.push('/thank-you?' + queryString)
   }
 
   if (paidFor) {
@@ -55,7 +59,7 @@ const PaypalCheckoutButton: FC<Props> = ({ products, onSubmit }) => {
         }}
         onApprove={async (data, actions) => {
           const order: any = await actions?.order?.capture()
-          console.log('Capture result', order)
+
           handleApprove(data.orderID)
         }}
         onCancel={() => {
@@ -75,7 +79,6 @@ const PaypalCheckoutButton: FC<Props> = ({ products, onSubmit }) => {
               {
                 description: products.title,
                 amount: {
-                  currency_code: 'EUR',
                   value: `${products.price * products.guestNumber}`,
                 },
               },
