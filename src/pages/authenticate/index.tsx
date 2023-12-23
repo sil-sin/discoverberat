@@ -22,9 +22,10 @@ const AuthPage = () => {
     const callbackUrl = router.query.callbackUrl as string
 
     if (user) {
-      const profilePath = user.displayName?.split(' ').join('-').toLowerCase()
+      const profilePath =
+        '/user/profile/' + user.displayName?.split(' ').join('-').toLowerCase()
 
-      router.push(callbackUrl ?? '/user/profile/' + profilePath)
+      router.push((callbackUrl as string) ?? profilePath)
     }
   }, [router, router.query.callback, user])
 

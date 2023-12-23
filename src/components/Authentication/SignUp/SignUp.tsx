@@ -59,8 +59,6 @@ export const SignUp: FC<SignUpProps> = ({ className }) => {
     },
   }
   const onSubmit: SubmitHandler<Inputs> = async (data: any) => {
-  
-
     for (const fieldName in inputRefs) {
       if (!data[fieldName]) {
         setError(fieldName as keyof Inputs, {
@@ -77,13 +75,14 @@ export const SignUp: FC<SignUpProps> = ({ className }) => {
         return
       }
     }
-    
+
     signUpWithEmail(
       data.target.email.value,
       data.target.password.value,
       data.target.firstName.value + ' ' + data.target.lastName.value
     )
   }
+
   return (
     <div className={classnames(styles.formContainer, className)}>
       <form

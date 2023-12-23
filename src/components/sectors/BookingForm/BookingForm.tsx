@@ -16,7 +16,7 @@ interface BookingFormProps {
 }
 
 const BookingForm: FC<BookingFormProps> = forwardRef((props, ref) => {
-  const { className, onSubmit, isPrivate, pickup } = props
+  const { className, onSubmit, isPrivate } = props
   const { user } = useAuthContext()
 
   const {
@@ -35,7 +35,11 @@ const BookingForm: FC<BookingFormProps> = forwardRef((props, ref) => {
     },
   })
 
-  const [booker, guestNumber] = watch(['booker', 'guestNumber'])
+  const [booker, guestNumber, pickup] = watch([
+    'booker',
+    'guestNumber',
+    'pickup',
+  ])
 
   useEffect(() => {
     if (user?.displayName) {
@@ -60,7 +64,14 @@ const BookingForm: FC<BookingFormProps> = forwardRef((props, ref) => {
     } else {
       setError('booker', {})
     }
-  }, [booker, guestNumber, isPrivate, setError])
+
+    if (!pickup) {
+      setError('booker', {
+        type: 'custom',
+        message: 'Booker field is required',
+      })
+    }
+  }, [booker, guestNumber, isPrivate, pickup, setError])
 
   const getFormData = () => ({
     booker,

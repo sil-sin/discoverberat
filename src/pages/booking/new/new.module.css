@@ -133,3 +133,22 @@
     font: 400 16px var(--primary-font);
     text-align: center;
 }
+
+
+.successContainer {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 999;
+    background-color: var(--background-secondary);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 0 200vw var(--shadow);
+}
+
+.buttonContainer {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}

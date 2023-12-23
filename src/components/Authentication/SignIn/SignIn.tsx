@@ -52,7 +52,9 @@ export const SignIn: FC<SignUpProps> = ({ className }) => {
     }
     signInWithEmailAndPassword(auth, data.email, data.password)
       .then((result) => {
-        router.push((callbackUrl as string) ?? '/user/profile/')
+        router.push(
+          (callbackUrl as string) ?? '/user/profile/' + result.user.displayName
+        )
       })
       .catch((err) => {
         const errorCode = err.code

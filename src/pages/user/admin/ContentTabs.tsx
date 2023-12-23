@@ -7,7 +7,6 @@ import Upload from '@/utils/cloudinary/CloudinaryUpload'
 import client, { createContent } from '@/utils/contentful/contentful'
 import { uploadImage } from '@/utils/contentful/uploadImage'
 import Button from '@/components/simple/Button'
-import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
 
 const ReachTextEditor = dynamic(() => import('./RichtextInput'), {
@@ -142,31 +141,59 @@ const EditCreateTab: React.FC<{
           </select>
         </div>
 
-        {dynamicFields.map((field: any) => (
-          <div key={field.id}>
-            {field.type === 'Text' ? (
-              <div>
+        {dynamicFields.map((field: any) => {
+          if (field.type === 'Text') {
+            return (
+              <div key={field.id}>
                 <label htmlFor={field.id}>{field.name}</label>
                 <ReachTextEditor onChange={setRichTextContent} />
               </div>
-            ) : field.type === 'Link' ? (
-              <div>
+            )
+          }
+
+          if (field.type === 'Link') {
+            return (
+              <div key={field.id}>
                 <label htmlFor={field.id}>{field.name}</label>
                 <Upload getImgUrl={setImgUrl} />
               </div>
-            ) : (
-              <div>
+            )
+          }
+
+          if (field.type === 'Boolean') {
+            return (
+              <div key={field.id}>
                 <label htmlFor={field.id}>{field.name}</label>
                 <input
-                  type={field.type}
-                  id={field.id}
+                  type='radio'
+                  id={`${field.id}-true`}
                   name={field.id}
-                  onChange={handleFormChange}
+                  value='true'
                 />
+                <label htmlFor={`${field.id}-true`}>Yes</label>
+                <input
+                  type='radio'
+                  id={`${field.id}-false`}
+                  name={field.id}
+                  value='false'
+                />
+                <label htmlFor={`${field.id}-false`}>No</label>
               </div>
-            )}
-          </div>
-        ))}
+            )
+          }
+
+          return (
+            <div key={field.id}>
+              <label htmlFor={field.id}>{field.name}</label>
+              <input
+                type={field.type}
+                id={field.id}
+                name={field.id}
+                onChange={handleFormChange}
+              />
+            </div>
+          )
+        })}
         <button
           type='button'
           onClick={() => {

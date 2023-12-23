@@ -25,6 +25,7 @@ function New({ booking, unavailableDates }: any) {
   const [selectedDateTime, setSelectedDateTime] = useState<Date | null>(null)
   const [availableTimes, setAvailableTimes] = useState<any>([])
   const [isPrivate, setIsPrivate] = useState<boolean>(false)
+  const [isSuccess, setIsSuccess] = useState<boolean>(false)
   const router = useRouter()
 
   const bookingFormRef = useRef<any>()
@@ -65,8 +66,8 @@ function New({ booking, unavailableDates }: any) {
       uid: user?.uid,
     })
 
-    // Todo : Add notification
-    console.log('Document successfully written!')
+    setIsSuccess(true)
+    router.push('#success')
   }
 
   const handleBookNow = async (isBookNow: boolean) => {
@@ -75,6 +76,7 @@ function New({ booking, unavailableDates }: any) {
         '/authenticate?callbackUrl=/booking/new?tour=' + url
       )
     }
+
     const formData = await bookingFormRef.current.getFormData()
 
     const bookingData = {
@@ -84,6 +86,7 @@ function New({ booking, unavailableDates }: any) {
       currency,
       isPaid: false,
       bookingId: id,
+
       ...formData,
       uid: user?.uid,
       date:
@@ -132,149 +135,184 @@ function New({ booking, unavailableDates }: any) {
   const nextDay = new Date(currentDay)
 
   return (
-    <div>
-      <div>
-        <h2> {title} </h2>
-        <div>
-          <div>
-            {description?.split('.')[0]}.
-            <Button
-              className={styles.link}
-              variant='link'
-              href={`/tours/${url}`}
-            >
-              Read more
-            </Button>
-          </div>
-        </div>
-
-        <div className={styles.bookingForm}>
-          <div className={styles.calendar}>
-            <ReactCalendar
-              tileDisabled={({ date }) => {
-                return unavailableDates.filter(
-                  (d: any) => d === date.toLocaleString('en-US')
-                ).length
-              }}
-              value={selectedDate}
-              minDate={nextDay}
-              onClickDay={handleAvailability}
-            />
-            <>
-              {selectedDate &&
-              availableTimes &&
-              availableTimes.length &&
-              !isDayTrip ? (
-                <select
-                  defaultValue='empty'
-                  className={styles.times}
-                  onChange={(time) => {
-                    const [hours, minutes] = time.currentTarget.value.split(':')
-                    const date = new Date(
-                      selectedDate.getTime() +
-                        (+hours * 3600000 + +minutes.split(' ')[0] * 60000)
-                    )
-                    setSelectedDateTime(date)
-                  }}
-                >
-                  <option value='empty' disabled>
-                    Select starting time
-                  </option>
-                  {availableTimes?.map((time: string, index: number) => (
-                    <option key={index} value={time}>
-                      {time}
-                    </option>
-                  ))}
-                </select>
-              ) : null}
-            </>
-          </div>
-          <BookingForm
-            // @ts-ignore
-            ref={bookingFormRef}
-            booker={user?.displayName ?? ''}
-            onSubmit={handleBookNow}
-            onBack={function (): void {
-              throw new Error('Function not implemented.')
-            }}
-            onContinue={function (): void {
-              throw new Error('Function not implemented.')
-            }}
-            guestNumber={0}
-            isValid={false}
-            isPrivate={isPrivate}
-          />
-        </div>
-
-        <div className={styles.bookingOptions}>
-          <div className={styles.bookOption}>
-            <div>
-              <h3>
-                PRIVATE TOUR
-                <br />
-                {currency}
-                {price}.00
-                <br />
-                PER PERSON
-                <hr />
-              </h3>
-              <div>
-                <p>Minimum booking requirement: 2 persons.</p>
-                <hr />
-                <p>Online payment option available for your convenience.</p>
-              </div>
-            </div>
-            <Button
-              variant='primary'
-              onClick={() => {
-                setIsPrivate(true)
-                handleBookNow(true)
-              }}
-            >
-              Book Now
-            </Button>
-          </div>
-          <div className={styles.bookOption}>
-            <div>
-              Reserve your spot on <b>{title}</b> for {currency}
-              {price}/person (group tour).
-              <br />
-              <p>Individual bookings available with no minimum requirement.</p>
-              <p>
-                Please note: Price may decrease if more participants join.
-                Online payment is not available for this option.
-              </p>
-            </div>
-            <Button
-              variant='primary'
-              onClick={() => {
-                setIsPrivate(false)
-                handleBookNow(false)
-              }}
-            >
-              Reserve Now
-            </Button>
-          </div>
-
-          <div className={styles.bookOption}>
-            <p>
-              Save for later (
-              <em>
-                This option will not reserve the selected service for you.
-              </em>
-              )
+    <>
+      {isSuccess && (
+        <>
+          <span id='success'></span>
+          <div
+            className={styles.successContainer}
+            onBlur={() => setIsSuccess(false)}
+          >
+            <p className={styles.successText}>
+              Your booking has been saved on your profile
             </p>
-            <Button onClick={handleSaveLater} variant='secondary'>
-              Save for later
-            </Button>
+
+            <div className={styles.buttonContainer}>
+              <Button
+                variant='primary'
+                text={
+                  type === 'tour' ? 'Find more tours' : 'Find more services'
+                }
+                onClick={() =>
+                  router.push('/' + type === 'tour' ? 'tours' : 'services')
+                }
+              />
+              <Button
+                variant='secondary'
+                text={'All saved items'}
+                onClick={() => router.push('/user/profile/' + user?.uid)}
+              />
+            </div>
           </div>
-        </div>
+        </>
+      )}
+      <div onClick={() => setIsSuccess(false)} className={styles.container}>
         <div>
-          <br />
-          <br />
+          <h2> {title} </h2>
+          <div>
+            <div>
+              {description?.split('.')[0]}.
+              <Button
+                className={styles.link}
+                variant='link'
+                href={`/tours/${url}`}
+              >
+                Read more
+              </Button>
+            </div>
+          </div>
+
+          <div className={styles.bookingForm}>
+            <div className={styles.calendar}>
+              <ReactCalendar
+                tileDisabled={({ date }) => {
+                  return unavailableDates.filter(
+                    (d: any) => d === date.toLocaleString('en-US')
+                  ).length
+                }}
+                value={selectedDate}
+                minDate={nextDay}
+                onClickDay={handleAvailability}
+              />
+              <>
+                {selectedDate &&
+                availableTimes &&
+                availableTimes.length &&
+                !isDayTrip ? (
+                  <select
+                    defaultValue='empty'
+                    className={styles.times}
+                    onChange={(time) => {
+                      const [hours, minutes] =
+                        time.currentTarget.value.split(':')
+                      const date = new Date(
+                        selectedDate.getTime() +
+                          (+hours * 3600000 + +minutes.split(' ')[0] * 60000)
+                      )
+                      setSelectedDateTime(date)
+                    }}
+                  >
+                    <option value='empty' disabled>
+                      Select starting time
+                    </option>
+                    {availableTimes?.map((time: string, index: number) => (
+                      <option key={index} value={time}>
+                        {time}
+                      </option>
+                    ))}
+                  </select>
+                ) : null}
+              </>
+            </div>
+            <BookingForm
+              // @ts-ignore
+              ref={bookingFormRef}
+              booker={user?.displayName ?? ''}
+              onSubmit={handleBookNow}
+              onBack={function (): void {
+                throw new Error('Function not implemented.')
+              }}
+              onContinue={function (): void {
+                throw new Error('Function not implemented.')
+              }}
+              guestNumber={0}
+              isValid={false}
+              isPrivate={isPrivate}
+            />
+          </div>
+
+          <div className={styles.bookingOptions}>
+            <div className={styles.bookOption}>
+              <div>
+                <h3>
+                  PRIVATE TOUR
+                  <br />
+                  {currency}
+                  {price}.00
+                  <br />
+                  PER PERSON
+                  <hr />
+                </h3>
+                <div>
+                  <p>Minimum booking requirement: 2 persons.</p>
+                  <hr />
+                  <p>Online payment option available for your convenience.</p>
+                </div>
+              </div>
+              <Button
+                variant='primary'
+                onClick={() => {
+                  setIsPrivate(true)
+                  handleBookNow(true)
+                }}
+              >
+                Book Now
+              </Button>
+            </div>
+            <div className={styles.bookOption}>
+              <div>
+                Reserve your spot on <b>{title}</b> for {currency}
+                {price}/person (group tour).
+                <br />
+                <p>
+                  Individual bookings available with no minimum requirement.
+                </p>
+                <p>
+                  Please note: Price may decrease if more participants join.
+                  Online payment is not available for this option.
+                </p>
+              </div>
+              <Button
+                variant='primary'
+                onClick={() => {
+                  setIsPrivate(false)
+                  handleBookNow(false)
+                }}
+              >
+                Reserve Now
+              </Button>
+            </div>
+
+            <div className={styles.bookOption}>
+              <p>
+                Save for later (
+                <em>
+                  This option will not reserve the selected service for you.
+                </em>
+                )
+              </p>
+              <Button onClick={handleSaveLater} variant='secondary'>
+                Save for later
+              </Button>
+            </div>
+          </div>
+          <div>
+            <br />
+            <br />
+          </div>
         </div>
       </div>
-    </div>
+    </>
   )
 }
 
