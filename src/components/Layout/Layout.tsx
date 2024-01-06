@@ -8,6 +8,7 @@ import React from 'react'
 import { User } from 'firebase/auth'
 import { useAuthContext } from '@/utils/auth/auth-provider'
 import ContactForm from '../ContactForm/ContactForm'
+import { Link } from 'next/link'
 
 export const metadata: Metadata = {
   title: 'Discover Berat',
@@ -30,7 +31,7 @@ export const Layout: FC<Props> = ({ children, pageTitle }) => {
       </Head>
       <Navigation className='navigationBar' />
       <div style={{ marginTop: '80px' }}>{children}</div>
-      <a href='https://wa.me/1XXXXXXXXXXX' className='whatsapp-button' target='_blank'>WhatsApp</a>
+      <Link href='https://wa.me/1XXXXXXXXXXX' className='whatsapp-button' target='_blank'>WhatsApp</Link>
       <ContactForm />
       <Footer />
     </main>
