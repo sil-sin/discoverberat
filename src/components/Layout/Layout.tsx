@@ -7,6 +7,7 @@ import Head from 'next/head'
 import React from 'react'
 import { User } from 'firebase/auth'
 import { useAuthContext } from '@/utils/auth/auth-provider'
+import ContactForm from '../ContactForm/ContactForm'
 
 export const metadata: Metadata = {
   title: 'Discover Berat',
@@ -27,8 +28,10 @@ export const Layout: FC<Props> = ({ children, pageTitle }) => {
         <title>{title}</title>
         <link rel='shortcut icon' href='/favicon.ico' />
       </Head>
-      <Navigation />
-      {children}
+      <Navigation className='navigationBar' />
+      <div style={{ marginTop: '80px' }}>{children}</div>
+      <a href='https://wa.me/1XXXXXXXXXXX' className='whatsapp-button' target='_blank'>WhatsApp</a>
+      <ContactForm />
       <Footer />
     </main>
   )

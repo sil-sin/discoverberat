@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 type Service = {
   title: string
   link: string
+  description?: string
 }
 
 const services: Service[] = [
@@ -13,14 +14,16 @@ const services: Service[] = [
   },
   {
     title: 'Transport and Transfers',
+    description: 'Please contact us for more details',
     link: 'transport',
   },
   {
-    title: 'Accommodation Booking',
+    title: 'Coming soon',
+    description: 'Please contact us for more details',
     link: 'accommodation',
   },
   {
-    title: 'Guided services and Activities',
+    title: 'Guided Tours and Activities',
     link: 'tours',
   },
 ]
@@ -55,6 +58,14 @@ function Page({ service, admin }: { service: Service | null; admin: boolean }) {
         onBlur={handleContentChange}
         dangerouslySetInnerHTML={{ __html: service.title || '' }}
       ></h1>
+
+      <div
+        id='description'
+        contentEditable={admin}
+        onBlur={handleContentChange}
+        dangerouslySetInnerHTML={{ __html: service.description || '' }}
+      ></div>
+
     </div>
   )
 }
@@ -69,10 +80,9 @@ export const getStaticPaths: GetStaticPaths = async () => {
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const selectedService =
     services.find((s) => s.link === params?.service) || null
-  const admin = true // Set your admin status here or fetch it from wherever you store this information.
 
   return {
-    props: { service: selectedService, admin },
+    props: { service: selectedService },
   }
 }
 

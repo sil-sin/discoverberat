@@ -1,0 +1,20 @@
+.userMenuContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  
+}
+
+@media screen and (min-width: 768px) {
+  .userMenuContainer {
+    position: absolute;
+    right: 20px;
+    top: 100%;
+    background-color: var(--background-default);
+    box-shadow: 0 0 10px var(--shadow);
+    border-radius: 4px;
+    padding: 10px;
+    gap: 10px;
+    z-index: 1;
+  }
+}

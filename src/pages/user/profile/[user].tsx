@@ -13,20 +13,36 @@ const ProfilePage: FC = ({ user, savedItems, data }: any) => {
   if (!user) {
     return null
   }
+  const upcomingBookings = data && data.sort((a: any, b: any) => {
+    // Convert date strings to Date objects
+    const dateA = new Date(a.date);
+    const dateB = new Date(b.date);
 
+    // Compare the dates
+    return dateA.getTime() - dateB.getTime();
+  })[0]
+  console.log(user.picture);
   return (
     <div className={styles.container}>
       <div className={styles.userContainer}>
-        <Image src={user?.picture} alt={user.name} width={50} height={50} />
-        <h1 className={styles.title}>{'Welcome, ' + user?.name || ''}</h1>
-        <p>{'Logged in with ' + user?.firebase?.sign_in_provider || ''}</p>
-        <p className={styles.email}>{'Email: ' + user?.email || ''}</p>
+        <div className={styles.userInfo}>
+          <Image src={!!user.picture ? user.picture : '/avatar.svg'} alt={user.name} width={50} height={50} />
+          <h1 className={styles.title}>{'Welcome, ' + user?.name || ''}</h1>
+        </div>
+
+        {data.length ? <div>Upcoming booking:
+          <p>{upcomingBookings.title} </p>
+          <p>{upcomingBookings.date}</p>
+        </div>
+
+          : <p> 'No upcoming booking'</p>}
       </div>
 
-      <div className={styles.bookingsContainer}>
+      <div className={styles.myItemsContainer}>
+         <div className={styles.bookingsContainer}>
         <h2>Bookings</h2>
         {data.length ? (
-          <ul>
+          <ul className={styles.bookingsList}>
             {data.map((item: any) => (
               <li key={item.id}>
                 <p>
@@ -58,19 +74,19 @@ const ProfilePage: FC = ({ user, savedItems, data }: any) => {
           </p>
         )}
       </div>
-      <div className={styles.savedItems}>
-        <h2>Saved items</h2>
-        {savedItems ? (
-          <ul>
-            {savedItems.map((item: any) => (
-              <li key={item.id}>{item.title}</li>
-            ))}
-          </ul>
-        ) : (
-          <p>You have no saved items</p>
-        )}
-      </div>
-    </div>
+        <div className={styles.savedItems}>
+          <h2>Saved items</h2>
+          {savedItems.length ? (
+            <ul>
+              {savedItems.map((item: any) => (
+                <li key={item.id}>{item.title}</li>
+              ))}
+            </ul>
+          ) : (
+            <p>You have no saved items</p>
+          )}
+        </div></div>
+    </div >
   )
 }
 

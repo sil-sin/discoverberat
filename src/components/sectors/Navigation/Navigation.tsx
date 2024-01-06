@@ -6,18 +6,24 @@ import Button from '@/components/simple/Button'
 import { AiOutlineClose, AiOutlineMenu } from 'react-icons/ai'
 import classNames from 'classnames'
 import Link from 'next/link'
-import { googleProvider } from '@/utils/auth/googleProvider'
-import { signOutUser } from '@/utils/auth/signOut'
 import { useAuthContext } from '@/utils/auth/auth-provider'
 import { useRouter } from 'next/router'
+import { UserMenuDropDown } from './components/UserMenuDropDown'
+import useResponsiveState from './utils/useResetState'
 
-export const Navigation: FC<{}> = () => {
+export const Navigation: FC<{ className?: string }> = ({ className }) => {
   const [isMenuShow, setIsMenuShow] = useState(false)
+  const [isShowUserMenu, setIsShowUserMenu] = useState(false)
   const { user, loading } = useAuthContext()
   const router = useRouter()
+  const [isLargeScreen] = useResponsiveState();
+
+  useEffect(() => {
+    setIsShowUserMenu(false)
+  }, [isLargeScreen]);
 
   return (
-    <nav className={styles.navbarContainer}>
+    <nav className={classNames(className, styles.navbarContainer)}>
       <div className={styles.imageIcon}>
         <Link className={styles.logo} href='/'>
           <Image
@@ -56,18 +62,22 @@ export const Navigation: FC<{}> = () => {
           <Button
             variant='secondary'
             onClick={() => {
-              user ? signOutUser() : router.push('/authenticate')
+              setIsShowUserMenu(!isShowUserMenu)
             }}
             text={
               loading
                 ? '...'
                 : user
-                ? user?.displayName?.split(' ')[0] ?? ''
-                : 'Sign in'
+                  ? user?.displayName?.split(' ')[0] ?? ''
+                  : 'Sign in'
             }
           />
+          {isShowUserMenu && <UserMenuDropDown showUserMenu={isShowUserMenu} />}
         </li>
       </ul>
     </nav>
   )
 }
+
+
+

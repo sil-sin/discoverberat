@@ -77,3 +77,8 @@ a {
   top: 90px;
 }
 
+.whatsapp-button {
+  position: fixed;
+  bottom: 30px;
+  right: 40px;
+}
