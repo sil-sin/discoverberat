@@ -1,31 +1,32 @@
 :root {
   /* button colors */
-  --font: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  --font: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', Oxygen,
+    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   --button-primary-bg: #47a66a;
   --button-primary-typo: #fcfcfc;
-  --button-primary-hover-bg: #4A9E60;
+  --button-primary-hover-bg: #4a9e60;
   /* Slightly lighter shade for hover */
-  --button-primary-active-bg: #499E5E;
+  --button-primary-active-bg: #499e5e;
   /* Slightly lighter shade for active */
   --button-secondary-bg: #fff;
-  --button-secondary-typo: #51A56A;
+  --button-secondary-typo: #51a56a;
   --button-secondary-hover-bg: #f4f4f4;
   --button-secondary-active-bg: #b0b0b0;
   --button-outline-border: rgba(45, 49, 55, 0.15);
-  --button-secondary-outline-border: #51A56A;
+  --button-secondary-outline-border: #51a56a;
   --button-outline-typo: #2d3137;
-  --button-outline-hover-border: #4A9E60;
+  --button-outline-hover-border: #4a9e60;
   /* Slightly lighter shade for hover */
-  --button-outline-active-border: #499E5E;
+  --button-outline-active-border: #499e5e;
   /* Slightly lighter shade for active */
   --button-disabled-bg: #b0b0b092;
   --button-disabled-typo: #ffffffcc;
   /* Link Tokens */
   --link-color: #2d3137;
   /* Normal link color */
-  --link-hover-color: #4A9E60;
+  --link-hover-color: #4a9e60;
   /* Link color on hover, slightly lighter */
-  --link-active-color: #499E5E;
+  --link-active-color: #499e5e;
   /* Link color when active, slightly lighter */
   --link-text-decoration: underline;
   --link-background: transparent;
@@ -61,7 +62,8 @@ body {
 }
 
 body {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Oxygen,
+    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   color: rgb(var(--foreground-rgb));
   background: rgb(var(--background-end-rgb));
   margin: 0;
@@ -80,5 +82,21 @@ a {
 .whatsapp-button {
   position: fixed;
   bottom: 30px;
-  right: 40px;
+  right: 30px;
+  z-index: 10;
+  cursor: pointer;
+  background-color: var(--button-primary-bg);
+  border: 4px solid var(--button-primary-bg);
+  border-radius: 50%;
+}
+
+.whatsapp-icon-container {
+  border: 2px solid white; /* Border color and width */
+  background-color: white;
+  border-radius: 50%;
+  overflow: hidden; /* Ensure border-radius clips the border properly */
+}
+
+.whatsapp-icon {
+  display: block;
 }

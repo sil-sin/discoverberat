@@ -5,31 +5,37 @@ import styles from './new.module.css'
 
 import { GetServerSidePropsContext } from 'next'
 import { getEntriesByType } from '@/utils/contentful/contentful'
-import { addDoc, collection, getDocs, getFirestore } from 'firebase/firestore'
+import { addDoc, collection, getFirestore } from 'firebase/firestore'
 import app from '@/utils/firebase/firebaseConfig'
 import { useAuthContext } from '@/utils/auth/auth-provider'
-
 import ReactCalendar from 'react-calendar'
 import 'react-calendar/dist/Calendar.css'
+import 'react-datetime-picker/dist/DateTimePicker.css';
+import 'react-calendar/dist/Calendar.css';
+import 'react-clock/dist/Clock.css';
 import { getTimes } from '@/helpers/getTimes'
 import BookingForm from '@/components/sectors/BookingForm/BookingForm'
 import { getFirestore as getFirestoreAdmin } from 'firebase-admin/firestore'
 import { useRouter } from 'next/router'
-import { fetchData } from '@/helpers/getDisabledDates'
-import { useForm } from 'react-hook-form'
 import { adminSDK, initializeAdmin } from '@/pages/api/adminConfig'
 import { stringify } from 'querystring'
+import useSaveLater from '@/hooks/useSaveLater'
+import Modal from '@/components/Modal'
 
 function New({ booking, unavailableDates }: any) {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null)
   const [selectedDateTime, setSelectedDateTime] = useState<Date | null>(null)
   const [availableTimes, setAvailableTimes] = useState<any>([])
   const [isPrivate, setIsPrivate] = useState<boolean>(false)
-  const [isSuccess, setIsSuccess] = useState<boolean>(false)
+  const [isShowModal, setIsShowModal] = useState<boolean>(false)
   const router = useRouter()
 
   const bookingFormRef = useRef<any>()
   const { user } = useAuthContext()
+
+  const tourUrl = '/authenticate?callbackUrl=/booking/new?tour=' + booking.url
+
+  const { handleSaveLater, isSuccess } = useSaveLater({ ...booking, id: user?.uid }, tourUrl);
   const currentDay = new Date().setDate(new Date().getDate() + 1)
 
   const {
@@ -44,6 +50,10 @@ function New({ booking, unavailableDates }: any) {
   } = booking
 
   useEffect(() => {
+    setIsShowModal(isSuccess)
+  }, [isSuccess])
+
+  useEffect(() => {
     if (!isDayTrip) {
       const times: any = getTimes(selectedDate)
 
@@ -51,24 +61,6 @@ function New({ booking, unavailableDates }: any) {
     }
   }, [isDayTrip, selectedDate])
 
-  //Todo: Add function to utils to perform save items
-  const handleSaveLater = async () => {
-    if (!user) {
-      return router.replace(
-        '/authenticate?callbackUrl=/booking/new?tour=' + url
-      )
-    }
-
-    const db = getFirestore(app)
-
-    await addDoc(collection(db, 'savedBooking'), {
-      ...booking,
-      uid: user?.uid,
-    })
-
-    setIsSuccess(true)
-    router.push('#success')
-  }
 
   const handleBookNow = async (isBookNow: boolean) => {
     if (!user) {
@@ -121,7 +113,7 @@ function New({ booking, unavailableDates }: any) {
 
       return router.replace(
         '/user/profile/' +
-          user.displayName?.split(' ').join('-').toLocaleLowerCase()
+        user.displayName?.split(' ').join('-').toLocaleLowerCase()
       )
     }
 
@@ -133,40 +125,30 @@ function New({ booking, unavailableDates }: any) {
   }
 
   const nextDay = new Date(currentDay)
+  const handleModalClose = () => {
+    setIsShowModal(false);
+    const urlWithoutHash = router.asPath.split('#')[0];
+    router.replace(urlWithoutHash)
+  };
+
+  const handleTimeSelection = (selectedTime: string) => {
+    // Combine selectedDate and selectedTime to create the new selectedDateTime
+    const [hours, minutes] = selectedTime.split(':');
+    const newDateTime = selectedDate && new Date(
+      selectedDate.getTime() +
+      (+hours * 3600000 + +minutes.split(' ')[0] * 60000)
+    );
+
+    // Update selectedDateTime
+    setSelectedDateTime(newDateTime);
+  };
 
   return (
     <>
-      {isSuccess && (
-        <>
-          <span id='success'></span>
-          <div
-            className={styles.successContainer}
-            onBlur={() => setIsSuccess(false)}
-          >
-            <p className={styles.successText}>
-              Your booking has been saved on your profile
-            </p>
-
-            <div className={styles.buttonContainer}>
-              <Button
-                variant='primary'
-                text={
-                  type === 'tour' ? 'Find more tours' : 'Find more services'
-                }
-                onClick={() =>
-                  router.push('/' + type === 'tour' ? 'tours' : 'services')
-                }
-              />
-              <Button
-                variant='secondary'
-                text={'All saved items'}
-                onClick={() => router.push('/user/profile/' + user?.uid)}
-              />
-            </div>
-          </div>
-        </>
-      )}
-      <div onClick={() => setIsSuccess(false)} className={styles.container}>
+      {isShowModal && (
+        <Modal id='success' onClose={handleModalClose} withCTA={true} modalTitle={'Success'} modalDescription={'Your booking has been saved on your profile'} />)
+      }
+      <div onClick={() => setIsShowModal(false)} className={styles.container}>
         <div>
           <h2> {title} </h2>
           <div>
@@ -196,31 +178,10 @@ function New({ booking, unavailableDates }: any) {
               />
               <>
                 {selectedDate &&
-                availableTimes &&
-                availableTimes.length &&
-                !isDayTrip ? (
-                  <select
-                    defaultValue='empty'
-                    className={styles.times}
-                    onChange={(time) => {
-                      const [hours, minutes] =
-                        time.currentTarget.value.split(':')
-                      const date = new Date(
-                        selectedDate.getTime() +
-                          (+hours * 3600000 + +minutes.split(' ')[0] * 60000)
-                      )
-                      setSelectedDateTime(date)
-                    }}
-                  >
-                    <option value='empty' disabled>
-                      Select starting time
-                    </option>
-                    {availableTimes?.map((time: string, index: number) => (
-                      <option key={index} value={time}>
-                        {time}
-                      </option>
-                    ))}
-                  </select>
+                  availableTimes &&
+                  availableTimes.length &&
+                  !isDayTrip ? (
+                  <ul className={styles.times}>{availableTimes.map((time: any) => <li> <Button variant='tertiary' onClick={() => handleTimeSelection(time)}>{time}</Button></li>)}</ul>
                 ) : null}
               </>
             </div>

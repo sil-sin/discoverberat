@@ -1,20 +1,21 @@
 import { FC } from 'react'
 import styles from './Footer.module.css'
+import Link from 'next/link'
 export const Footer: FC = () => {
   return (
     <footer className={styles.footerContainer}>
-  <div className={styles.footerColumns}>
+      <div className={styles.footerColumns}>
         <div className={styles.footerColumn}>
           <h3>Our Services</h3>
           <ul>
             <li>
-              <a href='/service1'>Service 1</a>
+              <Link href='/service1'>Service 1</Link>
             </li>
             <li>
-              <a href='/service2'>Service 2</a>
+              <Link href='/service2'>Service 2</Link>
             </li>
             <li>
-              <a href='/service3'>Service 3</a>
+              <Link href='/service3'>Service 3</Link>
             </li>
             {/* Add more services as needed */}
           </ul>
@@ -24,10 +25,10 @@ export const Footer: FC = () => {
           <h3>About Us</h3>
           <ul>
             <li>
-              <a href='/about'>About</a>
+              <Link href='/about'>About</Link>
             </li>
             <li>
-              <a href='/contact'>Contact</a>
+              <Link href='/contact'>Contact</Link>
             </li>
             {/* Add more about/contact links as needed */}
           </ul>
@@ -37,18 +38,18 @@ export const Footer: FC = () => {
           <h3>Social Media</h3>
           <ul>
             <li>
-              <a href='https://twitter.com'>Twitter</a>
+              <Link href='https://twitter.com'>Twitter</Link>
             </li>
             <li>
-              <a href='https://facebook.com'>Facebook</a>
+              <Link href='https://facebook.com'>Facebook</Link>
             </li>
             <li>
-              <a href='https://instagram.com'>Instagram</a>
+              <Link href='https://instagram.com'>Instagram</Link>
             </li>
             {/* Add more social media links as needed */}
           </ul>
         </div>
-  </div>
+      </div>
 
       <div className={styles.footerBottom}>
         <p>

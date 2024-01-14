@@ -28,7 +28,7 @@ export default function About() {
             <h2 className={styles.subtitle}>What Sets Us Apart</h2>
 
             <ul className={styles.list}>
-                <li><strong>Customized Itineraries:</strong> We understand that every traveler is unique. That's why we offer
+                <li><strong>Customized Itineraries:</strong> We understand that every traveler is unique. That&apos;s why we offer
                     customizable itineraries, allowing you to tailor your journey based on your interests, pace, and
                     preferences.</li>
                 <li><strong>Off the Beaten Path:</strong> While we appreciate the famous landmarks, we take pride in
