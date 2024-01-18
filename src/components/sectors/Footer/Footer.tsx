@@ -17,7 +17,6 @@ export const Footer: FC = () => {
             <li>
               <Link href='/service3'>Service 3</Link>
             </li>
-            {/* Add more services as needed */}
           </ul>
         </div>
 
@@ -53,8 +52,7 @@ export const Footer: FC = () => {
 
       <div className={styles.footerBottom}>
         <p>
-          &copy; {new Date().getFullYear()} Discover Berat. All rights
-          reserved.
+          &copy; {new Date().getFullYear()} Discover Berat. All rights reserved.
         </p>
       </div>
     </footer>

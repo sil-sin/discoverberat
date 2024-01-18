@@ -10,9 +10,9 @@ import app from '@/utils/firebase/firebaseConfig'
 import { useAuthContext } from '@/utils/auth/auth-provider'
 import ReactCalendar from 'react-calendar'
 import 'react-calendar/dist/Calendar.css'
-import 'react-datetime-picker/dist/DateTimePicker.css';
-import 'react-calendar/dist/Calendar.css';
-import 'react-clock/dist/Clock.css';
+import 'react-datetime-picker/dist/DateTimePicker.css'
+import 'react-calendar/dist/Calendar.css'
+import 'react-clock/dist/Clock.css'
 import { getTimes } from '@/helpers/getTimes'
 import BookingForm from '@/components/sectors/BookingForm/BookingForm'
 import { getFirestore as getFirestoreAdmin } from 'firebase-admin/firestore'
@@ -35,7 +35,10 @@ function New({ booking, unavailableDates }: any) {
 
   const tourUrl = '/authenticate?callbackUrl=/booking/new?tour=' + booking.url
 
-  const { handleSaveLater, isSuccess } = useSaveLater({ ...booking, id: user?.uid }, tourUrl);
+  const { handleSaveLater, isSuccess } = useSaveLater(
+    { ...booking, id: user?.uid },
+    tourUrl
+  )
   const currentDay = new Date().setDate(new Date().getDate() + 1)
 
   const {
@@ -60,7 +63,6 @@ function New({ booking, unavailableDates }: any) {
       setAvailableTimes(times)
     }
   }, [isDayTrip, selectedDate])
-
 
   const handleBookNow = async (isBookNow: boolean) => {
     if (!user) {
@@ -113,7 +115,7 @@ function New({ booking, unavailableDates }: any) {
 
       return router.replace(
         '/user/profile/' +
-        user.displayName?.split(' ').join('-').toLocaleLowerCase()
+          user.displayName?.split(' ').join('-').toLocaleLowerCase()
       )
     }
 
@@ -126,28 +128,36 @@ function New({ booking, unavailableDates }: any) {
 
   const nextDay = new Date(currentDay)
   const handleModalClose = () => {
-    setIsShowModal(false);
-    const urlWithoutHash = router.asPath.split('#')[0];
+    setIsShowModal(false)
+    const urlWithoutHash = router.asPath.split('#')[0]
     router.replace(urlWithoutHash)
-  };
+  }
 
   const handleTimeSelection = (selectedTime: string) => {
     // Combine selectedDate and selectedTime to create the new selectedDateTime
-    const [hours, minutes] = selectedTime.split(':');
-    const newDateTime = selectedDate && new Date(
-      selectedDate.getTime() +
-      (+hours * 3600000 + +minutes.split(' ')[0] * 60000)
-    );
+    const [hours, minutes] = selectedTime.split(':')
+    const newDateTime =
+      selectedDate &&
+      new Date(
+        selectedDate.getTime() +
+          (+hours * 3600000 + +minutes.split(' ')[0] * 60000)
+      )
 
     // Update selectedDateTime
-    setSelectedDateTime(newDateTime);
-  };
+    setSelectedDateTime(newDateTime)
+  }
 
   return (
     <>
       {isShowModal && (
-        <Modal id='success' onClose={handleModalClose} withCTA={true} modalTitle={'Success'} modalDescription={'Your booking has been saved on your profile'} />)
-      }
+        <Modal
+          id='success'
+          onClose={handleModalClose}
+          withCTA={true}
+          modalTitle={'Success'}
+          modalDescription={'Your booking has been saved on your profile'}
+        />
+      )}
       <div onClick={() => setIsShowModal(false)} className={styles.container}>
         <div>
           <h2> {title} </h2>
@@ -178,10 +188,22 @@ function New({ booking, unavailableDates }: any) {
               />
               <>
                 {selectedDate &&
-                  availableTimes &&
-                  availableTimes.length &&
-                  !isDayTrip ? (
-                  <ul className={styles.times}>{availableTimes.map((time: any) => <li> <Button variant='tertiary' onClick={() => handleTimeSelection(time)}>{time}</Button></li>)}</ul>
+                availableTimes &&
+                availableTimes.length &&
+                !isDayTrip ? (
+                  <ul className={styles.times}>
+                    {availableTimes.map((time: any) => (
+                      <li key={time}>
+                        {' '}
+                        <Button
+                          variant='tertiary'
+                          onClick={() => handleTimeSelection(time)}
+                        >
+                          {time}
+                        </Button>
+                      </li>
+                    ))}
+                  </ul>
                 ) : null}
               </>
             </div>

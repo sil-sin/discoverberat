@@ -16,11 +16,11 @@ export const Navigation: FC<{ className?: string }> = ({ className }) => {
   const [isShowUserMenu, setIsShowUserMenu] = useState(false)
   const { user, loading } = useAuthContext()
   const router = useRouter()
-  const [isLargeScreen] = useResponsiveState();
+  const [isLargeScreen] = useResponsiveState()
 
   useEffect(() => {
     setIsShowUserMenu(false)
-  }, [isLargeScreen]);
+  }, [isLargeScreen])
 
   return (
     <nav className={classNames(className, styles.navbarContainer)}>
@@ -62,14 +62,16 @@ export const Navigation: FC<{ className?: string }> = ({ className }) => {
           <Button
             variant='secondary'
             onClick={() => {
-              setIsShowUserMenu(!isShowUserMenu)
+              user?.uid
+                ? setIsShowUserMenu(!isShowUserMenu)
+                : (router.push('/authenticate'), setIsMenuShow(false))
             }}
             text={
               loading
                 ? '...'
                 : user
-                  ? user?.displayName?.split(' ')[0] ?? ''
-                  : 'Sign in'
+                ? user?.displayName?.split(' ')[0] ?? ''
+                : 'Sign in'
             }
           />
           {isShowUserMenu && <UserMenuDropDown showUserMenu={isShowUserMenu} />}
@@ -78,6 +80,3 @@ export const Navigation: FC<{ className?: string }> = ({ className }) => {
     </nav>
   )
 }
-
-
-

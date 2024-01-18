@@ -1,7 +1,20 @@
+@font-face {
+    font-family: 'QuartzoBold';
+    /* Provide a unique name for your font */
+    src: url('/fonts/QuartzoBold.ttf') format('truetype');
+    /* Add additional formats (e.g., woff, woff2) if necessary */
+    font-weight: 900;
+}
+
 .heroContainer {
+    background-image: url('/map-track-green.png');
+    background-size: 100%;
+    background-position: bottom bottom;
+    background-repeat: no-repeat;
+    /* background: radial-gradient(rgba(215, 149, 16, 0.273) 50%, rgba(255, 201, 100, 0.257)); */
     width: 100vw;
     object-fit: contain;
-    padding: 20px;
+    padding: 10px;
     display: flex;
     flex-direction: column;
 }
@@ -12,8 +25,33 @@
 
 .heroImage {
     width: 100%;
-    margin-bottom: 30px;
+    /* background: linear-gradient(to right, #47a66a, #63c37a, #7ed089); */
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     height: 400px;
+    background-image: url('https://images.ctfassets.net/vzi02yirpwbf/6dPDwtbfzHphRbmEib7ItO/e1a16970170b0a7751cb83ddbe8e52f3/berat.jpg');
+}
+
+.heroImage h1 {
+    font-family: 'QuartzoBold', sans-serif;
+    font-size: 13vw;
+    font-weight: 900;
+    line-height: .9em;
+    letter-spacing: .15em;
+    text-shadow: 0 0 30px var(--shadow);
+    text-transform: uppercase;
+    text-align: center;
+    pointer-events: none;
+    user-select: none;
+}
+
+.heroImage h1::selection {
+    background-color: transparent;
+    user-select: none;
 }
 
 @media (min-width:580px) {
