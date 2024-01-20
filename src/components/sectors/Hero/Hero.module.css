@@ -9,7 +9,7 @@
 .heroContainer {
     background-image: url('/map-track-green.png');
     background-size: 100%;
-    background-position: bottom bottom;
+    background-position: top;
     background-repeat: no-repeat;
     /* background: radial-gradient(rgba(215, 149, 16, 0.273) 50%, rgba(255, 201, 100, 0.257)); */
     width: 100vw;
@@ -24,29 +24,32 @@
 }
 
 .heroImage {
+    padding: 10px;
     width: 100%;
-    /* background: linear-gradient(to right, #47a66a, #63c37a, #7ed089); */
+    background: linear-gradient(to right, #47a66a, #63c37a, #7ed089);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 400px;
+    background-repeat: no-repeat;
+    background-size: cover;
     background-image: url('https://images.ctfassets.net/vzi02yirpwbf/6dPDwtbfzHphRbmEib7ItO/e1a16970170b0a7751cb83ddbe8e52f3/berat.jpg');
 }
 
 .heroImage h1 {
     font-family: 'QuartzoBold', sans-serif;
-    font-size: 13vw;
+    font-size: 14vw;
     font-weight: 900;
-    line-height: .9em;
-    letter-spacing: .15em;
+    line-height: 0.9em;
+    letter-spacing: 0.15em;
     text-shadow: 0 0 30px var(--shadow);
     text-transform: uppercase;
     text-align: center;
     pointer-events: none;
     user-select: none;
+    margin: 5px;
 }
 
 .heroImage h1::selection {
@@ -54,9 +57,10 @@
     user-select: none;
 }
 
-@media (min-width:580px) {
+@media (min-width: 580px) {
     .heroContainer {
         align-items: center;
+        background-position: center;
     }
 
     .bookTourButton {

@@ -31,9 +31,19 @@ export const Layout: FC<Props> = ({ children, pageTitle }) => {
       </Head>
       <Navigation className='navigationBar' />
       <div style={{ marginTop: '80px' }}>{children}</div>
-      <Link href='https://wa.me/4917671613833' className='whatsapp-button' target='_blank'>
+      <Link
+        href='https://wa.me/355692921203'
+        className='whatsapp-button'
+        target='_blank'
+      >
         <div className='whatsapp-icon-container'>
-          <Image className='whatsapp-icon' width={40} height={40} src='/whatsapp-icon.svg' alt={'whatsapp icon'} />
+          <Image
+            className='whatsapp-icon'
+            width={40}
+            height={40}
+            src='/whatsapp-icon.svg'
+            alt={'whatsapp icon'}
+          />
         </div>
       </Link>
       <ContactForm />

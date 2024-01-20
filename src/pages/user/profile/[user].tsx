@@ -8,38 +8,56 @@ import { adminSDK } from '@/pages/api/adminConfig'
 import { getFirestore } from 'firebase-admin/firestore'
 
 import Button from '@/components/simple/Button'
+import Dashboard from '@/components/Dashboard/Dashboard'
 
 const ProfilePage: FC = ({ user, savedItems, data }: any) => {
   if (!user) {
     return null
   }
-  const upcomingBookings = data && data.sort((a: any, b: any) => {
-    // Convert date strings to Date objects
-    const dateA = new Date(a.date);
-    const dateB = new Date(b.date);
+  const upcomingBookings =
+    data &&
+    data.sort((a: any, b: any) => {
+      // Convert date strings to Date objects
+      const dateA = new Date(a.date)
+      const dateB = new Date(b.date)
 
-    // Compare the dates
-    return dateA.getTime() - dateB.getTime();
-  })[0]
-  console.log(user.picture);
+      // Compare the dates
+      return dateA.getTime() - dateB.getTime()
+    })
+
   return (
     <div className={styles.container}>
       <div className={styles.userContainer}>
         <div className={styles.userInfo}>
-          <Image src={!!user.picture ? user.picture : '/avatar.svg'} alt={user.name} width={50} height={50} />
+          <Image
+            src={!!user.picture ? user.picture : '/avatar.svg'}
+            alt={user.name}
+            width={50}
+            height={50}
+          />
           <h1 className={styles.title}>{'Welcome, ' + user?.name || ''}</h1>
         </div>
-
-        {data.length ? <div>Upcoming booking:
-          <p>{upcomingBookings.title} </p>
-          <p>{upcomingBookings.date}</p>
-        </div>
-
-          : <p> No upcoming booking</p>}
+      <Dashboard bookings={upcomingBookings} savedItems={savedItems} />
+        {data.length ? (
+          <div>
+            Upcoming booking:
+            <Dashboard
+              bookings={[
+                {
+                  ...upcomingBookings[0],
+                  uid: upcomingBookings[0].uid + 'upcoming',
+                },
+              ]}
+            />
+          </div>
+        ) : (
+          <p> No upcoming booking</p>
+        )}
+        D
       </div>
 
       <div className={styles.myItemsContainer}>
-        <div className={styles.bookingsContainer}>
+        {/* <div className={styles.bookingsContainer}>
           <h2>Bookings</h2>
           {data.length ? (
             <ul className={styles.bookingsList}>
@@ -73,7 +91,7 @@ const ProfilePage: FC = ({ user, savedItems, data }: any) => {
               </Button>
             </p>
           )}
-        </div>
+        </div> */}
         <div className={styles.savedItems}>
           <h2>Saved items</h2>
           {savedItems.length ? (
@@ -85,8 +103,9 @@ const ProfilePage: FC = ({ user, savedItems, data }: any) => {
           ) : (
             <p>You have no saved items</p>
           )}
-        </div></div>
-    </div >
+        </div>
+      </div>
+    </div>
   )
 }
 

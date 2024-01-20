@@ -51,7 +51,9 @@ const PaypalCheckoutButton: FC<Props> = ({ products, onSubmit }) => {
                 reference_id: products.uid,
                 description: products.title,
                 amount: {
-                  value: `${products.price * products.guestNumber}`,
+                  value: `${(products.price * products.guestNumber).toFixed(
+                    2
+                  )}`,
                 },
               },
             ],

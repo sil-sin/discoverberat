@@ -37,9 +37,6 @@ export const Footer: FC = () => {
           <h3>Social Media</h3>
           <ul>
             <li>
-              <Link href='https://twitter.com'>Twitter</Link>
-            </li>
-            <li>
               <Link href='https://facebook.com'>Facebook</Link>
             </li>
             <li>

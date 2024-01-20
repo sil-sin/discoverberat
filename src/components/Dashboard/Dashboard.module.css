@@ -1,0 +1,252 @@
+/* Global Data Page Styles */
+.body {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 16px;
+    line-height: 20px;
+}
+
+.body input[type="checkbox"] {
+    position: absolute;
+    visibility: hidden;
+    opacity: 0;
+    z-index: -1;
+}
+
+.dataPage {
+    width: 100%;
+    padding-top: 10px;
+    padding-bottom: 40px;
+}
+
+.dataPage h2 {
+    margin-bottom: 12px;
+    font-size: 28px;
+    line-height: 30px;
+}
+
+.dataPage section {
+    width: 80vw;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.dataPage section+section {
+    margin-top: 40px;
+}
+
+.dataPage table {
+    width: 100%;
+    text-align: left;
+    border-collapse: collapse;
+}
+
+.dataPage tr {
+    border-top: 1px solid #cdcfd4;
+    transition: all .2s ease;
+}
+
+.bookingTable table tr,
+.dataPage tr:first-child {
+    border-top: 0;
+}
+
+.dataPage th,
+.dataPage td {
+    padding: 10px;
+}
+
+.dataPage th:first-child {
+    width: 300px;
+}
+
+.tableSegmentTitle {
+    position: relative;
+    display: block;
+    padding: 12px 60px 12px 12px;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.contactDetailsTable .contactDetailsEmail {
+    width: auto;
+    word-break: break-word;
+}
+
+/* END Global Data Page Styles */
+
+/* Tables Accordion Styles */
+.tableSegment {
+    border-right: 1px solid #c8c8c8;
+    border-left: 1px solid #c8c8c8;
+    border-bottom: 1px solid #c8c8c8;
+}
+
+.bookingTable h2+.tableSegment,
+.passengersMobile .tableSegment:first-child {
+    border-top: 1px solid #c8c8c8;
+}
+
+.tableSegmentTitle::before,
+.tableSegmentTitle::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    display: block;
+    background-color: #dcdcdc;
+    transform-origin: center;
+    transform: translateY(-50%);
+    transition: all .25s ease-out;
+}
+
+.tableSegmentTitle::before {
+    right: 20px;
+    width: 20px;
+    height: 2px;
+}
+
+.tableSegmentTitle::after {
+    right: 29px;
+    width: 2px;
+    height: 20px;
+}
+
+.tableSegment:hover label::before,
+.tableSegment:hover label::after {
+    background-color: #1236aa;
+}
+
+.tableWrapper {
+    height: 0;
+    overflow: hidden;
+    transition: all .25s ease-out;
+}
+
+.tableWrapper table {
+    margin-top: 10px;
+    margin-bottom: 12px;
+}
+
+.tableSegment input:checked~.tableWrapper {
+    height: 263px;
+}
+
+.passengersMobile input:checked~.tableWrapper {
+    height: auto;
+}
+
+.tableSegment input:checked~label::before,
+.tableSegment input:checked~label::after {
+    background-color: #1236aa;
+    transform: translateY(-50%) rotate(135deg);
+}
+
+/* END Tables Accordion Styles */
+
+/* Data Page Media Queries */
+@media (max-width: 1440px) {
+    .dataPage section {
+        width: 90vw;
+    }
+}
+
+@media (max-width: 992px) {
+    .tableSegment input:checked~.tableWrapper {
+        height: auto;
+    }
+}
+
+@media (min-width: 861px) {
+
+    .passengersMobile,
+    .contactDetailsMobile {
+        display: none;
+    }
+}
+
+@media (max-width: 860px) {
+
+    .passengersDesktop,
+    .contactDetailsDesktop {
+        display: none;
+    }
+
+    .passengersMobile tr,
+    .contactDetailsMobile tr {
+        border-top: 0;
+    }
+
+    .priceTable tr {
+        display: inline-block;
+        border-top: 0;
+        transition: all .3s ease;
+    }
+
+    .priceTable th,
+    .priceTable td {
+        display: block;
+    }
+}
+
+@media (max-width: 768px) {
+    .dataPage {
+        font-size: 14px;
+        line-height: 18px;
+    }
+
+    .dataPage h2 {
+        margin-bottom: 8px;
+        font-size: 24px;
+        line-height: 28px;
+    }
+
+    .tableSegmentTitle {
+        font-size: 16px;
+    }
+
+    .dataPage th:first-child {
+        width: 200px;
+    }
+}
+
+@media (max-width: 600px) {
+    .dataPage th:first-child {
+        width: 150px;
+        max-width: 150px;
+    }
+}
+
+@media (max-width: 480px) {
+    .priceTable th {
+        max-width: 150px;
+    }
+}
+
+@media (max-width: 375px) {
+    .dataPage h2 {
+        font-size: 20px;
+        line-height: 24px;
+    }
+
+    .dataPage th:first-child {
+        width: 120px;
+        max-width: 120px;
+    }
+
+    .tableSegmentTitle {
+        padding-right: 52px;
+    }
+
+    .tableSegmentTitle::before {
+        right: 12px;
+    }
+
+    .tableSegmentTitle::after {
+        right: 21px;
+    }
+}
+
+/* END Data Page Media Queries */
