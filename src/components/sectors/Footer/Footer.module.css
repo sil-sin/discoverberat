@@ -8,10 +8,10 @@
   width: 100vw;
 }
 
-.footerColumns {
+.socialMediaContainer {
   display: flex;
-  align-items: flex-start;
-  justify-content: space-evenly;
-  flex-wrap: wrap;
-  width: -webkit-fill-available;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-top: 20px;
 }

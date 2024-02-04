@@ -10,7 +10,7 @@ type Props = {
   children?: ReactNode
   className?: string
   isDisabled?: boolean
-  type?:'submit'|'reset'|'button'
+  type?: 'submit' | 'reset' | 'button'
 }
 export const Button: FC<Props> = ({
   onClick,
@@ -25,7 +25,7 @@ export const Button: FC<Props> = ({
     <a
       href={href}
       onClick={onClick}
-      className={classnames(className, styles.link)}
+      className={classnames(styles.link, className)}
     >
       {text || children}
     </a>

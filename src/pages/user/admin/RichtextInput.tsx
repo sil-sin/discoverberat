@@ -5,9 +5,10 @@ import styles from './admin.module.css'
 
 interface RichTextEditorProps {
   onChange: (value: string) => void
+  id?: string
 }
 
-const RichTextEditor: React.FC<RichTextEditorProps> = ({ onChange }) => {
+const RichTextEditor: React.FC<RichTextEditorProps> = ({ onChange, id }) => {
   const [editorValue, setEditorValue] = useState('')
 
   const ReactQuill = useMemo(
@@ -27,6 +28,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ onChange }) => {
   }
   return (
     <ReactQuill
+      id={id}
       className={styles.richTextEditor}
       style={customStyles as any}
       theme='snow'

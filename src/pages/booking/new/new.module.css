@@ -1,8 +1,22 @@
-.bookingOptions {
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 auto;
+  max-width: 780px;
+  gap: 16px;
+  padding: 16px;
+  width: 100%;
+  border: 1px solid var(--button-outline-hover-border);
+  box-shadow: 0 0 20px 10px var(--shadow);
+  border-radius: 8px;
+}
+
+/* .bookingOptions {
   display: flex;
   flex-direction: column;
   gap: 16px;
-}
+} */
 
 .link {
   text-decoration: underline;
@@ -21,6 +35,13 @@
   gap: 8px;
   border: 1px solid;
   border-radius: 8px;
+  padding: 20px;
+  width: 100vw;
+  text-align: center;
+}
+
+.bookOption h3 {
+  font-size: 1.7em;
 }
 
 .calendar>div {
@@ -28,6 +49,10 @@
   flex-direction: column;
   gap: 8px;
   width: 100vw;
+}
+
+.calendar button {
+  margin: 0 !important
 }
 
 .calendar button:is(:focus, :active) {
@@ -41,6 +66,11 @@
 .calendar button[class*='react-calendar__month-view__days__day--neighboringMonth'] {
   background-color: var(--button-secondary-hover-bg);
   color: var(--button-primary-active-bg);
+}
+
+.calendar button[class*='react-calendar__tile--active'] {
+  background-color: var(--button-primary-active-bg) !important;
+  color: var(--button-primary-typo) !important;
 }
 
 .calendar button:hover {
@@ -57,36 +87,84 @@
 }
 
 .calendar div {
-  font: 600 16px var(--primary-font);
+  margin: 0;
   text-align: center;
 }
 
+.timesContainer {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  background: var(--background-secondary);
+  padding: 0;
+}
+
+.times {
+  list-style: none;
+  display: flex;
+  align-content: center;
+  flex-wrap: wrap;
+  flex-direction: row;
+  align-items: center;
+  border-radius: 6px;
+  width: 100%;
+  padding: 20px;
+  gap: 10px;
+}
+
+.times li {
+  border-radius: 8px;
+  border: 1px solid var(--button-outline-active-border);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.timeButton {
+  width: 70px;
+  padding: 10px;
+}
+
 @media screen and (min-width: 780px) {
-  .bookingOptions {
+  /* .bookingOptions {
     flex-direction: row;
     justify-content: center;
     flex-shrink: 0;
+  } */
+
+  .bookOption,
+  .calendar,
+  .timesContainer,
+  .times {
+    max-width: 512px;
+    width: 100%;
   }
 
   .bookOption {
-    max-width: 200px;
+
     padding: 10px;
   }
 
   .calendar {
-    width: 360px;
+
     display: flex;
     flex-direction: column;
     align-items: center;
   }
 
-  .times {
-    color: black;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    z-index: 10;
+  .timeButton {
+    padding: 0 !important;
+    margin: 0 !important
   }
+
+  .timeButton:hover {
+    background-color: var(--button-primary-active-bg) !important;
+    color: var(--button-primary-typo) !important;
+    border: 1px solid var(--button-primary-active-border) !important;
+  }
+
+
 
   .paypal {
     display: flex;
@@ -96,36 +174,69 @@
   }
 }
 
+.paypal * {
+  z-index: 0 !important;
+}
+
 .paymentContainer {
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  gap: 10px;
+  gap: 16px;
+  max-width: 780px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 10px;
 }
 
-.calendar button {
-  background-color: var(--button-secondary-background);
-  margin: 10px auto;
-  padding: 10px;
-  color: var(--button-secondary-typo) !important;
-  outline: none;
+.paymentContainer em {
+  color: var(--alert-error-text-only-typo);
 }
 
 .bookingDetailsTable table {
   border-spacing: 0;
   width: 100%;
   table-layout: fixed;
+
+  @media screen and (max-width: 780px) {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: 100%;
+  }
 }
 
 .bookingDetailsTable * {
   padding: 5px 10px;
   text-align: start;
+
+  @media screen and (max-width: 780px) {
+    padding: 10px 0;
+  }
 }
 
 .bookingDetailsTable th {
   background-color: var(--background-secondary);
 }
 
+
+
+@media screen and (max-width: 780px) {
+  .bookingDetailsTable tr {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    align-items: stretch;
+  }
+
+  .bookingDetailsTable th,
+  .bookingDetailsTable td {
+    width: 100%;
+    padding: 10px;
+    border-bottom: 1px solid var(--alert-primary-active-bg);
+    height: 70px;
+  }
+}
 
 .successContainer {
   position: absolute;

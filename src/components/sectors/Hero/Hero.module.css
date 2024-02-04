@@ -2,8 +2,8 @@
     font-family: 'QuartzoBold';
     /* Provide a unique name for your font */
     src: url('/fonts/QuartzoBold.ttf') format('truetype');
-    /* Add additional formats (e.g., woff, woff2) if necessary */
     font-weight: 900;
+    font-style: bold
 }
 
 .heroContainer {

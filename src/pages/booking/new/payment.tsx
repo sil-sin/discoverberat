@@ -25,13 +25,22 @@ export default function Payment({ service }: any) {
       ...data,
     }).then((res) => router.push('thank-you?id=' + res.id))
     setDisableCheckout(!data)
+
+    const subject = `New booking from ${data.name} on ${data.date}`
+    const message = `Hi, I'm ${data.name} and I just booked this tour: ${title} on ${data.date} for ${guestNumber} guests. I'll be in touch with you soon.`
+    await addDoc(collection(db, 'mail'), {
+      to: process.env.NEXT_PUBLIC_ADMIN,
+      message: {
+        subject: subject,
+        html: message,
+      },
+    })
   }
 
   return (
     <PayPalScriptProvider
       options={{
-        clientId:
-          process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || ''
+        clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || '',
       }}
     >
       <div className={styles.paymentContainer}>
@@ -59,37 +68,31 @@ export default function Payment({ service }: any) {
             </tbody>
           </table>
         </div>
-
         <div className={styles.paypal}>
-          <p>Select a payment method</p>
+          <h3>Select a payment method</h3>
           {disableCheckout && (
             <PaypalCheckoutButton products={service} onSubmit={onSuccess} />
           )}
         </div>
-
-        {/* <Button
-        className={styles.button}
-        variant='primary'
-        onClick={() => {
-          router.replace('/user/profile/user')
-        }}
-        isDisabled={disableCheckout}
-      >
-        Done
-      </Button> */}
       </div>
     </PayPalScriptProvider>
   )
 }
 
 export const getServerSideProps = async (params: any) => {
-  const service = params.query
-  const bookingEntry = await getEntry(service.bookingId, {
-    content_type: service.type === 'tour' ? 'tourPage' : 'serviceCard',
-    select: 'fields.price',
-  })
-  const price = bookingEntry.fields.price
   return {
-    props: { service: { ...service, price } },
+    redirect: {
+      destination: '/',
+      permanent: false,
+    },
   }
+  // const service = params.query
+  // const bookingEntry = await getEntry(service.bookingId, {
+  //   content_type: service.type === 'tour' ? 'tourPage' : 'serviceCard',
+  //   select: 'fields.price',
+  // })
+  // const price = bookingEntry.fields.price
+  // return {
+  //   props: { service: { ...service, price } },
+  // }
 }

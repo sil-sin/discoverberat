@@ -4,11 +4,11 @@
       box-shadow: 0 0 10px var(--shadow);
       display: flex;
       flex-direction: column;
-      align-items: flex-start;
       justify-content: space-between;
-      width: 350px;
+      max-width: calc((130vw) / 3);
       max-height: 500px;
       position: relative;
+      overflow: clip;
   }
 
   .image {
@@ -19,10 +19,12 @@
   }
 
   .button {
-      padding: 0.2em 1em;
       font-weight: 400;
-      text-shadow: 0.7px 0 0 black;
+      text-shadow: 0.4px 0 0 black;
       width: 100%;
+      justify-self: stretch;
+      margin: 0;
+      border-radius: 0 0 10px 10px;
   }
 
   .title {
@@ -32,9 +34,9 @@
       font: var(--primary-button-font);
       background-color: rgba(245, 245, 245, 0.561);
       position: absolute;
-      top: 152px;
+      bottom: 100px;
       left: 0;
-      text-wrap: nowrap;
+
   }
 
   .description {

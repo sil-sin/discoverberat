@@ -4,6 +4,7 @@ import { CustomError } from '@/utils/types'
 import { useAuthContext } from '@/utils/auth/auth-provider'
 import classnames from 'classnames'
 import styles from './BookingForm.module.css'
+import Toast from '@/components/simple/Toast'
 interface BookingFormProps {
   className?: string
   onSubmit: (formData: any) => void
@@ -12,6 +13,7 @@ interface BookingFormProps {
   booker?: string
   guestNumber: number
   pickup?: string
+  email: string | null
   isPrivate?: boolean
 }
 
@@ -29,21 +31,24 @@ const BookingForm: FC<BookingFormProps> = forwardRef((props, ref) => {
   } = useForm<BookingFormProps>({
     defaultValues: {
       booker: user?.displayName ?? '',
-      guestNumber: 1,
+      guestNumber: 2,
+      email: user?.email ?? '',
       isPrivate: isPrivate || false,
       pickup: 'Discover Berat office',
     },
   })
 
-  const [booker, guestNumber, pickup] = watch([
+  const [booker, guestNumber, pickup, email] = watch([
     'booker',
     'guestNumber',
     'pickup',
+    'email',
   ])
 
   useEffect(() => {
     if (user?.displayName) {
       setValue('booker', user?.displayName)
+      setValue('email', user?.email)
     }
   }, [user?.displayName])
 
@@ -51,7 +56,7 @@ const BookingForm: FC<BookingFormProps> = forwardRef((props, ref) => {
     if (!guestNumber || (isPrivate && guestNumber < 2)) {
       setError('guestNumber', {
         type: 'custom',
-        message: `Guests must be at least ${isPrivate ? '2' : '1'}`,
+        message: `Guests must be at least ${isPrivate ? '2' : '2'}`,
       })
     } else {
       setError('guestNumber', {})
@@ -66,9 +71,9 @@ const BookingForm: FC<BookingFormProps> = forwardRef((props, ref) => {
     }
 
     if (!pickup) {
-      setError('booker', {
+      setError('pickup', {
         type: 'custom',
-        message: 'Booker field is required',
+        message: 'Pickup field is required',
       })
     }
   }, [booker, guestNumber, isPrivate, pickup, setError])
@@ -78,6 +83,7 @@ const BookingForm: FC<BookingFormProps> = forwardRef((props, ref) => {
     guestNumber,
     isPrivate,
     pickup,
+    email,
   })
 
   useImperativeHandle(ref, () => ({
@@ -88,24 +94,61 @@ const BookingForm: FC<BookingFormProps> = forwardRef((props, ref) => {
     <div className={classnames(styles.bookingFormContainer, className)}>
       <h2>Booking information</h2>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <label htmlFor='booker'>Booker:</label>
-        <input
-          type='text'
-          id='booker'
-          {...register('booker', { required: 'Booker field is required' })}
-        />
-        {errors.booker && <p>{errors.booker.message}</p>}
-        <label htmlFor='pickup'>Pickup place:</label>
-        <input
-          type='text'
-          id='pickup'
-          {...register('pickup', { required: 'Pickup field is required' })}
-        />
-        {errors.pickup && <p>{errors.pickup.message}</p>}
+        <label htmlFor='booker'>Booker name:</label>
         <div>
-          <label htmlFor='guestNumber'> Guests:</label>
           <input
-            min={isPrivate ? 2 : 1}
+            placeholder='Enter a name for the booking'
+            type='text'
+            id='booker'
+            {...register('booker', { required: 'Booker field is required' })}
+          />
+          {errors.booker?.message && (
+            <Toast
+              isTextOnly
+              isError
+              message={errors.booker.message ?? 'Something went wrong!'}
+            />
+          )}
+        </div>
+        <label htmlFor='booker'>Booker email:</label>
+        <div>
+          <input
+            placeholder='Enter a name for the booking'
+            type='emil'
+            id='email'
+            {...register('email', {
+              required: 'Booker email field is required',
+            })}
+          />
+          {errors.booker?.message && (
+            <Toast
+              isTextOnly
+              isError
+              message={errors.booker.message ?? 'Something went wrong!'}
+            />
+          )}
+        </div>
+        <label htmlFor='pickup'>Pickup place:</label>
+        <div>
+          <input
+            placeholder='Enter a pickup place'
+            type='text'
+            id='pickup'
+            {...register('pickup', { required: 'Pickup field is required' })}
+          />
+          {errors.pickup?.message && (
+            <Toast
+              isTextOnly
+              isError
+              message={errors.pickup.message ?? 'Something went wrong!'}
+            />
+          )}
+        </div>
+        <label htmlFor='guestNumber'> Guests:</label>
+        <div>
+          <input
+            placeholder='Enter number of guests'
+            min={2}
             type='number'
             list='guestNumbers'
             {...register('guestNumber', {
@@ -114,14 +157,20 @@ const BookingForm: FC<BookingFormProps> = forwardRef((props, ref) => {
             id='guestNumber'
           />
           <datalist id='guestNumbers'>
-            {!isPrivate && <option value={1} />}
+            {!isPrivate && <option value={2} />}
             {[...Array(isPrivate ? 9 : 8)].map((_, index) => (
-              <option key={index + 2} value={index + 2}>
-                {index + 2}
+              <option key={index + 3} value={index + 3}>
+                {index + 3}
               </option>
             ))}
           </datalist>
-          {errors.guestNumber && <p>{errors.guestNumber.message}</p>}
+          {errors.guestNumber?.message && (
+            <Toast
+              isTextOnly
+              isError
+              message={errors.guestNumber.message ?? 'Something went wrong!'}
+            />
+          )}
         </div>
       </form>
     </div>

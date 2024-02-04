@@ -35,81 +35,26 @@ const ProfilePage: FC = ({ user, savedItems, data }: any) => {
             width={50}
             height={50}
           />
-          <h1 className={styles.title}>{'Welcome, ' + user?.name || ''}</h1>
+          <h2 className={styles.title}>{'Welcome, ' + user?.name || ''}</h2>
         </div>
-      <Dashboard bookings={upcomingBookings} savedItems={savedItems} />
-        {data.length ? (
-          <div>
-            Upcoming booking:
-            <Dashboard
-              bookings={[
-                {
-                  ...upcomingBookings[0],
-                  uid: upcomingBookings[0].uid + 'upcoming',
-                },
-              ]}
-            />
-          </div>
-        ) : (
-          <p> No upcoming booking</p>
-        )}
-        D
-      </div>
-
-      <div className={styles.myItemsContainer}>
-        {/* <div className={styles.bookingsContainer}>
-          <h2>Bookings</h2>
-          {data.length ? (
-            <ul className={styles.bookingsList}>
-              {data.map((item: any) => (
-                <li key={item.id}>
-                  <p>
-                    You have booked <q>{item.title}</q> {item.type}
-                  </p>
-                  <p>
-                    Price of the booking :{item.currency}
-                    {item.price}{' '}
-                    <span>({item.isPaid ? 'Paid' : 'Pay on location'})</span>
-                  </p>
-                  <p>For {item.guestNumber} guest(s)</p>
-                  <p>
-                    Starts at :
-                    <span>
-                      {new Date(item?.date).toLocaleString('en-US', {
-                        timeZoneName: 'short',
-                      })}
-                    </span>
-                  </p>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p>
-              You have no bookings
-              <Button variant='link' href='/tours'>
-                Book a tour
-              </Button>
-            </p>
-          )}
-        </div> */}
-        <div className={styles.savedItems}>
-          <h2>Saved items</h2>
-          {savedItems.length ? (
-            <ul>
-              {savedItems.map((item: any) => (
-                <li key={item.id}>{item.title}</li>
-              ))}
-            </ul>
-          ) : (
-            <p>You have no saved items</p>
-          )}
-        </div>
+        <Dashboard
+          bookings={upcomingBookings}
+          savedItems={savedItems}
+          user={user}
+        />
       </div>
     </div>
   )
 }
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
+  const CACHE_TIME_SECONDS = 12 * 60 * 60 // 12 hours
+  // Set caching headers for the response
+  ctx.res.setHeader(
+    'Cache-Control',
+    `public, s-maxage=${CACHE_TIME_SECONDS}, stale-while-revalidate=59`
+  )
+
   try {
     const cookies = nookies.get(ctx)
     const authenticatedUser = await adminSDK.auth().verifyIdToken(cookies.token)

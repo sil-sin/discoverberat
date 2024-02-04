@@ -22,8 +22,11 @@ import { stringify } from 'querystring'
 import useSaveLater from '@/hooks/useSaveLater'
 import Modal from '@/components/Modal'
 
+const startDay = new Date().setDate(new Date().getDate() + 1)
+const startDateObject = new Date(startDay)
+
 function New({ booking, unavailableDates }: any) {
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null)
+  const [selectedDate, setSelectedDate] = useState<Date>(startDateObject)
   const [selectedDateTime, setSelectedDateTime] = useState<Date | null>(null)
   const [availableTimes, setAvailableTimes] = useState<any>([])
   const [isPrivate, setIsPrivate] = useState<boolean>(false)
@@ -113,10 +116,27 @@ function New({ booking, unavailableDates }: any) {
     if (formData.guestNumber && !isBookNow) {
       await addDoc(collection(db, 'bookings'), bookingData)
 
-      return router.replace(
-        '/user/profile/' +
-          user.displayName?.split(' ').join('-').toLocaleLowerCase()
-      )
+      const subject = `New booking from ${bookingData.booker} on ${bookingData.date}`
+      const message = `Hi,<p> I'm ${bookingData.booker} and I just reserved this tour:</p> ${title} on ${bookingData.date} for ${bookingData.guestNumber} guests. I'll be in touch with you soon.`
+      const bookingConfirmationSubject = `Booking confirmation:  ${title} on ${bookingData.date} for ${bookingData.guestNumber} guests`
+      const bookingConfirmationMessage = `Dear ${bookingData.booker}, <p>Thank you for you reservation of  ${title} on ${bookingData.date} for ${bookingData.guestNumber} guests. <p>See you soon !</p>`
+
+      await addDoc(collection(db, 'mail'), {
+        to: bookingData.email,
+        message: {
+          subject: bookingConfirmationSubject,
+          html: bookingConfirmationMessage,
+        },
+      })
+      await addDoc(collection(db, 'mail'), {
+        to: process.env.NEXT_PUBLIC_ADMIN,
+        message: {
+          subject: subject,
+          html: message,
+        },
+      })
+
+      setIsShowModal(true)
     }
 
     return
@@ -148,7 +168,7 @@ function New({ booking, unavailableDates }: any) {
   }
 
   return (
-    <>
+    <div>
       {isShowModal && (
         <Modal
           id='success'
@@ -158,8 +178,8 @@ function New({ booking, unavailableDates }: any) {
           modalDescription={'Your booking has been saved on your profile'}
         />
       )}
-      <div onClick={() => setIsShowModal(false)} className={styles.container}>
-        <div>
+      <div onClick={() => setIsShowModal(false)}>
+        <div className={styles.container}>
           <h2> {title} </h2>
           <div>
             <div>
@@ -191,18 +211,21 @@ function New({ booking, unavailableDates }: any) {
                 availableTimes &&
                 availableTimes.length &&
                 !isDayTrip ? (
-                  <ul className={styles.times}>
-                    {availableTimes.map((time: any) => (
-                      <li key={time}>
-                        {' '}
-                        <Button
-                          variant='tertiary'
-                          onClick={() => handleTimeSelection(time)}
-                        >
-                          {time}
-                        </Button>
-                      </li>
-                    ))}
+                  <ul className={styles.timesContainer}>
+                    <p>Select starting time</p>
+                    <div className={styles.times}>
+                      {availableTimes.map((time: any) => (
+                        <li key={time}>
+                          <Button
+                            className={styles.timeButton}
+                            variant='tertiary'
+                            onClick={() => handleTimeSelection(time)}
+                          >
+                            {time}
+                          </Button>
+                        </li>
+                      ))}
+                    </div>
                   </ul>
                 ) : null}
               </>
@@ -212,20 +235,15 @@ function New({ booking, unavailableDates }: any) {
               ref={bookingFormRef}
               booker={user?.displayName ?? ''}
               onSubmit={handleBookNow}
-              onBack={function (): void {
-                throw new Error('Function not implemented.')
-              }}
-              onContinue={function (): void {
-                throw new Error('Function not implemented.')
-              }}
               guestNumber={0}
               isValid={false}
               isPrivate={isPrivate}
+              email={user?.email ?? ''}
             />
           </div>
 
-          <div className={styles.bookingOptions}>
-            <div className={styles.bookOption}>
+          {/* <div className={styles.bookingOptions}> */}
+          {/* <div className={styles.bookOption}>
               <div>
                 <h3>
                   PRIVATE TOUR
@@ -251,32 +269,32 @@ function New({ booking, unavailableDates }: any) {
               >
                 Book Now
               </Button>
+            </div> */}
+          <div className={styles.bookOption}>
+            <div>
+              <h2>Book now, pay on location.</h2>
+              <hr />
+              <h3>
+                {currency}
+                {price}/PERSON
+              </h3>
+              <p>Minimum booking requirement: 2 persons.</p>
             </div>
-            <div className={styles.bookOption}>
-              <div>
-                Reserve your spot on <b>{title}</b> for {currency}
-                {price}/person (group tour).
-                <br />
-                <p>
-                  Individual bookings available with no minimum requirement.
-                </p>
-                <p>
-                  Please note: Price may decrease if more participants join.
-                  Online payment is not available for this option.
-                </p>
-              </div>
-              <Button
-                variant='primary'
-                onClick={() => {
-                  setIsPrivate(false)
-                  handleBookNow(false)
-                }}
-              >
-                Reserve Now
-              </Button>
-            </div>
+            <Button
+              variant='primary'
+              onClick={() => {
+                setIsPrivate(false)
+                handleBookNow(false)
+              }}
+            >
+              Reserve Now
+            </Button>
+            <Button onClick={handleSaveLater} variant='secondary'>
+              Save for later
+            </Button>
+          </div>
 
-            <div className={styles.bookOption}>
+          {/* <div className={styles.bookOption}>
               <p>
                 Save for later (
                 <em>
@@ -287,21 +305,29 @@ function New({ booking, unavailableDates }: any) {
               <Button onClick={handleSaveLater} variant='secondary'>
                 Save for later
               </Button>
-            </div>
-          </div>
+            </div> */}
+          {/* </div> */}
           <div>
             <br />
             <br />
           </div>
         </div>
       </div>
-    </>
+    </div>
   )
 }
 
 export const getServerSideProps = async ({
   query,
+  res,
 }: GetServerSidePropsContext) => {
+  const CACHE_TIME_SECONDS = 12 * 60 * 60 // 12 hours
+  // Set caching headers for the response
+  res.setHeader(
+    'Cache-Control',
+    `public, s-maxage=${CACHE_TIME_SECONDS}, stale-while-revalidate=59`
+  )
+
   const tourData: any =
     query.tour &&
     (await getEntriesByType('tourPage')).find(

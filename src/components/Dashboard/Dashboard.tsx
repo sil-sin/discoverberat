@@ -1,52 +1,64 @@
 import React from 'react'
 import styles from './Dashboard.module.css'
-export default function Dashboard({ bookings, savedItems }: any) {
-  if (!bookings) {
+import useSaveLater from '@/hooks/useSaveLater'
+import classNames from 'classnames'
+import Button from '../simple/Button/index'
+export default function Dashboard({ bookings, savedItems, user }: any) {
+  if (!user) {
     return null
   }
-
-  console.log(bookings)
+  const itemLink = (item: any) => {
+    return item.title.replace(/&/g, 'and').split(' ').join('-').toLowerCase()
+  }
 
   return (
     <div className={styles.body}>
       <main className={styles.dataPage}>
         <section className={styles.contactDetailsTable}>
-          <h2>User details</h2>
-          {/* <table className={styles.contactDetailsDesktop}>
-            <tr>
-              <th>Full name</th>
-              <th>Phone</th>
-              <th>E-mail</th>
-            </tr>
-            <tr>
-              <td>Mauricio Fastichelli</td>
-              <td>+380935513047</td>
-              <td className={styles.contactDetailsEmail}>
-                somelonglong-veryverylong-email@gmail.com
-              </td>
-            </tr>
-          </table> */}
-          {/* <table className={styles.contactDetailsMobile}>
-            <tr>
-              <th>Full name</th>
-              <td>Mauricio Fastichelli</td>
-            </tr>
-            <tr>
-              <th>Phone</th>
-              <td>+380935513047</td>
-            </tr>
-            <tr>
-              <th>E-mail</th>
-              <td className={styles.contactDetailsEmail}>
-                somelonglong-veryverylong-email@gmail.com
-              </td>
-            </tr>
-          </table> */}
+          <h3>User data</h3>
+          <table className={''}>
+            <tbody>
+              <tr>
+                <th>Full name</th>
+                <th>Phone</th>
+                <th>E-mail</th>
+              </tr>
+              <tr>
+                <td>{user.name}</td>
+                <td>{user.phoneNumber}</td>
+                <td className={styles.contactDetailsEmail}>{user.email}</td>
+              </tr>
+            </tbody>
+          </table>
         </section>
+        <section className={styles.upcomingBooking}>
+          <h3>Upcoming booking</h3>
+          {bookings.length > 0 ? (
+            <table className={styles.upcomingBookingTable}>
+              <tbody>
+                <tr>
+                  <th>Booking name</th>
+                  <th>Pickup</th>
+                  <th>Date and Time</th>
+                  <th>Payment</th>
+                </tr>
+                <tr>
+                  <td>{bookings[0].title}</td>
+                  <td>{bookings[0].pickup}</td>
+                  <td>{bookings[0].date}</td>
+                  <td>{bookings[0].isPaid ? 'Paid' : 'Not paid'}</td>
+                </tr>
+              </tbody>
+            </table>
+          ) : (
+            <p>No upcoming booking</p>
+          )}
+        </section>
+
         <section className={styles.bookingTable}>
-          <h2>Bookings</h2>
+          <h3>Bookings</h3>
           {bookings?.map((booking: any, index: any) => (
-            <div key={booking.id} className={styles.tableSegment}>
+            <div key={index + booking.uid} className={styles.tableSegment}>
               <input
                 type='checkbox'
                 id={index + booking.uid}
@@ -95,65 +107,48 @@ export default function Dashboard({ bookings, savedItems }: any) {
             </div>
           ))}
         </section>
-        <section className={styles.bookingTable}>
-          <h2>Saved items</h2>
-          <div className={styles.tableSegment}>
-            <input
-              type='checkbox'
-              id='segment-3'
-              name='segment-checker'
-              value=''
-            />
-            <label htmlFor='segment-3' className={styles.tableSegmentTitle}>
-              Berlin Central Station &mdash; Madrid Puerta de Atocha
-            </label>
-            <div className={styles.tableWrapper}>
-              {/* <table>
-                <tr>
-                  <th>Train / Bus / Flight</th>
-                  <td>LO0024 (LOT - Polish Airlines)</td>
-                </tr>
-                <tr>
-                  <th>Departure</th>
-                  <td>21:40, 18.09.2017</td>
-                </tr>
-                <tr>
-                  <th>Arrival</th>
-                  <td>18:00, 19.09.2017</td>
-                </tr>
-                <tr>
-                  <th>Tariff</th>
-                  <td>Economy</td>
-                </tr>
-                <tr>
-                  <th>Carriers reference number</th>
-                  <td>KD95RR</td>
-                </tr>
-                <tr>
-                  <th>Ticket type</th>
-                  <td>ETK</td>
-                </tr>
-              </table> */}
+        <section className={classNames(styles.bookingTable, styles.savedItems)}>
+          <h3>Saved items</h3>
+          {savedItems?.map((savedItem: any) => (
+            <div key={savedItem.id} className={styles.tableSegment}>
+              <input
+                type='checkbox'
+                id={savedItem.id}
+                name='segment-checker'
+                value=''
+              />
+              <label
+                htmlFor={savedItem.id}
+                className={styles.tableSegmentTitle}
+              >
+                {savedItem.title}
+              </label>
+              <div className={styles.tableWrapper}>
+                <table>
+                  <tbody>
+                    <tr>
+                      <th>Price</th>
+                      <td>
+                        {savedItem.currency}
+                        {savedItem.price} / person
+                      </td>
+                      <td>
+                        <Button
+                          variant='tertiary'
+                          text=' More info'
+                          onClick={() =>
+                            (window.location.href = `/tours/${itemLink(
+                              savedItem
+                            )}`)
+                          }
+                        />
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
-          </div>
-        </section>
-
-        <section className={styles.priceTable}>
-          <h2>Price</h2>
-          {/* <table>
-            <tr>
-              <th>Fare</th>
-              <th>Fees</th>
-              <th>Agent service fee</th>
-              <th>Total</th>
-            </tr>
-            <tr>
-              <td>2 964.98 UAH</td>
-              <td>1 296.50 UAH</td>
-              <td>1 190.00 UAH</td>
-              <td>105 630.74 UAH</td>
-            </tr>
-          </table> */}
+          ))}
         </section>
       </main>
     </div>

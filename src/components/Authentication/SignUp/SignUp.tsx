@@ -20,7 +20,6 @@ export const SignUp: FC<SignUpProps> = ({ className }) => {
   const {
     register,
     handleSubmit,
-    watch,
     setError,
     formState: { errors, isValid },
   } = useForm<Inputs>()
@@ -77,9 +76,9 @@ export const SignUp: FC<SignUpProps> = ({ className }) => {
     }
 
     signUpWithEmail(
-      data.target.email.value,
-      data.target.password.value,
-      data.target.firstName.value + ' ' + data.target.lastName.value
+      data.email,
+      data.password,
+      data.firstName + ' ' + data.lastName
     )
   }
 
@@ -98,7 +97,13 @@ export const SignUp: FC<SignUpProps> = ({ className }) => {
             </label>
             <input
               className={errors[fieldName as keyof Inputs] && styles.errorInput}
-              type={fieldName === 'password' ? 'password' : 'text'}
+              type={
+                fieldName === 'password'
+                  ? 'password'
+                  : fieldName === 'email'
+                  ? 'email'
+                  : 'text'
+              }
               id={fieldName}
               placeholder={inputRefs[fieldName as keyof Inputs].placeholder}
               {...inputRefs[fieldName as keyof Inputs].ref}

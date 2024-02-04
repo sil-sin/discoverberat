@@ -25,7 +25,7 @@ export const Navigation: FC<{ className?: string }> = ({ className }) => {
   return (
     <nav className={classNames(className, styles.navbarContainer)}>
       <div className={styles.imageIcon}>
-        <Link className={styles.logo} href='/'>
+        <Link className={styles.logo} href={'/'}>
           <Image
             src='/main_logo.svg'
             width={200}

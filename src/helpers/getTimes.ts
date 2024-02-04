@@ -1,12 +1,19 @@
-import { add } from 'date-fns'
+import { add, setHours, setMinutes, setSeconds } from 'date-fns'
 
 export const getTimes = (selectedDate: Date | null) => {
   if (!selectedDate) return null
-  const startingTime = add(selectedDate, { hours: 9 })
 
-  const endingTime = add(selectedDate, { hours: 16 })
+  // Reset the time part of the selectedDate to 00:00:00
+  const selectedDateWithoutTime = setSeconds(
+    setMinutes(setHours(selectedDate, 0), 0),
+    0
+  )
+
+  const startingTime = add(selectedDateWithoutTime, { hours: 9 })
+  const endingTime = add(selectedDateWithoutTime, { hours: 16 })
   const interval = 30 //minutes
-  const times: any[] = []
+  const times: string[] = []
+
   for (
     let i = startingTime;
     i < endingTime;
@@ -17,7 +24,7 @@ export const getTimes = (selectedDate: Date | null) => {
         hour: '2-digit',
         minute: '2-digit',
         hour12: false,
-      })
+      }) || ''
     )
   }
 

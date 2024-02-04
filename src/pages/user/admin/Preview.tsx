@@ -2,7 +2,6 @@ import { SetStateAction, useState } from 'react'
 
 import Card from '@/components/simple/Card'
 
-import { useContentfulLiveUpdates } from '@contentful/live-preview/react'
 import Tour from '@/components/Tour'
 import TransfersCard from '@/components/simple/TransferCards'
 const PreviewTab = ({

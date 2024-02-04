@@ -44,6 +44,20 @@
     outline: var(--button-secondary-outline-border) 1px solid;
 }
 
+.tertiary {
+    font: var(--tertiary-button-font);
+    background-color: var(--button-tertiary-bg);
+    color: var(--button-tertiary-typo);
+    border: var(--button-tertiary-outline-border) 3px solid;
+    outline: var(--button-tertiary-outline-border) 1px transparent;
+}
+
+.tertiary:hover {
+    background-color: var(--button-tertiary-hover-bg);
+    transition: background-color 0.2s ease-in-out;
+    outline: var(--button-tertiary-outline-border) 1px solid;
+}
+
 .link {
     position: relative;
     text-decoration: none;

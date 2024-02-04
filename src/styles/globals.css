@@ -14,6 +14,14 @@
   --button-secondary-active-bg: #b0b0b0;
   --button-outline-border: rgba(45, 49, 55, 0.15);
   --button-secondary-outline-border: #51a56a;
+  --button-tertiary-bg: #fff;
+  --button-tertiary-typo: #2d3137;
+  --button-tertiary-hover-bg: #f4f4f4;
+  --button-tertiary-active-bg: #b0b0b0;
+  --button-outline-hover-border: #4a9e60;
+  /* Slightly lighter shade for hover */
+  --button-outline-active-border: #499e5e;
+  /* Slightly lighter shade for active */
   --button-outline-typo: #2d3137;
   --button-outline-hover-border: #4a9e60;
   /* Slightly lighter shade for hover */
@@ -48,6 +56,21 @@
   --secondary-font: italic 400 1rem/1.5 var(--font);
   --primary-button-font: 450 1.2rem/1.5 var(--font);
   --secondary-button-font: 450 1rem/1 var(--font);
+  --tertiary-button-font: 450 1rem/1.5 var(--font);
+
+  /* alert colors */
+  --alert-success-bg: #1ee46774;
+  --alert-success-typo: #3b794b;
+  --alert-success-border: #4a9e60;
+  --alert-primary-active-bg: #499e5e;
+  --alert-error-text-only-typo: #ef3f32db;
+  --alert-error-bg: #f4433674;
+  --alert-error-typo: #731811;
+  --alert-error-border: #f44336;
+  --alert-warning-bg: #ffdd0061;
+  --alert-warning-typo: #8d7e0b;
+  --alert-warning-border: #ffd000b4;
+
 }
 
 * {
@@ -58,6 +81,17 @@
 *::selection {
   background-color: var(--button-primary-bg);
   color: var(--button-primary-typo);
+}
+
+*::-moz-selection {
+  background-color: var(--button-primary-bg);
+  color: var(--button-primary-typo);
+}
+
+*:focus-visible {
+  outline: 1px auto var(--button-outline-hover-border) !important;
+  background-color: var(--background-secondary) !important;
+  color: var(--text-default) !important;
 }
 
 html,
@@ -92,20 +126,26 @@ a {
   right: 30px;
   z-index: 10;
   cursor: pointer;
-  background-color: var(--button-primary-bg);
-  border: 4px solid var(--button-primary-bg);
+  background-color: #169836;
+  border: 4px solid #169836;
   border-radius: 50%;
 }
 
 .whatsapp-icon-container {
-  border: 2px solid white;
-  /* Border color and width */
-  background-color: white;
+  border: 3px solid #169836;
+  background-color: #169836;
   border-radius: 50%;
-  overflow: hidden;
-  /* Ensure border-radius clips the border properly */
 }
 
 .whatsapp-icon {
   display: block;
+}
+
+.viewAll {
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  cursor: pointer;
+  font-weight: 700 !important;
+  font-size: 1.2rem !important;
 }

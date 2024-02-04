@@ -1,9 +1,13 @@
 import React, { FC } from 'react'
 import styles from './TransferCard.module.css'
 import { MdEast } from 'react-icons/md'
+import classNames from 'classnames'
 
-export const TransfersCard: FC<any> = (props: { transfer: any }) => {
-  const { transfer } = props
+export const TransfersCard: FC<any> = (props: {
+  transfer: any
+  className?: string
+}) => {
+  const { transfer, className } = props
 
   if (!transfer) {
     return (
@@ -14,15 +18,14 @@ export const TransfersCard: FC<any> = (props: { transfer: any }) => {
   }
 
   return (
-    <div className={styles.transfersContainer}>
+    <div className={classNames(className, styles.transfersContainer)}>
       <div className={styles.transfer}>
         <p>{transfer.from}</p>
-        <MdEast size={24}  />
+        <MdEast size={24} />
         <p>{transfer.to}</p>
       </div>
       <div className={styles.priceDistance}>
-        <p> &euro;{transfer.price} </p>
-        <span></span>
+        <p className={styles.price}> &euro;{transfer.price} </p>
         <p>{transfer.distance}</p>
       </div>
     </div>

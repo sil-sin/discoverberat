@@ -4,6 +4,14 @@
     align-items: center;
     width: 100%;
     margin: 10px auto;
+    padding: 0 10px;
+}
+
+.bookingFormContainer form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
 }
 
 .bookingFormContainer label {
@@ -12,8 +20,8 @@
 }
 
 .bookingFormContainer input {
+    width: 100%;
     color: var(--button-outline-active-border);
-
     margin: 5px;
     padding: 15px 10px;
     border: 1px solid transparent;
@@ -32,4 +40,9 @@
     -moz-appearance: none;
     appearance: none;
     margin: 0;
+}
+
+.bookingFormContainer input::placeholder {
+    color: rgba(6, 70, 7, 0.319);
+    font-weight: 500;
 }
