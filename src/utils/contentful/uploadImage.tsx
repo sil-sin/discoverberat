@@ -3,10 +3,10 @@ import contentfulConfig from './contentfulConfig'
 const contentful = require('contentful-management')
 
 const SPACE_ID = contentfulConfig.space
-const ACCESS_TOKEN = 'CFPAT-Juzn-HgMDO36houFXIhe3rHi2cmekD3SzU-9y2UO99E'
+
 
 const client = contentful.createClient({
-  accessToken: ACCESS_TOKEN,
+  accessToken: process.env.CONTENTFUL_MANAGEMENT_TOKEN,
 })
 
 export const uploadImage = async (imgUrl: string) => {
