@@ -1,6 +1,6 @@
 {
   "name": "discoverberat",
-  "version": "0.1.1",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -9,19 +9,44 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@types/node": "20.5.7",
-    "@types/react": "18.2.21",
-    "@types/react-dom": "18.2.7",
+    "@cloudinary/react": "^1.11.2",
+    "@cloudinary/url-gen": "^1.12.0",
+    "@contentful/live-preview": "^2.11.10",
+    "@contentful/rich-text-html-renderer": "^16.3.0",
+    "@paypal/react-paypal-js": "^8.1.3",
+    "@types/quill": "^2.0.13",
+    "blueimp-file-upload": "^10.32.0",
+    "cloudinary-core": "^2.13.0",
+    "contentful": "^10.6.5",
+    "contentful-management": "^11.3.0",
+    "date-fns": "^2.30.0",
+    "firebase": "^10.6.0",
+    "firebase-admin": "^11.11.0",
+    "marked": "^9.1.4",
+    "next": "13.5.4",
+    "nookies": "^2.5.2",
+    "quill": "^1.3.7",
+    "react": "^18",
+    "react-calendar": "^4.6.1",
+    "react-datetime-picker": "^5.6.0",
+    "react-dom": "^18",
+    "react-hook-form": "^7.48.2",
+    "react-quill": "^2.0.0",
+    "turndown": "^7.1.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "@types/turndown": "^5.0.3",
     "classnames": "^2.3.2",
-    "eslint": "8.48.0",
-    "eslint-config-next": "13.4.19",
-    "firebase": "^10.4.0",
-    "next": "^13.5.5-canary.5",
-    "next-auth": "^4.23.2",
-    "react": "18.2.0",
+    "eslint": "^8",
+    "eslint-config-next": "13.5.4",
+    "next": "^13.4.19",
+    "react": "^18.2.0",
     "react-content-loader": "^6.2.1",
-    "react-dom": "18.2.0",
+    "react-dom": "^18.2.0",
     "react-icons": "^4.11.0",
-    "typescript": "5.2.2"
+    "typescript": "^5"
   }
 }

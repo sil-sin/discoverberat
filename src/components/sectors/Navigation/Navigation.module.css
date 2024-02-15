@@ -1,70 +1,96 @@
 .navbarContainer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0px 0px 10px 4px rgba(0, 0, 0, 0.286);
-    padding: 0 20px;
-    position: absolute;
-    top: 0;
-    width: 100vw;
-    z-index: 1;
-    background-color: var(--background-color);
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0px 0px 10px 4px rgba(0, 0, 0, 0.286);
+  padding: 0 12px;
+  position: fixed;
+  top: 0;
+  width: 100vw;
+  z-index: 1;
+  background-color: var(--background-default);
 }
 
 .navbarLinksContainer {
-    display: none
+  display: none;
 }
 
 .navbarLinksShow {
-    display: flex;
-    flex-direction: column;
-    list-style: none;
-    align-items: self-start;
-    gap: 10px;
-    position: absolute;
-    top: 50px;
-    right: 10px;
-    background-color: white;
-    box-shadow: 0px 0px 10px 4px rgba(0, 0, 0, 0.286);
-    padding: 10px;
-    border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  list-style: none;
+  gap: 10px;
+  padding: 0;
+  margin: 0;
+}
+
+.navbarLinksShow li {
+  text-align: center;
+  width: 100%;
+  margin: 0;
+  padding: 10px;
+  border-bottom: 0.5px inset var(--link-background-hover);
+}
+
+.menuButton {
+  border-color: transparent !important;
+}
+
+.imageIcon {
+  display: flex;
+  justify-content: space-between;
 }
 
 @media screen and (min-width: 768px) {
-    .navbarContainer {
-        display: flex;
-        justify-content: space-between;
-    }
+  .navbarContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    position: fixed;
+    top: 0;
+  }
 
-    .navbarLinksContainer {
-        display: flex;
-        list-style: none;
-        align-items: center;
-        gap: 10px;
-        margin: 0
-    }
+  .navbarLinksContainer {
+    display: flex;
+    list-style: none;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+  }
 
-    .navbarLinksShow {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        box-shadow: none;
-        background-color: transparent;
-        position: static;
-    }
+  .navbarLinksShow li {
+    border: none;
+    margin: 0;
+    padding: 0;
+  }
 
-    .menuButton {
-        display: none
-    }
+  .navbarLinksShow a {
+    padding: 0;
+  }
+
+  .navbarLinksShow {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    box-shadow: none;
+    background-color: transparent;
+    position: static;
+  }
+
+  .menuButton {
+    display: none;
+  }
+
+  .logoImage {
+    margin-left: 20px;
+  }
 }
 
-
 .logoImage {
-    object-fit: cover;
-    object-position: center;
-    filter: drop-shadow(0px 0px 0px black);
-    padding: 0;
-    width: 200px;
-    height: 70px;
-    margin-left: 20px;
+  object-fit: cover;
+  object-position: center;
+  filter: drop-shadow(0px 0px 0px black);
+  padding: 0;
+  max-width: 200px;
+  height: 70px;
 }

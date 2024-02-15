@@ -1,18 +1,14 @@
 export const HEADER_LINKS = [
     {
-        title: 'About',
-        href: '/about',
+        title: 'Tours',
+        href: '/tours',
     },
     {
         title: 'Contact',
-        href: '/contact',
+        href: '#contact',
     },
     {
-        title: 'Blog',
-        href: '/blog',
-    },
-    {
-        title: 'Tours',
-        href: '/tours',
+        title: 'About',
+        href: '/about',
     },
 ]

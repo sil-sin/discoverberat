@@ -1,110 +1,85 @@
   .cardContainer {
       margin: 20px;
       border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 0 10px var(--shadow);
       display: flex;
       flex-direction: column;
-      align-items: flex-start;
       justify-content: space-between;
-      width: 70vw;
-      height: 500px;
+      max-width: calc((130vw) / 3);
+      max-height: 500px;
+      position: relative;
+      overflow: clip;
   }
 
   .image {
-      box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
-      object-fit: contain;
-      padding: 10px;
-      width: inherit;
-      height: 300px;
+      border-radius: 10px 10px 0 0;
+      box-shadow: solid 3px var(--shadow);
+      max-height: 200px;
+      width: 100%;
+      object-fit: cover;
+      object-position: 50% 70%;
+  }
+
+  .button {
+      font-weight: 400;
+      text-shadow: 0.4px 0 0 black;
+      width: 100%;
+      justify-self: stretch;
+      margin: 0;
+      border-radius: 0 0 10px 10px;
   }
 
   .title {
       font-size: 1em;
-      color: white;
-      background-color: var(--button-color);
-      width: 100%;
-      box-sizing: border-box;
-      margin: 0;
       padding: 10px;
-      border-radius: 10px 10px 0 0;
-      height: 70px;
-      font-size: 1.6em;
+      border-radius: 0 30px 0 0;
+      font: var(--primary-button-font);
+      background-color: rgba(245, 245, 245, 0.561);
+      position: absolute;
+      bottom: 100px;
+      left: 0;
+
   }
 
   .description {
       font-size: 1em;
-      width: 100%;
       box-sizing: border-box;
       margin: 0;
       padding: 10px;
       border-radius: 0 0 10px 10px;
+
   }
 
   .price {
-      font-size: 0.7em;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 1em;
       margin: 10px;
-      align-self: end;
-      font-weight: 600;
+      font-weight: 400;
+      width: 100%;
+      padding-right: 10px;
   }
 
-  @media screen and (min-width: 900px) {
-      .cardContainer {
-          margin: 20px;
-          border-radius: 10px;
-          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-          display: flex;
-          flex-direction: column;
-          align-items: flex-start;
-          justify-content: space-between;
-          width: 250px;
-          height: 450px;
-      }
-
-      .image {
-          box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
-          object-fit: contain;
-          padding: 10px;
-          width: inherit;
-          height: 200px;
-      }
-
-      .title {
-          font-size: 1em;
-          color: white;
-          background-color: var(--button-color);
-          width: 100%;
-          box-sizing: border-box;
-          margin: 0;
-          padding: 10px;
-          border-radius: 10px 10px 0 0;
-          height: 65px;
-          font-size: 1.2em;
-      }
-
-      .description {
-          font-size: 1em;
-          width: 100%;
-          box-sizing: border-box;
-          margin: 0;
-          padding: 10px;
-          border-radius: 0 0 10px 10px;
-      }
-
+  .priceSpan {
+      padding: 5px;
+      font-size: larger;
+      font-weight: bold;
   }
 
   .cardSkeleton {
       border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 0 10px var(--shadow);
       display: flex;
       flex-direction: column;
       align-items: flex-start;
       justify-content: flex-start;
       width: 250px;
       height: 400px;
-      background-image: linear-gradient(100deg, rgb(227, 222, 222), white, rgb(214, 214, 214)),
-          linear-gradient(100deg, rgb(227, 222, 222), white, rgb(214, 214, 214)),
-          linear-gradient(100deg, rgb(227, 222, 222), white, rgb(214, 214, 214)),
-          linear-gradient(100deg, rgb(227, 222, 222), white, rgb(214, 214, 214));
+      background-image: linear-gradient(100deg, rgb(227, 222, 222), var(--background-default), rgb(214, 214, 214)),
+          linear-gradient(100deg, rgb(227, 222, 222), var(--background-default), rgb(214, 214, 214)),
+          linear-gradient(100deg, rgb(227, 222, 222), var(--background-default), rgb(214, 214, 214)),
+          linear-gradient(100deg, rgb(227, 222, 222), var(--background-default), rgb(214, 214, 214));
       background-size: 150px 30px, 250px 200px, 230px 100px, 70px 20px;
       background-position: 10px 10px, 0 50px, 10px 260px, 160px 370px;
       background-repeat: no-repeat;
@@ -116,7 +91,7 @@
       width: 80px;
       height: 400px;
       position: absolute;
-      background: linear-gradient(white, whitesmoke);
+      background: linear-gradient(var(--background-default), var(--background-secondary));
       animation: shine 1s linear infinite;
       mix-blend-mode: hard-light;
       border: none;
@@ -141,25 +116,22 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      background-color: white;
+      background-color: var(--background-default);
       width: 200px;
-      border: solid 1px var(--button-color);
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 0 10px var(--shadow);
       border-radius: 10px;
-      border: solid 1px var(--button-color);
+      border: solid 1px var(--button-outline-active-border);
   }
 
   .cardIcon {
       font-size: 2em;
-      color: var(--button-color);
+      color: var(--button-primary-bg);
       padding: 20px 40px;
   }
 
   .iconCardTitle {
       white-space: nowrap;
-      font: inherit;
-      font-size: large;
       text-align: center;
-      font-weight: 500;
       padding: 10px;
+      font: var(--secondary-button-font)
   }

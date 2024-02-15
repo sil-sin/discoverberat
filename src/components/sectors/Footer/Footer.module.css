@@ -1,0 +1,17 @@
+.footerContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: var(--background-inverse);
+  color: var(--text-inverse);
+  padding: 20px auto;
+  width: 100vw;
+}
+
+.socialMediaContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-top: 20px;
+}

@@ -2,25 +2,50 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+
+}
+
+.toursContainer h2 {
+    text-align: center;
+    margin-bottom: 40px;
+    font-size: 2rem;
+    color: var(--text-default);
 }
 
 .tourCardsContainer {
     display: flex;
-    flex-direction: column;
-    align-items: center;
+    flex-wrap: wrap;
+    width: -webkit-fill-available;
+    margin: 10px auto;
+    max-width: 1200px
 }
 
-.toursTitle {
-    text-align: center;
-    margin-bottom: 40px;
-    font-size: 2rem;
-    color: var(--primary-color);
+
+.tourCards {
+    flex-grow: 1;
+    flex-basis: 350px;
+    display: flex;
+    justify-content: stretch;
+
 }
 
-@media (min-width: 900px) {
+.tourCard {
+    height: min-content;
+    margin: 20px;
+    max-width: 100%;
+    width: 100%;
+    position: relative;
+}
+
+@media (min-width: 780px) {
     .tourCardsContainer {
+        display: flex;
+        align-items: center;
         flex-direction: row;
-        justify-content: center;
+        flex-wrap: wrap;
     }
 
+    .tourCard {
+        max-width: calc((130vw) / 3);
+    }
 }

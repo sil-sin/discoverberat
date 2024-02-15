@@ -1,0 +1,22 @@
+.container {
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+}
+
+.title {
+  color: var(--text-default);
+}
+
+.list strong,
+.description strong {
+  color: var(--button-primary-bg);
+}
+
+.description:last-child {
+  align-self: center;
+  text-align: center;
+  margin: 20px auto;
+}

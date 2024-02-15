@@ -1,0 +1,151 @@
+:root {
+  /* button colors */
+  --font: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', Oxygen,
+    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  --button-primary-bg: #47a66a;
+  --button-primary-typo: #fcfcfc;
+  --button-primary-hover-bg: #4a9e60;
+  /* Slightly lighter shade for hover */
+  --button-primary-active-bg: #499e5e;
+  /* Slightly lighter shade for active */
+  --button-secondary-bg: #fff;
+  --button-secondary-typo: #51a56a;
+  --button-secondary-hover-bg: #f4f4f4;
+  --button-secondary-active-bg: #b0b0b0;
+  --button-outline-border: rgba(45, 49, 55, 0.15);
+  --button-secondary-outline-border: #51a56a;
+  --button-tertiary-bg: #fff;
+  --button-tertiary-typo: #2d3137;
+  --button-tertiary-hover-bg: #f4f4f4;
+  --button-tertiary-active-bg: #b0b0b0;
+  --button-outline-hover-border: #4a9e60;
+  /* Slightly lighter shade for hover */
+  --button-outline-active-border: #499e5e;
+  /* Slightly lighter shade for active */
+  --button-outline-typo: #2d3137;
+  --button-outline-hover-border: #4a9e60;
+  /* Slightly lighter shade for hover */
+  --button-outline-active-border: #499e5e;
+  /* Slightly lighter shade for active */
+  --button-disabled-bg: #b0b0b092;
+  --button-disabled-typo: #ffffffcc;
+  /* Link Tokens */
+  --link-color: #2d3137;
+  /* Normal link color */
+  --link-hover-color: #4a9e60;
+  /* Link color on hover, slightly lighter */
+  --link-active-color: #499e5e;
+  /* Link color when active, slightly lighter */
+  --link-text-decoration: underline;
+  --link-background: transparent;
+  --link-background-hover: #c8c8c8;
+
+  /* text color */
+  --text-default: #2d3137;
+  --text-secondary: #868686;
+  --text-inverse: #ffffff;
+
+  /* background color */
+  --background-default: #ffffff;
+  --background-secondary: #f4f4f4;
+  --background-inverse: #1f2533;
+  --shadow: rgba(45, 49, 55, 0.3);
+
+  /* font */
+  --primary-font: 500 1.6rem/1.5 var(--font);
+  --secondary-font: italic 400 1rem/1.5 var(--font);
+  --primary-button-font: 450 1.2rem/1.5 var(--font);
+  --secondary-button-font: 450 1rem/1 var(--font);
+  --tertiary-button-font: 450 1rem/1.5 var(--font);
+
+  /* alert colors */
+  --alert-success-bg: #1ee46774;
+  --alert-success-typo: #3b794b;
+  --alert-success-border: #4a9e60;
+  --alert-primary-active-bg: #499e5e;
+  --alert-error-text-only-typo: #ef3f32db;
+  --alert-error-bg: #f4433674;
+  --alert-error-typo: #731811;
+  --alert-error-border: #f44336;
+  --alert-warning-bg: #ffdd0061;
+  --alert-warning-typo: #8d7e0b;
+  --alert-warning-border: #ffd000b4;
+
+}
+
+* {
+  box-sizing: border-box;
+
+}
+
+*::selection {
+  background-color: var(--button-primary-bg);
+  color: var(--button-primary-typo);
+}
+
+*::-moz-selection {
+  background-color: var(--button-primary-bg);
+  color: var(--button-primary-typo);
+}
+
+*:focus-visible {
+  outline: 1px auto var(--button-outline-hover-border) !important;
+  background-color: var(--background-secondary) !important;
+  color: var(--text-default) !important;
+}
+
+html,
+body {
+
+  max-width: 100vw;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Oxygen,
+    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  color: rgb(var(--foreground-rgb));
+  background: rgb(var(--background-end-rgb));
+  margin: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.container {
+  position: relative;
+  top: 90px;
+}
+
+.whatsapp-button {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  z-index: 10;
+  cursor: pointer;
+  background-color: #169836;
+  border: 4px solid #169836;
+  border-radius: 50%;
+}
+
+.whatsapp-icon-container {
+  border: 3px solid #169836;
+  background-color: #169836;
+  border-radius: 50%;
+}
+
+.whatsapp-icon {
+  display: block;
+}
+
+.viewAll {
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  cursor: pointer;
+  font-weight: 700 !important;
+  font-size: 1.2rem !important;
+}

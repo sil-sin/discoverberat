@@ -1,52 +1,57 @@
 import Card from '@/components/simple/Card'
-import React from 'react'
+import React, { FC } from 'react'
 import styles from './Tours.module.css'
-import Link from 'next/link' // Import Link from Next.js
+import { Tour } from '@/utils/types'
 
-export default function Tours() {
-  const tours = [
-    {
-      title: 'Osumi Canyon & Bogova Waterfall',
-      description:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent et felis eget elit ornare luctus. In hac habitasse platea dictumst.',
-      image: 'next.svg',
-      price: '50 EUR',
-      link: 'osumi-canyon-and-bogova-waterfall',
-    },
-    {
-      title: 'Tomori Mountain ',
-      description:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent et felis eget elit ornare luctus. In hac habitasse platea dictumst.',
-      image: 'next.svg',
-      price: '50 EUR',
-      link: 'tomori-mountain',
-    },
-    {
-      title: 'Berat City Tour',
-      description:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent et felis eget elit ornare luctus. In hac habitasse platea dictumst.',
-      image: 'next.svg',
-      price: '50 EUR',
-      link: 'berat-city-tour',
-    },
-  ]
+export const Tours: FC<any> = (props: {
+  tours: Tour[]
+  pageTitle?: string
+}) => {
+  const { tours } = props
+
+  if (!tours) {
+    return (
+      <div>
+        <h1> No tours found </h1>
+      </div>
+    )
+  }
+  const toursCards = (toursByCategory: Tour[]) =>
+    toursByCategory?.map((tour: Tour) => {
+      const { title, description, price, currency, image, url } = tour.fields
+
+      const imgUrl = image?.fields?.file?.url as string
+
+      return (
+        <div key={title} className={styles.tourCards}>
+          <Card
+            title={title}
+            description={description}
+            imageSrc={imgUrl ? 'https:' + imgUrl : ''}
+            price={price}
+            className={styles.tourCard}
+            currency={currency}
+            isLoading={!tours}
+            learnMoreLink={`/tours/${url}`}
+            onClick={() => {
+              window.location.href = `/booking/new?tour=${url}`
+            }}
+          />
+        </div>
+      )
+    })
+
+  const sortedTours = tours
+    ?.filter((tour: any) => tour.fields?.category?.includes(''))
+    .sort((a: any, b: any) => a.fields.price - b.fields.price)
 
   return (
     <div className={styles.toursContainer}>
-      <h1 className={styles.toursTitle}>Top tours</h1>
-      <div className={styles.tourCardsContainer}>
-        {tours.map((tour) => (
-          <div key={tour.link}>
-            <Link href={`/tours/${tour.link}`}>
-              <Card
-                title={tour.title}
-                description={tour.description}
-                imageSrc={tour.image}
-                price={tour.price}
-              />
-            </Link>
-          </div>
-        ))}
+      <div>
+        <h2 className={styles.tourCategory}>{props.pageTitle ?? 'Tours'}</h2>
+        <div className={styles.tourCardsContainer}>
+          {toursCards(sortedTours)}
+        </div>
       </div>
     </div>
   )

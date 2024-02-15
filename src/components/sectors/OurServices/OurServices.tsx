@@ -11,9 +11,9 @@ import { GiCornerFlag } from 'react-icons/gi'
 export const OurServices: FC = () => {
   const services = [
     {
-      title: 'Tour Packages',
-      icon: <MdTravelExplore size={50} />,
-      link: 'services/tour-packages',
+      title: 'Guided Tours and Activities',
+      icon: <GiCornerFlag size={50} />,
+      link: '/tours',
     },
     {
       title: 'Transport and Transfers',
@@ -24,11 +24,6 @@ export const OurServices: FC = () => {
       title: 'Accommodation Booking',
       icon: <MdOutlineLocalHotel size={50} />,
       link: 'services/accommodation',
-    },
-    {
-      title: 'Guided Tours and Activities',
-      icon: <GiCornerFlag size={50} />,
-      link: '/tours',
     },
   ]
 

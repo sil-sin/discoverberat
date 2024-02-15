@@ -1,0 +1,74 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+    max-width: 600px;
+    width: 100%;
+    padding-top: 20px;
+}
+
+.formContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    box-shadow:
+        0px 1px 10px 1px rgba(0, 0, 0, 0.286);
+    border-radius: 6px;
+    background-color: var(--button-secondary-bg);
+    margin-bottom: 20px
+}
+
+.formContainer h3 {
+    margin: 0;
+}
+
+.orSeparator div {
+    max-height: 0;
+    border: solid 1px var(--button-outline-active-border);
+    width: 100%;
+    margin: auto 10px;
+}
+
+
+
+.googleButton {
+    align-self: center;
+    display: flex;
+    gap: 4px;
+    align-items: center;
+}
+
+.tabButtons {
+    width: 100%;
+    justify-content: center;
+    display: flex;
+    margin: 0
+}
+
+.tabButton {
+    width: 50%;
+    margin: 0;
+    background-color: var(--background-secondary);
+    color: var(--text-default);
+}
+
+.rightTabButton {
+    border-radius: 0 6px;
+}
+
+.leftTabButton {
+    border-radius: 6px 0;
+}
+
+.active {
+    background-color: var(--button-secondary-bg);
+    color: var(--button-secondary-typo);
+}
+
+.orSeparator {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    width: 100%;
+}

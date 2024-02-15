@@ -1,52 +1,74 @@
 .button {
     cursor: pointer;
     border: transparent solid 1px;
-    -webkit-border-radius: 5px;
-    -moz-border-radius: 5px;
-    border-radius: 5px;
-    padding: 10px 20px;
+    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
+    border-radius: 6px;
+    padding: 15px 20px;
     margin: 10px;
+    outline: 2px solid transparent;
 }
 
 .primary {
-    background-color: var(--primary-color);
-    color: white;
+    font: var(--primary-button-font);
+    background-color: var(--button-primary-bg);
+    color: var(--button-primary-typo);
     font-size: medium;
 }
 
 .primary:hover {
-    background-color: var(--button-color);
-    border: var(--primary-color) 1px solid;
+    background-color: var(--button-primary-hover-bg);
+    outline: 1px solid var(--button-outline-hover-border);
+    transition: background-color 0.2s ease;
+}
+
+.primary:focus,
+.primary:active {
+    background-color: var(--button-primary-active-bg);
     color: black;
-    transition: background-color 0.4s ease-in-out;
+    transition: background-color 0.2s ease;
 }
 
 .secondary {
-    background-color: white;
-    color: black;
-    font-size: medium;
-    border: var(--secondary-color) 1px solid;
+    font: var(--secondary-button-font);
+    background-color: var(--button-secondary-bg);
+    color: var(--button-secondary-typo);
+    border: var(--button-secondary-outline-border) 3px solid;
+    outline: var(--button-secondary-outline-border) 1px transparent;
 }
 
 .secondary:hover {
-    background-color: #4caf4fb1;
-    border: green 1px solid;
-    color: white;
-    text-shadow: slategrey 0 0 1px;
-    transition: background-color 0.4s ease-in-out;
+    background-color: var(--button-secondary-hover-bg);
+    border: var(--button-outline-hover-border) 3px solid;
+    transition: background-color 0.2s ease-in-out;
+    outline: var(--button-secondary-outline-border) 1px solid;
+}
+
+.tertiary {
+    font: var(--tertiary-button-font);
+    background-color: var(--button-tertiary-bg);
+    color: var(--button-tertiary-typo);
+    border: var(--button-tertiary-outline-border) 3px solid;
+    outline: var(--button-tertiary-outline-border) 1px transparent;
+}
+
+.tertiary:hover {
+    background-color: var(--button-tertiary-hover-bg);
+    transition: background-color 0.2s ease-in-out;
+    outline: var(--button-tertiary-outline-border) 1px solid;
 }
 
 .link {
     position: relative;
     text-decoration: none;
-    color: rgba(0, 128, 0, 0.9);
+    color: var(--link-color);
     font-size: medium;
     font-weight: 450;
     padding: 5px 10px;
 }
 
 .link:hover {
-    color: var(--button-color);
+    color: var(--button-primary-bg);
 }
 
 .link::before {
@@ -56,7 +78,7 @@
     left: 0;
     width: 0;
     height: 1px;
-    background: linear-gradient(90deg, transparent 0%, var(--button-color) 40%);
+    background: linear-gradient(90deg, transparent 0%, var(--button-primary-bg) 40%);
     transition: width 0.3s ease;
 }
 
@@ -67,4 +89,20 @@
 .tourButton {
     font-size: large;
     margin: 10px;
+}
+
+
+.disabled {
+    cursor: not-allowed;
+    background-color: var(--button-disabled-bg);
+    color: var(--button-disabled-typo);
+    border: none;
+    outline: none;
+}
+
+.disabled:hover {
+    background-color: var(--button-disabled-bg);
+    color: var(--button-disabled-typo);
+    border: none;
+    outline: none;
 }

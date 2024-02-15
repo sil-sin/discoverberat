@@ -1,6 +1,13 @@
 /** @type {import('next').NextConfig} */
-module.exports = {
-    images: {
-        domains: ['placehold.co'], // Add the hostname here
-    },
-};
+const nextConfig = {
+  reactStrictMode: true,
+  images: {
+    domains: [
+      'images.ctfassets.net',
+      'res.cloudinary.com',
+      'lh3.googleusercontent.com',
+    ],
+  },
+}
+
+module.exports = nextConfig

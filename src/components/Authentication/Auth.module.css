@@ -1,0 +1,35 @@
+.inputWrapper,
+.formContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+    padding: 5px 10px;
+    width: 100%;
+}
+
+.formContainer label {
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.formContainer input {
+    margin: 5px;
+    padding: 15px 10px;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    background-color: var(--background-secondary);
+}
+
+.formContainer input::placeholder {
+    color: rgba(6, 70, 7, 0.53);
+}
+
+.formContainer input:focus {
+    outline: var(--button-outline-active-border) 1px solid;
+}
+
+.errorInput,
+.errorInput:focus {
+    outline: 1px solid red;
+}

@@ -1,4 +1,3 @@
-'use client'
 import { FC, ReactNode } from 'react'
 import styles from './Button.module.css'
 import classnames from 'classnames'
@@ -10,6 +9,8 @@ type Props = {
   href?: string
   children?: ReactNode
   className?: string
+  isDisabled?: boolean
+  type?: 'submit' | 'reset' | 'button'
 }
 export const Button: FC<Props> = ({
   onClick,
@@ -18,19 +19,26 @@ export const Button: FC<Props> = ({
   href,
   children,
   className,
+  isDisabled,
 }) => {
   return variant === 'link' ? (
     <a
       href={href}
       onClick={onClick}
-      className={classnames(className, styles.link)}
+      className={classnames(styles.link, className)}
     >
       {text || children}
     </a>
   ) : (
     <button
       onClick={onClick}
-      className={classnames(className, styles.button, styles[`${variant}`])}
+      className={classnames(
+        className,
+        styles.button,
+        styles[`${variant}`],
+        isDisabled && styles.disabled
+      )}
+      disabled={isDisabled}
     >
       {text || children}
     </button>
