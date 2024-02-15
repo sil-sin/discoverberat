@@ -8,7 +8,7 @@ const client = createClient({
 })
 
 const clientEdit = contentful.createClient({
-  accessToken: 'CFPAT-Juzn-HgMDO36houFXIhe3rHi2cmekD3SzU-9y2UO99E',
+  accessToken: process.env.CONTENTFUL_MANAGEMENT_TOKEN,
   space: contentfulConfig.space,
 })
 
