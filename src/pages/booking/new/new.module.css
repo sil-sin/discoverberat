@@ -20,12 +20,19 @@
 
 .link {
   text-decoration: underline;
+  display: block;
+  padding: 10px 0;
+  width: fit-content;
 }
 
 .link:hover {
   cursor: pointer;
   text-decoration: none;
   border: none;
+}
+
+.link:hover::before {
+  display: none
 }
 
 .bookOption {

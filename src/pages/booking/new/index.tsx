@@ -21,6 +21,7 @@ import { adminSDK, initializeAdmin } from '@/pages/api/adminConfig'
 import { stringify } from 'querystring'
 import useSaveLater from '@/hooks/useSaveLater'
 import Modal from '@/components/Modal'
+import Toast from '@/components/simple/Toast'
 
 const startDay = new Date().setDate(new Date().getDate() + 1)
 const startDateObject = new Date(startDay)
@@ -31,6 +32,7 @@ function New({ booking, unavailableDates }: any) {
   const [availableTimes, setAvailableTimes] = useState<any>([])
   const [isPrivate, setIsPrivate] = useState<boolean>(false)
   const [isShowModal, setIsShowModal] = useState<boolean>(false)
+  const [warning, setWarning] = useState<boolean>(false)
   const router = useRouter()
 
   const bookingFormRef = useRef<any>()
@@ -38,7 +40,7 @@ function New({ booking, unavailableDates }: any) {
 
   const tourUrl = '/authenticate?callbackUrl=/booking/new?tour=' + booking.url
 
-  const { handleSaveLater, isSuccess } = useSaveLater(
+  const { handleSaveLater, isSuccess, isTouched } = useSaveLater(
     { ...booking, id: user?.uid },
     tourUrl
   )
@@ -56,8 +58,19 @@ function New({ booking, unavailableDates }: any) {
   } = booking
 
   useEffect(() => {
-    setIsShowModal(isSuccess)
-  }, [isSuccess])
+    if (isSuccess) {
+      setIsShowModal(isSuccess)
+    } else {
+      setIsShowModal(false)
+      setWarning(isTouched)
+    }
+  }, [isSuccess, isTouched])
+
+  useEffect(() => {
+    setTimeout(() => {
+      setWarning(false)
+    }, 5000)
+  }, [warning])
 
   useEffect(() => {
     if (!isDayTrip) {
@@ -87,8 +100,9 @@ function New({ booking, unavailableDates }: any) {
       ...formData,
       uid: user?.uid,
       date:
-        selectedDateTime?.toLocaleString('en-US', { hour12: true }) ||
-        selectedDate?.toLocaleString('en-US'),
+        selectedDateTime?.toLocaleString('en-GB', {
+          hour12: true,
+        }) || selectedDate?.toLocaleString('en-GB'),
     }
 
     const db = getFirestore(app)
@@ -104,7 +118,7 @@ function New({ booking, unavailableDates }: any) {
     ) {
       await addDoc(collection(db, 'unavailableDates'), {
         uid: user?.uid,
-        date: selectedDate?.toLocaleString('en-US'),
+        date: selectedDate?.toLocaleString('en-GB'),
       })
     }
 
@@ -113,30 +127,33 @@ function New({ booking, unavailableDates }: any) {
       router.push('/booking/new/payment?' + queryString)
     }
 
+    const subject = `New booking from ${bookingData.booker} on ${bookingData.date}`
+    const message = `Hi,<p> I'm ${bookingData.booker} and I just reserved this tour:</p> ${title} on ${bookingData.date} for ${bookingData.guestNumber} guests. I'll be in touch with you soon.`
+    const bookingConfirmationSubject = `Booking confirmation:  ${title} on ${bookingData.date} for ${bookingData.guestNumber} guests`
+    const bookingConfirmationMessage = `Dear ${bookingData.booker}, <p>Thank you for you reservation of  ${title} on ${bookingData.date} for ${bookingData.guestNumber} guests. <p>See you soon !</p>`
+
     if (formData.guestNumber && !isBookNow) {
-      await addDoc(collection(db, 'bookings'), bookingData)
+      await addDoc(collection(db, 'bookings'), bookingData).then(
+        async (res) => {
+          await addDoc(collection(db, 'mail'), {
+            to: bookingData.email,
+            message: {
+              subject: bookingConfirmationSubject,
+              html: bookingConfirmationMessage,
+            },
+          })
 
-      const subject = `New booking from ${bookingData.booker} on ${bookingData.date}`
-      const message = `Hi,<p> I'm ${bookingData.booker} and I just reserved this tour:</p> ${title} on ${bookingData.date} for ${bookingData.guestNumber} guests. I'll be in touch with you soon.`
-      const bookingConfirmationSubject = `Booking confirmation:  ${title} on ${bookingData.date} for ${bookingData.guestNumber} guests`
-      const bookingConfirmationMessage = `Dear ${bookingData.booker}, <p>Thank you for you reservation of  ${title} on ${bookingData.date} for ${bookingData.guestNumber} guests. <p>See you soon !</p>`
+          await addDoc(collection(db, 'mail'), {
+            to: process.env.NEXT_PUBLIC_ADMIN,
+            message: {
+              subject: subject,
+              html: message,
+            },
+          })
 
-      await addDoc(collection(db, 'mail'), {
-        to: bookingData.email,
-        message: {
-          subject: bookingConfirmationSubject,
-          html: bookingConfirmationMessage,
-        },
-      })
-      await addDoc(collection(db, 'mail'), {
-        to: process.env.NEXT_PUBLIC_ADMIN,
-        message: {
-          subject: subject,
-          html: message,
-        },
-      })
-
-      setIsShowModal(true)
+          router.push('new/thank-you?id=' + res.id)
+        }
+      )
     }
 
     return
@@ -199,7 +216,7 @@ function New({ booking, unavailableDates }: any) {
               <ReactCalendar
                 tileDisabled={({ date }) => {
                   return unavailableDates.filter(
-                    (d: any) => d === date.toLocaleString('en-US')
+                    (d: any) => d === date.toLocaleString('en-GB')
                   ).length
                 }}
                 value={selectedDate}
@@ -280,6 +297,7 @@ function New({ booking, unavailableDates }: any) {
               </h3>
               <p>Minimum booking requirement: 2 persons.</p>
             </div>
+
             <Button
               variant='primary'
               onClick={() => {
@@ -292,6 +310,14 @@ function New({ booking, unavailableDates }: any) {
             <Button onClick={handleSaveLater} variant='secondary'>
               Save for later
             </Button>
+            {!isSuccess && warning && (
+              <Toast
+                withCLoseButton={false}
+                onClose={() => setWarning(false)}
+                message='Already saved in your profile'
+                isInfo
+              />
+            )}
           </div>
 
           {/* <div className={styles.bookOption}>

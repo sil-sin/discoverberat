@@ -40,16 +40,10 @@ export default function ThankYouPage() {
     return <p>Loading...</p>
   }
 
-  const formattedDate = new Date(booking.date).toLocaleString('en-US', {
-    day: 'numeric',
+  const formattedDate = booking.date.toLocaleString('en-GB', {
     month: 'short',
+    day: 'numeric',
     year: 'numeric',
-  })
-
-  const formattedTime = new Date(booking.date).toLocaleString('en-US', {
-    hour12: true,
-    hour: 'numeric',
-    minute: 'numeric',
   })
 
   const formatedBookingTitle = booking.title.includes(booking.type)
@@ -64,7 +58,7 @@ export default function ThankYouPage() {
       {booking && (
         <div className={styles.detailsContainer}>
           <h3 className={styles.title}>Thank you for your booking! </h3>
-          <p>
+          <section>
             You have booked{' '}
             <strong>
               {formatedBookingTitle} {booking.type}
@@ -77,17 +71,17 @@ export default function ThankYouPage() {
             for {booking.guestNumber} guest
             {booking.guestNumber === 1 ? '' : 's'} (
             {booking.currency + booking.price} per person).
-            <p>
+            <div>
               Starting on{' '}
               <strong>
                 {
                   // TODO : Add to calendar
                 }
-                {formattedDate} at {formattedTime}
+                {formattedDate}
               </strong>
               .<p>See you soon!</p>
-            </p>
-          </p>
+            </div>
+          </section>
           <Button
             variant='primary'
             onClick={() =>

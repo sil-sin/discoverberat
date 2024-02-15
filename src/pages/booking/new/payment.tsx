@@ -19,7 +19,7 @@ export default function Payment({ service }: any) {
 
   const onSuccess = async (data: any) => {
     const db = getFirestore(app)
-    console.log('sil:', { data })
+   
 
     await addDoc(collection(db, 'bookings'), {
       ...data,

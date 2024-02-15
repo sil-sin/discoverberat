@@ -12,6 +12,7 @@ type Props = {
   isError?: boolean
   isInfo?: boolean
   isTextOnly?: boolean
+  withCLoseButton?: boolean
 }
 export const Toast: FC<Props> = ({
   message,
@@ -20,6 +21,7 @@ export const Toast: FC<Props> = ({
   isError = false,
   isInfo = false,
   isTextOnly = false,
+  withCLoseButton = true,
 }) => {
   return (
     <div
@@ -43,7 +45,7 @@ export const Toast: FC<Props> = ({
           variant='tertiary'
           onClick={onClose}
         >
-          <GiCancel size={20} />
+          {withCLoseButton && <GiCancel size={20} />}
         </Button>
       )}
     </div>

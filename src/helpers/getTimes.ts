@@ -20,7 +20,7 @@ export const getTimes = (selectedDate: Date | null) => {
     i = add(i, { minutes: interval })
   ) {
     times.push(
-      i?.toLocaleTimeString('en-US', {
+      i?.toLocaleTimeString('en-GB', {
         hour: '2-digit',
         minute: '2-digit',
         hour12: false,
