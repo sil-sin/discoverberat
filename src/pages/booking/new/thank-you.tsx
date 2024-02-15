@@ -39,13 +39,19 @@ export default function ThankYouPage() {
   if (!booking) {
     return <p>Loading...</p>
   }
+  console.log(booking.date)
 
-  const formattedDate = booking.date.toLocaleString('en-GB', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-  })
-
+  const formattedDate = new Date(booking.date.seconds * 1000).toLocaleString(
+    'en-GB',
+    {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric',
+    }
+  )
   const formatedBookingTitle = booking.title.includes(booking.type)
     ? booking.title
         .split(' ')

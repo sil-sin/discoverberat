@@ -6,7 +6,6 @@ import { Transfers } from '@/components/sectors/Transfers/Transfers'
 import Button from '@/components/simple/Button'
 import { getEntriesByType } from '@/utils/contentful/contentful'
 import { GetServerSideProps } from 'next'
-import Link from 'next/link'
 import { useRouter } from 'next/router'
 
 function Home(props: any) {

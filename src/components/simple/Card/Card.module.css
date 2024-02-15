@@ -16,6 +16,8 @@
       box-shadow: solid 3px var(--shadow);
       max-height: 200px;
       width: 100%;
+      object-fit: cover;
+      object-position: 50% 70%;
   }
 
   .button {

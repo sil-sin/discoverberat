@@ -99,10 +99,7 @@ function New({ booking, unavailableDates }: any) {
 
       ...formData,
       uid: user?.uid,
-      date:
-        selectedDateTime?.toLocaleString('en-GB', {
-          hour12: true,
-        }) || selectedDate?.toLocaleString('en-GB'),
+      date: selectedDateTime,
     }
 
     const db = getFirestore(app)
@@ -114,7 +111,7 @@ function New({ booking, unavailableDates }: any) {
     if (
       unavailableDates?.filter(
         (date: any) => date === selectedDate?.toLocaleString()
-      ).length <= 2
+      ).length <= 5
     ) {
       await addDoc(collection(db, 'unavailableDates'), {
         uid: user?.uid,
@@ -122,10 +119,10 @@ function New({ booking, unavailableDates }: any) {
       })
     }
 
-    if (isBookNow && formData.guestNumber > 1) {
-      const queryString = stringify(bookingData)
-      router.push('/booking/new/payment?' + queryString)
-    }
+    // if (isBookNow && formData.guestNumber > 1) {
+    //   const queryString = stringify(bookingData)
+    //   router.push('/booking/new/payment?' + queryString)
+    // }
 
     const subject = `New booking from ${bookingData.booker} on ${bookingData.date}`
     const message = `Hi,<p> I'm ${bookingData.booker} and I just reserved this tour:</p> ${title} on ${bookingData.date} for ${bookingData.guestNumber} guests. I'll be in touch with you soon.`
@@ -135,22 +132,20 @@ function New({ booking, unavailableDates }: any) {
     if (formData.guestNumber && !isBookNow) {
       await addDoc(collection(db, 'bookings'), bookingData).then(
         async (res) => {
-          await addDoc(collection(db, 'mail'), {
-            to: bookingData.email,
-            message: {
-              subject: bookingConfirmationSubject,
-              html: bookingConfirmationMessage,
-            },
-          })
-
-          await addDoc(collection(db, 'mail'), {
-            to: process.env.NEXT_PUBLIC_ADMIN,
-            message: {
-              subject: subject,
-              html: message,
-            },
-          })
-
+          // await addDoc(collection(db, 'mail'), {
+          //   to: bookingData.email,
+          //   message: {
+          //     subject: bookingConfirmationSubject,
+          //     html: bookingConfirmationMessage,
+          //   },
+          // })
+          // await addDoc(collection(db, 'mail'), {
+          //   to: process.env.NEXT_PUBLIC_ADMIN,
+          //   message: {
+          //     subject: subject,
+          //     html: message,
+          //   },
+          // })
           router.push('new/thank-you?id=' + res.id)
         }
       )
@@ -173,12 +168,21 @@ function New({ booking, unavailableDates }: any) {
   const handleTimeSelection = (selectedTime: string) => {
     // Combine selectedDate and selectedTime to create the new selectedDateTime
     const [hours, minutes] = selectedTime.split(':')
-    const newDateTime =
-      selectedDate &&
-      new Date(
-        selectedDate.getTime() +
-          (+hours * 3600000 + +minutes.split(' ')[0] * 60000)
-      )
+    const newDateTime = selectedDate && new Date(selectedDate.getTime())
+
+    // Set the hours and minutes of the new date time
+    if (newDateTime) {
+      newDateTime.setHours(+hours)
+      newDateTime.setMinutes(+minutes)
+    }
+
+    // Custom format the date string without seconds
+    const formattedDateTime = `${newDateTime?.toDateString()} ${newDateTime?.toLocaleTimeString(
+      [],
+      { hour: '2-digit', minute: '2-digit' }
+    )}`
+
+    console.log(formattedDateTime)
 
     // Update selectedDateTime
     setSelectedDateTime(newDateTime)
@@ -299,6 +303,7 @@ function New({ booking, unavailableDates }: any) {
             </div>
 
             <Button
+              isDisabled={!selectedDateTime && !isDayTrip}
               variant='primary'
               onClick={() => {
                 setIsPrivate(false)

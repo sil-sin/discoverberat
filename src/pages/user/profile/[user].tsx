@@ -7,7 +7,6 @@ import Image from 'next/image'
 import { adminSDK } from '@/pages/api/adminConfig'
 import { getFirestore } from 'firebase-admin/firestore'
 
-import Button from '@/components/simple/Button'
 import Dashboard from '@/components/Dashboard/Dashboard'
 
 const ProfilePage: FC = ({ user, savedItems, data }: any) => {
