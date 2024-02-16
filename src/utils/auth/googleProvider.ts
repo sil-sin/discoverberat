@@ -13,7 +13,6 @@ export const googleProvider = () => {
 
       const token = credential?.accessToken
       const user = result.user
-      console.log(result)
 
       const { callbackUrl } = JSON.parse(window.location.search)
       window.location.replace(

@@ -20,12 +20,10 @@ export default function Dashboard({ bookings, savedItems, user }: any) {
             <tbody>
               <tr>
                 <th>Full name</th>
-                <th>Phone</th>
                 <th>E-mail</th>
               </tr>
               <tr>
                 <td>{user.name}</td>
-                <td>{user.phoneNumber}</td>
                 <td className={styles.contactDetailsEmail}>{user.email}</td>
               </tr>
             </tbody>

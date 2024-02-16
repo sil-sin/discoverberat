@@ -39,7 +39,6 @@ export default function ThankYouPage() {
   if (!booking) {
     return <p>Loading...</p>
   }
-  console.log(booking.date)
 
   const formattedDate = new Date(booking.date.seconds * 1000).toLocaleString(
     'en-GB',

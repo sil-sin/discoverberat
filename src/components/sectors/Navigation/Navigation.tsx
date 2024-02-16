@@ -27,6 +27,7 @@ export const Navigation: FC<{ className?: string }> = ({ className }) => {
       <div className={styles.imageIcon}>
         <Link className={styles.logo} href={'/'}>
           <Image
+            priority
             src='/main_logo.svg'
             width={200}
             height={100}
@@ -55,7 +56,12 @@ export const Navigation: FC<{ className?: string }> = ({ className }) => {
       >
         {HEADER_LINKS.map((link: any) => (
           <li key={link.title}>
-            <Button variant='link' href={link.href} text={link.title} />
+            <Button
+              onClick={() => setIsMenuShow(false)}
+              variant='link'
+              href={link.href}
+              text={link.title}
+            />
           </li>
         ))}
         <li>
@@ -74,7 +80,7 @@ export const Navigation: FC<{ className?: string }> = ({ className }) => {
                 : 'Sign in'
             }
           />
-          {isShowUserMenu && <UserMenuDropDown showUserMenu={isShowUserMenu} />}
+          {isShowUserMenu && <UserMenuDropDown />}
         </li>
       </ul>
     </nav>

@@ -6,6 +6,7 @@ import { Transfers } from '@/components/sectors/Transfers/Transfers'
 import Button from '@/components/simple/Button'
 import { getEntriesByType } from '@/utils/contentful/contentful'
 import { GetServerSideProps } from 'next'
+import Head from 'next/head'
 import { useRouter } from 'next/router'
 
 function Home(props: any) {
@@ -19,22 +20,39 @@ function Home(props: any) {
   )
 
   return (
-    <main className='main'>
-      <Hero />
-      <OurServices />
-      <Tours tours={topTours} pageTitle={'Top Tours'} />
+    <>
+      <Head>
+        <title>Discover Berat</title>
+        <meta charSet='UTF-8' />
+        <meta
+          name='viewport'
+          content='width=device-width, initial-scale=1.0'
+        ></meta>
+        <meta name='description' content='Discover Berat Tours' />
+        <meta property='og:title' content='Discover Berat' />
+        <meta
+          property='og:description'
+          content='Discover the charm, embrace the stories, and make memories that last a lifetime. Welcome to Discover Berat - Where Every Journey Tells a Tale.'
+        />
+        <meta property='og:image' content='/main_logo.svg' />
+      </Head>
+      <main className='main'>
+        <Hero />
+        <OurServices />
+        <Tours tours={topTours} pageTitle={'Top Tours'} />
 
-      <Button
-        className='viewAll'
-        variant='tertiary'
-        onClick={() => {
-          router.push('/tours')
-        }}
-      >
-        View all tours
-      </Button>
-      <Transfers transfers={[...transfers]} />
-    </main>
+        <Button
+          className='viewAll'
+          variant='tertiary'
+          onClick={() => {
+            router.push('/tours')
+          }}
+        >
+          View all tours
+        </Button>
+        <Transfers transfers={[...transfers]} />
+      </main>
+    </>
   )
 }
 

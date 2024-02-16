@@ -182,8 +182,6 @@ function New({ booking, unavailableDates }: any) {
       { hour: '2-digit', minute: '2-digit' }
     )}`
 
-    console.log(formattedDateTime)
-
     // Update selectedDateTime
     setSelectedDateTime(newDateTime)
   }
