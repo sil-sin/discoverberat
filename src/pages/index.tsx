@@ -35,6 +35,7 @@ function Home(props: any) {
           content='Discover the charm, embrace the stories, and make memories that last a lifetime. Welcome to Discover Berat - Where Every Journey Tells a Tale.'
         />
         <meta property='og:image' content='/main_logo.svg' />
+        <link rel='preconnect' href='https://images.ctfassets.net' />
       </Head>
       <main className='main'>
         <Hero />
