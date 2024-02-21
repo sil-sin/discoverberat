@@ -24,10 +24,10 @@ export const Footer: FC = () => {
         >
           <FaFacebookSquare size={30} />
         </Link>
-        <Link href={'https://facebook.com/discoverberat'}>
+        <Link href={'https://linkedin.com/discoverberat'}>
           <FaLinkedin size={30} />
         </Link>
-        <Link href={'https://instagram.com/discoverberat'}>
+        <Link href={'https://www.instagram.com/real.discoverberat'}>
           <FaInstagramSquare size={30} />
         </Link>
         <Link href={'https://tiktok.com/discoverberat'}>
