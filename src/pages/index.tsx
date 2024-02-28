@@ -64,7 +64,7 @@ function Home(props: any) {
         />
         <meta
           property='twitter:image'
-          content='https://metatags.io/images/meta-tags.png'
+          content='https://images.ctfassets.net/vzi02yirpwbf/5IgNZ5fK06tYapDIIs6bjO/6da1941f117f3cdafd4a0a5374023e23/favicon.ico'
         />
 
         <link rel='preconnect' href='https://images.ctfassets.net' />
