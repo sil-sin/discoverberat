@@ -28,13 +28,45 @@ function Home(props: any) {
           name='viewport'
           content='width=device-width, initial-scale=1.0'
         ></meta>
-        <meta name='description' content='Discover Berat Tours' />
-        <meta property='og:title' content='Discover Berat' />
+
+        <title>Discover Berat - Tour Operator</title>
+        <meta name='title' content='Discover Berat - Tour Operator' />
+        <meta
+          name='description'
+          content='Discover the charm, embrace the stories, and make memories that last a lifetime. Welcome to Discover Berat - Where Every Journey Tells a Tale.'
+        />
+
+        <meta property='og:type' content='website' />
+        <meta property='og:url' content='https://discoverberat.com/' />
+        <meta property='og:title' content='Discover Berat - Tour Operator' />
         <meta
           property='og:description'
           content='Discover the charm, embrace the stories, and make memories that last a lifetime. Welcome to Discover Berat - Where Every Journey Tells a Tale.'
         />
-        <meta property='og:image' content='/main_logo.svg' />
+        <meta
+          property='og:image'
+          content='https://images.ctfassets.net/vzi02yirpwbf/5IgNZ5fK06tYapDIIs6bjO/6da1941f117f3cdafd4a0a5374023e23/favicon.ico'
+        />
+
+        <meta
+          property='twitter:card'
+          content='https://images.ctfassets.net/vzi02yirpwbf/5IgNZ5fK06tYapDIIs6bjO/6da1941f117f3cdafd4a0a5374023e23/favicon.ico'
+        />
+        <meta property='twitter:url' content='https://discoverberat.com/' />
+
+        <meta
+          property='twitter:title'
+          content='Discover Berat - Tour Operator'
+        />
+        <meta
+          property='twitter:description'
+          content='Discover the charm, embrace the stories, and make memories that last a lifetime. Welcome to Discover Berat - Where Every Journey Tells a Tale.'
+        />
+        <meta
+          property='twitter:image'
+          content='https://metatags.io/images/meta-tags.png'
+        />
+
         <link rel='preconnect' href='https://images.ctfassets.net' />
       </Head>
       <main className='main'>
