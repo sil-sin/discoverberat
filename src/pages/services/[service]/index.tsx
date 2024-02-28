@@ -1,5 +1,5 @@
 import { GetStaticPaths, GetStaticProps } from 'next'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 type Service = {
   title: string
@@ -65,7 +65,6 @@ function Page({ service, admin }: { service: Service | null; admin: boolean }) {
         onBlur={handleContentChange}
         dangerouslySetInnerHTML={{ __html: service.description || '' }}
       ></div>
-
     </div>
   )
 }

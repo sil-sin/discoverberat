@@ -1,5 +1,5 @@
 import { useAuthContext } from '@/utils/auth/auth-provider'
-import { FC, use, useEffect, useState } from 'react'
+import { FC } from 'react'
 import styles from './UserMenuDropDown.module.css'
 import Link from 'next/link'
 import Button from '@/components/simple/Button'
