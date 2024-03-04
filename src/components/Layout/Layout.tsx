@@ -1,15 +1,14 @@
 import { Navigation } from '@/components/sectors/Navigation/Navigation'
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
 import { FC, ReactNode, useMemo } from 'react'
 import { Footer } from '../sectors/Footer/Footer'
 import Head from 'next/head'
 import React from 'react'
-import { User } from 'firebase/auth'
-import { useAuthContext } from '@/utils/auth/auth-provider'
+
 import ContactForm from '../ContactForm/ContactForm'
 import Link from 'next/link'
 import Image from 'next/image'
+import CookieBanner from '../CookieBanner/CookieBanner'
 export const metadata: Metadata = {
   title: 'Discover Berat',
   description: 'Discover Berat with our customized guided tours',
@@ -47,6 +46,7 @@ export const Layout: FC<Props> = ({ children, pageTitle }) => {
         </div>
       </Link>
       <ContactForm />
+      <CookieBanner />
       <Footer />
     </main>
   )

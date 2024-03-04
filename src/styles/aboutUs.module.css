@@ -9,16 +9,37 @@
   background-color: var(--background-secondary);
   box-shadow: 0 0 10px var(--shadow);
   border-radius: 8px;
-  gap: 20px;
+  gap: 10px;
+}
+
+.container h2 {
+  margin: 0;
 }
 
 .title {
   color: var(--text-default);
+  margin: 0;
 }
 
 .list strong,
 .description strong {
   color: var(--button-primary-bg);
+}
+
+.list li {
+  margin: 20px auto;
+  padding-left: 0;
+}
+
+.list {
+  padding: 0 10px;
+  margin: 0 auto 20px;
+  list-style: none;
+}
+
+.description {
+  margin: 30px auto;
+  padding: 0 10px;
 }
 
 .description:last-child {
