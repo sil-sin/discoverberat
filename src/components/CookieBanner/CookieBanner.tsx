@@ -40,13 +40,14 @@ const CookieBanner = () => {
               This website uses cookies.
             </span>
             <span className={styles.cookieText}>
-              Why we use cookies?
+              {' '}
+              Why we use cookies? Click to learn more
               <Button
                 variant='link'
                 href='/cookie-policy'
                 className={styles.cookieLink}
               >
-                Learn more
+                Cookie Policy
               </Button>
             </span>
           </div>

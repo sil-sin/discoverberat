@@ -63,7 +63,7 @@ export const Card: FC<Props> = ({
               </span>
               /person
             </span>
-            <Button variant='link' href={learnMoreLink} text='Learn More' />
+            <Button variant='link' href={learnMoreLink} text='Tour details' />
           </p>
         )}
         <div className={styles.linkButton}>
