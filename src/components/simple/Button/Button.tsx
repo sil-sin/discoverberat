@@ -35,7 +35,7 @@ export const Button: FC<Props> = ({
     <button
       name={buttonName ?? 'button'}
       title={buttonName ?? 'button'}
-      area-label={buttonName ?? 'button'}
+      aria-label={buttonName ?? 'button'}
       onClick={onClick}
       className={classnames(
         className,
