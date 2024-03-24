@@ -36,6 +36,7 @@ export const Navigation: FC<{ className?: string }> = ({ className }) => {
           />
         </Link>
         <Button
+          aria-label='Menu'
           className={styles.menuButton}
           variant='secondary'
           onClick={() => {
