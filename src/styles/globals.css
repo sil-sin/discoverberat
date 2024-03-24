@@ -76,7 +76,7 @@
 * {
   box-sizing: border-box;
   scroll-behavior: smooth;
-
+  scroll-snap-align: start;
 }
 
 *::selection {
