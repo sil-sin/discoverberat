@@ -1,70 +1,42 @@
 @font-face {
-    font-family: 'QuartzoBold';
-    /* Provide a unique name for your font */
-    src: url('/fonts/QuartzoBold.ttf') format('truetype');
-    font-weight: 900;
-    font-style: bold
+  font-family: 'QuartzoBold';
+  /* Provide a unique name for your font */
+  src: url('/fonts/QuartzoBold.ttf') format('truetype');
+  font-weight: 900;
+  font-style: bold;
 }
 
 .heroContainer {
-    background-image: url('/map-track-green.svg');
-    background-size: 100%;
-    background-position: top;
-    background-repeat: no-repeat;
-    /* background: radial-gradient(rgba(215, 149, 16, 0.273) 50%, rgba(255, 201, 100, 0.257)); */
-    width: 100vw;
-    object-fit: contain;
-    padding: 10px;
-    display: flex;
-    flex-direction: column;
+  background-size: 100%;
+  background-position: top;
+  background-repeat: no-repeat;
+  width: 100vw;
+  object-fit: contain;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
 }
 
 .heroVideo {
-    width: 100%;
+  width: 100%;
 }
 
 .heroImage {
-    padding: 10px;
-    width: 100%;
-    background: linear-gradient(to right, #47a66a, #63c37a, #7ed089);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-image: url('https://images.ctfassets.net/vzi02yirpwbf/6dPDwtbfzHphRbmEib7ItO/e1a16970170b0a7751cb83ddbe8e52f3/berat.jpg');
-}
-
-.heroImage h1 {
-    font-family: 'QuartzoBold', sans-serif;
-    font-size: 14vw;
-    font-weight: 900;
-    line-height: 0.9em;
-    letter-spacing: 0.15em;
-    text-shadow: 0 0 30px var(--shadow);
-    text-transform: uppercase;
-    text-align: center;
-    pointer-events: none;
-    user-select: none;
-    margin: 5px;
-}
-
-.heroImage h1::selection {
-    background-color: transparent;
-    user-select: none;
+  padding: 10px;
+  width: 100%;
+  max-height: 400px;
+  height: 100%;
+  object-fit: contain;
 }
 
 @media (min-width: 580px) {
-    .heroContainer {
-        align-items: center;
-        background-position: center;
-    }
+  .heroContainer {
+    align-items: center;
+    background-position: center;
+  }
 
-    .bookTourButton {
-        width: 250px;
-        transition: width ease-in-out 0.2s ease-in-out;
-    }
+  .bookTourButton {
+    width: 250px;
+    transition: width ease-in-out 0.2s ease-in-out;
+  }
 }
