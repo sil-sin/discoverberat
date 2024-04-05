@@ -2,7 +2,6 @@ import React, { useState, useEffect, MouseEventHandler } from 'react'
 import dynamic from 'next/dynamic'
 import { FormEvent, ChangeEvent } from 'react'
 import TurndownService from 'turndown'
-import Upload from '@/utils/cloudinary/CloudinaryUpload'
 
 import client, { createContent } from '@/utils/contentful/contentful'
 import { uploadImage } from '@/utils/contentful/uploadImage'
@@ -155,7 +154,7 @@ const EditCreateTab: React.FC<{
             return (
               <div key={field.id}>
                 <label htmlFor={field.id}>{field.name}</label>
-                <Upload getImgUrl={setImgUrl} />
+                {/* <Upload getImgUrl={setImgUrl} /> */}
               </div>
             )
           }

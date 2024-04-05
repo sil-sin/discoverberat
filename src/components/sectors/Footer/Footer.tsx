@@ -22,23 +22,46 @@ export const Footer: FC = () => {
         </Button>
         <div className={styles.socialMediaContainer}>
           <p>Follow us</p>
-          <Link href={'https://twitter.com/DiscoverBerat'}>
+          <Link
+            target={'_blank'}
+            href={'https://twitter.com/DiscoverBerat'}
+            aria-label='Twitter'
+            rel={'noreferrer noopener'}
+          >
             <FaTwitterSquare size={30} />
           </Link>
           <Link
+            rel={'noreferrer noopener'}
+            target={'_blank'}
             href={
               'https://www.facebook.com/people/Discover-Berat/61556334115156/'
             }
+            aria-label='Facebook'
           >
             <FaFacebookSquare size={30} />
           </Link>
-          <Link href={'https://linkedin.com/discoverberat'}>
+          <Link
+            rel={'noreferrer noopener'}
+            target={'_blank'}
+            href={'https://linkedin.com/discoverberat'}
+            aria-label='Linkedin'
+          >
             <FaLinkedin size={30} />
           </Link>
-          <Link href={'https://www.instagram.com/real.discoverberat'}>
+          <Link
+            rel={'noreferrer noopener'}
+            target={'_blank'}
+            href={'https://www.instagram.com/real.discoverberat'}
+            aria-label='Instagram'
+          >
             <FaInstagramSquare size={30} />
           </Link>
-          <Link href={'https://tiktok.com/discoverberat'}>
+          <Link
+            rel={'noreferrer noopener'}
+            target={'_blank'}
+            href={'https://tiktok.com/discoverberat'}
+            aria-label='TikTok'
+          >
             <FaTiktok size={24} />
           </Link>
         </div>

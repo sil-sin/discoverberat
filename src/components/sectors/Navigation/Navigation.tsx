@@ -36,6 +36,8 @@ export const Navigation: FC<{ className?: string }> = ({ className }) => {
           />
         </Link>
         <Button
+          buttonName='Menu button'
+          aria-label='Menu'
           className={styles.menuButton}
           variant='secondary'
           onClick={() => {
@@ -43,9 +45,17 @@ export const Navigation: FC<{ className?: string }> = ({ className }) => {
           }}
         >
           {isMenuShow ? (
-            <AiOutlineClose size={20} className={styles.menuIcon} />
+            <AiOutlineClose
+              size={20}
+              className={styles.menuIcon}
+              name='Menu close'
+            />
           ) : (
-            <AiOutlineMenu size={20} className={styles.menuIcon} />
+            <AiOutlineMenu
+              size={20}
+              className={styles.menuIcon}
+              name='Menu open'
+            />
           )}
         </Button>
       </div>

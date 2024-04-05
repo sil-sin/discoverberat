@@ -11,6 +11,7 @@ type Props = {
   className?: string
   isDisabled?: boolean
   type?: 'submit' | 'reset' | 'button'
+  buttonName?: string
 }
 export const Button: FC<Props> = ({
   onClick,
@@ -20,6 +21,7 @@ export const Button: FC<Props> = ({
   children,
   className,
   isDisabled,
+  buttonName,
 }) => {
   return variant === 'link' ? (
     <a
@@ -31,6 +33,9 @@ export const Button: FC<Props> = ({
     </a>
   ) : (
     <button
+      name={buttonName ?? 'button'}
+      title={buttonName ?? 'button'}
+      aria-label={buttonName ?? 'button'}
       onClick={onClick}
       className={classnames(
         className,
