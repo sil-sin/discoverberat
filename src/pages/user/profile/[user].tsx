@@ -8,12 +8,13 @@ import { adminSDK } from '@/pages/api/adminConfig'
 import { getFirestore } from 'firebase-admin/firestore'
 
 import Dashboard from '@/components/Dashboard/Dashboard'
+import { displayName } from 'react-quill'
 
 const ProfilePage: FC = ({ user, savedItems, data }: any) => {
+
   if (!user || !data) {
     return null
   }
-
   const upcomingBookings =
     data &&
     data.sort((a: any, b: any) => {
@@ -33,11 +34,11 @@ const ProfilePage: FC = ({ user, savedItems, data }: any) => {
         <div className={styles.userInfo}>
           <Image
             src={!!user.picture ? user.picture : '/avatar.svg'}
-            alt={user.name}
+            alt={user.displayName ?? 'Profile Picture'}
             width={50}
             height={50}
           />
-          <h2 className={styles.title}>{'Welcome, ' + user?.name || ''}</h2>
+          <h2 className={styles.title}>{'Welcome, ' + (user?.displayName) ?? ''}</h2>
         </div>
         <Dashboard
           bookings={upcomingBookings}
@@ -60,16 +61,17 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   try {
     const cookies = nookies.get(ctx)
     const authenticatedUser = await adminSDK.auth().verifyIdToken(cookies.token)
+    const user = await adminSDK.auth().getUser(authenticatedUser.uid)
 
     if (
       ctx.params?.user !==
-      authenticatedUser.uid
+      user.uid
     ) {
       return {
         redirect: {
           destination:
             '/user/profile/' +
-            authenticatedUser.uid,
+            user.uid,
           permanent: false,
         },
       }
@@ -88,18 +90,17 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
     await bookingQuery.get().then((querySnapshot) => {
       querySnapshot.forEach((documentSnapshot) => {
         const bookingData = documentSnapshot.data();
-        if (authenticatedUser.uid === bookingData.uid) {
+        if (authenticatedUser.uid === bookingData.uid && bookingData.date) {
           // Convert Firestore Timestamp to JavaScript Date
           const timestamp = bookingData.date;
           const date = new Date(timestamp._seconds * 1000);
 
           // Format date as a string (adjust formatting as needed)
           const dateString = date.toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' }); // Or any other desired format
-
           // Add formatted date to bookingData and push it to the data array
           data.push({ ...bookingData, date: dateString });
         }
-      });
+      })
     });
 
 
@@ -111,10 +112,10 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
           : null
       })
     })
-    console.log(data);
+
     return {
       props: {
-        user: authenticatedUser,
+        user: { ...authenticatedUser, displayName: user.displayName },
         data,
         savedItems: savedItems || null,
       },

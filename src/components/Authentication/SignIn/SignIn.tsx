@@ -38,9 +38,8 @@ export const SignIn: FC<SignUpProps> = ({ className }) => {
       if (!data[fieldName]) {
         setError(fieldName as keyof Inputs, {
           type: 'manual',
-          message: `${
-            fieldName.charAt(0).toUpperCase() + fieldName.slice(1)
-          } is required`,
+          message: `${fieldName.charAt(0).toUpperCase() + fieldName.slice(1)
+            } is required`,
         })
 
         // Focus on the current input field
@@ -53,7 +52,7 @@ export const SignIn: FC<SignUpProps> = ({ className }) => {
     signInWithEmailAndPassword(auth, data.email, data.password)
       .then((result) => {
         router.push(
-          (callbackUrl as string) ?? '/user/profile/' + result.user.displayName
+          (callbackUrl as string) ?? '/user/profile/' + result.user.uid
         )
       })
       .catch((err) => {
