@@ -10,15 +10,12 @@ import app from '@/utils/firebase/firebaseConfig'
 import { useAuthContext } from '@/utils/auth/auth-provider'
 import ReactCalendar from 'react-calendar'
 import 'react-calendar/dist/Calendar.css'
-import 'react-datetime-picker/dist/DateTimePicker.css'
-import 'react-calendar/dist/Calendar.css'
-import 'react-clock/dist/Clock.css'
 import { getTimes } from '@/helpers/getTimes'
 import BookingForm from '@/components/sectors/BookingForm/BookingForm'
 import { getFirestore as getFirestoreAdmin } from 'firebase-admin/firestore'
 import { useRouter } from 'next/router'
 import { adminSDK, initializeAdmin } from '@/pages/api/adminConfig'
-import { stringify } from 'querystring'
+
 import useSaveLater from '@/hooks/useSaveLater'
 import Modal from '@/components/Modal'
 import Toast from '@/components/simple/Toast'
@@ -132,20 +129,20 @@ function New({ booking, unavailableDates }: any) {
     if (formData.guestNumber && !isBookNow) {
       await addDoc(collection(db, 'bookings'), bookingData).then(
         async (res) => {
-          // await addDoc(collection(db, 'mail'), {
-          //   to: bookingData.email,
-          //   message: {
-          //     subject: bookingConfirmationSubject,
-          //     html: bookingConfirmationMessage,
-          //   },
-          // })
-          // await addDoc(collection(db, 'mail'), {
-          //   to: process.env.NEXT_PUBLIC_ADMIN,
-          //   message: {
-          //     subject: subject,
-          //     html: message,
-          //   },
-          // })
+          await addDoc(collection(db, 'mail'), {
+            to: bookingData.email,
+            message: {
+              subject: bookingConfirmationSubject,
+              html: bookingConfirmationMessage,
+            },
+          })
+          await addDoc(collection(db, 'mail'), {
+            to: process.env.NEXT_PUBLIC_ADMIN,
+            message: {
+              subject: subject,
+              html: message,
+            },
+          })
           router.push('new/thank-you?id=' + res.id)
         }
       )

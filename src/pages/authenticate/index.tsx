@@ -15,17 +15,24 @@ const AuthPage = () => {
 
   const router = useRouter()
   const { user, loading } = useAuthContext()
+  const callbackUrl = router.query.callbackUrl as string
 
   useEffect(() => {
-    const callbackUrl = router.query.callbackUrl as string
-
     if (user) {
       const profilePath =
-        '/user/profile/' + user.displayName?.split(' ').join('-').toLowerCase()
+        '/user/profile/' + user?.uid
 
       router.push((callbackUrl as string) ?? profilePath)
     }
   }, [router, router.query.callback, user])
+
+  useEffect(() => {
+   setTimeout(() => {
+     if (callbackUrl) {
+       alert('Please sign in to continue')
+     }
+   })
+  }, [])
 
   return (
     <div className={styles.container}>

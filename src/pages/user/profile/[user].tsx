@@ -10,9 +10,10 @@ import { getFirestore } from 'firebase-admin/firestore'
 import Dashboard from '@/components/Dashboard/Dashboard'
 
 const ProfilePage: FC = ({ user, savedItems, data }: any) => {
-  if (!user) {
+  if (!user || !data) {
     return null
   }
+
   const upcomingBookings =
     data &&
     data.sort((a: any, b: any) => {
@@ -23,6 +24,8 @@ const ProfilePage: FC = ({ user, savedItems, data }: any) => {
       // Compare the dates
       return dateA.getTime() - dateB.getTime()
     })
+
+
 
   return (
     <div className={styles.container}>
@@ -60,13 +63,13 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 
     if (
       ctx.params?.user !==
-      authenticatedUser.name.split(' ').join('-').toLowerCase()
+      authenticatedUser.uid
     ) {
       return {
         redirect: {
           destination:
             '/user/profile/' +
-            authenticatedUser.name.split(' ').join('-').toLowerCase(),
+            authenticatedUser.uid,
           permanent: false,
         },
       }
@@ -82,13 +85,23 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
     //Todo: Add logic for duplicate saved items
     //Todo: Add logic for delete saved items
     //Todo: Move them to utils functions
-
     await bookingQuery.get().then((querySnapshot) => {
-      return querySnapshot.forEach((documentSnapshot) => {
-        authenticatedUser.uid === documentSnapshot.data().uid &&
-          data.push(documentSnapshot.data())
-      })
-    })
+      querySnapshot.forEach((documentSnapshot) => {
+        const bookingData = documentSnapshot.data();
+        if (authenticatedUser.uid === bookingData.uid) {
+          // Convert Firestore Timestamp to JavaScript Date
+          const timestamp = bookingData.date;
+          const date = new Date(timestamp._seconds * 1000);
+
+          // Format date as a string (adjust formatting as needed)
+          const dateString = date.toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' }); // Or any other desired format
+
+          // Add formatted date to bookingData and push it to the data array
+          data.push({ ...bookingData, date: dateString });
+        }
+      });
+    });
+
 
     const savedItems: any[] = []
     await savedItemsQuery.get().then((querySnapshot) => {
@@ -98,7 +111,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
           : null
       })
     })
-
+    console.log(data);
     return {
       props: {
         user: authenticatedUser,
