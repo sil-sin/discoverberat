@@ -23,7 +23,7 @@ export default function Dashboard({ bookings, savedItems, user }: any) {
                 <th>E-mail</th>
               </tr>
               <tr>
-                <td>{user.name}</td>
+                <td>{user.displayName}</td>
                 <td className={styles.contactDetailsEmail}>{user.email}</td>
               </tr>
             </tbody>
@@ -135,9 +135,9 @@ export default function Dashboard({ bookings, savedItems, user }: any) {
                           variant='tertiary'
                           text=' More info'
                           onClick={() =>
-                            (window.location.href = `/tours/${itemLink(
-                              savedItem
-                            )}`)
+                          (window.location.href = `/tours/${itemLink(
+                            savedItem
+                          )}`)
                           }
                         />
                       </td>

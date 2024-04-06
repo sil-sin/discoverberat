@@ -21,11 +21,13 @@ import Modal from '@/components/Modal'
 import Toast from '@/components/simple/Toast'
 
 const startDay = new Date().setDate(new Date().getDate() + 1)
-const startDateObject = new Date(startDay)
+const startDateObject = new Date(startDay);
+startDateObject.setHours(9); // Set the hours to 9:00 AM
+startDateObject.setMinutes(0); // Set the minutes to 0
 
 function New({ booking, unavailableDates }: any) {
   const [selectedDate, setSelectedDate] = useState<Date>(startDateObject)
-  const [selectedDateTime, setSelectedDateTime] = useState<Date | null>(null)
+  const [selectedDateTime, setSelectedDateTime] = useState<Date | null>(startDateObject)
   const [availableTimes, setAvailableTimes] = useState<any>([])
   const [isPrivate, setIsPrivate] = useState<boolean>(false)
   const [isShowModal, setIsShowModal] = useState<boolean>(false)
@@ -153,6 +155,11 @@ function New({ booking, unavailableDates }: any) {
 
   const handleAvailability = (date: Date) => {
     setSelectedDate(date)
+    if (isDayTrip) {
+      const defaultTime = new Date(date);
+      defaultTime.setHours(9, 0, 0); // Set hours and minutes to 9:00 am
+      setSelectedDateTime(defaultTime);
+    }
   }
 
   const nextDay = new Date(currentDay)
@@ -224,9 +231,9 @@ function New({ booking, unavailableDates }: any) {
               />
               <>
                 {selectedDate &&
-                availableTimes &&
-                availableTimes.length &&
-                !isDayTrip ? (
+                  availableTimes &&
+                  availableTimes.length &&
+                  !isDayTrip ? (
                   <ul className={styles.timesContainer}>
                     <p>Select starting time</p>
                     <div className={styles.times}>
