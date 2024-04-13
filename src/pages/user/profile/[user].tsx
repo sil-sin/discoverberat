@@ -51,12 +51,7 @@ const ProfilePage: FC = ({ user, savedItems, data }: any) => {
 }
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
-  const CACHE_TIME_SECONDS = 12 * 60 * 60 // 12 hours
-  // Set caching headers for the response
-  ctx.res.setHeader(
-    'Cache-Control',
-    `public, s-maxage=${CACHE_TIME_SECONDS}, stale-while-revalidate=59`
-  )
+
 
   try {
     const cookies = nookies.get(ctx)
