@@ -33,3 +33,9 @@
 .errorInput:focus {
     outline: 1px solid red;
 }
+
+
+.forgotPasswordLink {
+    margin: 10px;
+    width: max-content;
+}

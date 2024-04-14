@@ -65,6 +65,7 @@
     font-size: medium;
     font-weight: 450;
     padding: 5px 10px;
+    cursor: pointer;
 }
 
 .link:hover {
