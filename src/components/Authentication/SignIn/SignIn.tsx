@@ -1,5 +1,5 @@
 import classnames from 'classnames'
-import { FC, useEffect } from 'react'
+import { FC } from 'react'
 import styles from '../Auth.module.css'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import Button from '@/components/simple/Button'
@@ -38,8 +38,9 @@ export const SignIn: FC<SignUpProps> = ({ className }) => {
       if (!data[fieldName]) {
         setError(fieldName as keyof Inputs, {
           type: 'manual',
-          message: `${fieldName.charAt(0).toUpperCase() + fieldName.slice(1)
-            } is required`,
+          message: `${
+            fieldName.charAt(0).toUpperCase() + fieldName.slice(1)
+          } is required`,
         })
 
         // Focus on the current input field
@@ -105,7 +106,14 @@ export const SignIn: FC<SignUpProps> = ({ className }) => {
             )}
           </div>
         ))}
-
+        <Button
+          className={styles.forgotPasswordLink}
+          variant='link'
+          text={'Forgot password'}
+          onClick={() => {
+            router.push('/authenticate/forgot-password')
+          }}
+        />
         <Button
           type='submit'
           text={'Sign in'}

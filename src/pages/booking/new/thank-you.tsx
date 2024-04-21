@@ -24,7 +24,7 @@ export default function ThankYouPage() {
             const data = docSnapshot.data() as DocumentData
             setBooking(data)
           } else {
-            console.log('Document does not exist')
+            console.warn('Document does not exist')
             setBooking(null)
           }
         } catch (error) {

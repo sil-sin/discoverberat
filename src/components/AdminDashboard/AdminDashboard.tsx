@@ -1,14 +1,9 @@
 import React from 'react'
-import styles from './Dashboard.module.css'
+import styles from './AdminDashboard.module.css'
 
-import classNames from 'classnames'
-import Button from '../simple/Button/index'
-export default function Dashboard({ bookings, savedItems, user }: any) {
+export default function AdminDashboard({ bookings, user }: any) {
   if (!user) {
     return null
-  }
-  const itemLink = (item: any) => {
-    return item.title.replace(/&/g, 'and').split(' ').join('-').toLowerCase()
   }
 
   return (
@@ -54,7 +49,7 @@ export default function Dashboard({ bookings, savedItems, user }: any) {
         </section>
 
         <section className={styles.bookingTable}>
-          <h3>Bookings</h3>
+          <h3>All bookings</h3>
           {bookings?.map((booking: any, index: any) => (
             <div key={index + booking.uid} className={styles.tableSegment}>
               <input
@@ -67,7 +62,8 @@ export default function Dashboard({ bookings, savedItems, user }: any) {
                 htmlFor={index + booking.uid}
                 className={styles.tableSegmentTitle}
               >
-                {booking.title}
+                <span> {booking.title}</span> <span>{booking.date}</span>
+                <span>{booking.isPaid ? 'Paid' : 'Not paid'}</span>
               </label>
               <div className={styles.tableWrapper}>
                 <table>
@@ -85,6 +81,10 @@ export default function Dashboard({ bookings, savedItems, user }: any) {
                       <td>{booking.booker}</td>
                     </tr>
                     <tr>
+                      <th>Booker email</th>
+                      <td>{booking.email}</td>
+                    </tr>
+                    <tr>
                       <th>Price</th>
                       <td>
                         {booking.currency}
@@ -98,49 +98,6 @@ export default function Dashboard({ bookings, savedItems, user }: any) {
                     <tr>
                       <th>Guest number</th>
                       <td>{booking.guestNumber} guest(s)</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          ))}
-        </section>
-        <section className={classNames(styles.bookingTable, styles.savedItems)}>
-          <h3>Saved items</h3>
-          {savedItems?.map((savedItem: any) => (
-            <div key={savedItem.id} className={styles.tableSegment}>
-              <input
-                type='checkbox'
-                id={savedItem.id}
-                name='segment-checker'
-                value=''
-              />
-              <label
-                htmlFor={savedItem.id}
-                className={styles.tableSegmentTitle}
-              >
-                {savedItem.title}
-              </label>
-              <div className={styles.tableWrapper}>
-                <table>
-                  <tbody>
-                    <tr>
-                      <th>Price</th>
-                      <td>
-                        {savedItem.currency}
-                        {savedItem.price} / person
-                      </td>
-                      <td>
-                        <Button
-                          variant='tertiary'
-                          text=' More info'
-                          onClick={() =>
-                            (window.location.href = `/tours/${itemLink(
-                              savedItem
-                            )}`)
-                          }
-                        />
-                      </td>
                     </tr>
                   </tbody>
                 </table>

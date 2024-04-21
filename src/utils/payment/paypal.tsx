@@ -65,7 +65,7 @@ const PaypalCheckoutButton: FC<Props> = ({ products, onSubmit }) => {
           handleApprove(data.orderID)
         }}
         onCancel={() => {
-          console.log('Transaction cancelled')
+          console.info('Transaction cancelled')
         }}
         onError={(err) => console.error('PayPal Error:', err)}
       />
@@ -75,7 +75,7 @@ const PaypalCheckoutButton: FC<Props> = ({ products, onSubmit }) => {
         }}
         fundingSource='card'
         createOrder={(data, actions) => {
-          console.log({ data, actions })
+          console.info({ data, actions })
           return actions.order.create({
             purchase_units: [
               {
@@ -89,11 +89,11 @@ const PaypalCheckoutButton: FC<Props> = ({ products, onSubmit }) => {
         }}
         onApprove={async (data, actions) => {
           const order: any = await actions?.order?.capture()
-          console.log('Capture result', order)
+          console.info('Capture result', order)
           handleApprove(data.orderID)
         }}
         onCancel={() => {
-          console.log('Transaction cancelled')
+          console.info('Transaction cancelled')
         }}
         onError={(err) => console.error('PayPal Error:', err)}
       />
