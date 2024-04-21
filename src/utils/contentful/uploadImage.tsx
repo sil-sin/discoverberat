@@ -36,7 +36,7 @@ export const uploadImage = async (imgUrl: string) => {
     // Publish the asset to make it available
     const publishedAsset = await uploadedAsset.publish()
 
-    console.log('Image uploaded and published:', publishedAsset)
+    console.info('Image uploaded and published:', publishedAsset)
     return publishedAsset
   } catch (error) {
     console.error('Error uploading image:', error)
