@@ -4,7 +4,7 @@ import Image from 'next/image'
 import styles from './Tour.module.css'
 import Button from '../simple/Button'
 import { useRouter } from 'next/router'
-import { RatingRead } from '../simple/Rating/Rating'
+// import { RatingRead } from '../simple/Rating/Rating'
 
 export const Tour: FC<{ tour: any }> = ({ tour }) => {
   const { price, title, description, currency, imgUrl, url } = tour
@@ -26,7 +26,7 @@ export const Tour: FC<{ tour: any }> = ({ tour }) => {
         }}
         className={styles.tourContainer}
       >
-        <RatingRead />
+        {/* <RatingRead /> */}
         <Image
           priority
           width={800}
