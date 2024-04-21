@@ -1,6 +1,6 @@
 import React from 'react'
 import styles from './Dashboard.module.css'
-import useSaveLater from '@/hooks/useSaveLater'
+
 import classNames from 'classnames'
 import Button from '../simple/Button/index'
 export default function Dashboard({ bookings, savedItems, user }: any) {
@@ -135,9 +135,9 @@ export default function Dashboard({ bookings, savedItems, user }: any) {
                           variant='tertiary'
                           text=' More info'
                           onClick={() =>
-                          (window.location.href = `/tours/${itemLink(
-                            savedItem
-                          )}`)
+                            (window.location.href = `/tours/${itemLink(
+                              savedItem
+                            )}`)
                           }
                         />
                       </td>

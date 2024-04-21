@@ -60,7 +60,7 @@ export const editEntry = async (entryId: string, fields: any) => {
       return entry.update()
     })
     .then((publishedEntry: any) => {
-      console.log('Published Entry:', publishedEntry)
+      console.info('Published Entry:', publishedEntry)
     })
     .catch(console.error)
 }
@@ -72,7 +72,7 @@ export const editEntry = async (entryId: string, fields: any) => {
 //     const entry = await environment.getEntry(entryId)
 
 //     await entry.publish()
-//     console.log(`Entry ${entryId} published successfully.`)
+//     console.info(`Entry ${entryId} published successfully.`)
 //   } catch (error) {
 //     console.error('Error publishing entry:', error)
 //   }

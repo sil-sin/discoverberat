@@ -8,7 +8,7 @@ import {
   where,
   addDoc,
 } from 'firebase/firestore'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 const useSaveLater = (booking: any, url: string) => {
   const [isSuccess, setIsSuccess] = useState(false)
@@ -17,7 +17,6 @@ const useSaveLater = (booking: any, url: string) => {
   const router = useRouter()
 
   const handleSaveLater = async () => {
-    setIsTouched(true)
     if (!user) {
       return router.replace(
         '/authenticate?callbackUrl=/booking/new?tour=' + url
@@ -32,18 +31,24 @@ const useSaveLater = (booking: any, url: string) => {
         query(collection(db, 'savedBooking'), where('uid', '==', user.uid))
       )
 
-      if (querySnapshot.empty) {
+      //find by id
+      const existingBooking = querySnapshot.docs.find((doc) => {
+        return doc.data().id === booking.id
+      })
+
+      if (existingBooking) {
+        console.warn('Duplicate document found. Not saving.')
+        setIsSuccess(false)
+        setIsTouched(true)
         // No existing document found, proceed to save
+      } else {
+        // Document with the same content already exists
         await addDoc(collection(db, 'savedBooking'), {
           ...booking,
           uid: user.uid,
         })
         setIsSuccess(true)
         router.push('#success')
-      } else {
-        // Document with the same content already exists
-        console.warn('Duplicate document found. Not saving.')
-        setIsSuccess(false)
       }
     } catch (error) {
       console.error('Error saving booking:', error)

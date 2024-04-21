@@ -1,5 +1,5 @@
 .modalContainer {
-  position: absolute;
+  position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -10,6 +10,11 @@
   box-shadow: 0 0 0 300vw var(--shadow);
   display: flex;
   flex-direction: column;
+
+  @media (max-width: 768px) {
+    width: 90vw;
+
+  }
 }
 
 .closeButton {
@@ -18,4 +23,35 @@
   right: 0;
   padding: 0;
   background-color: transparent;
+}
+
+.ctaContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+
+  @media(max-width: 768px) {
+    flex-direction: column;
+  }
+}
+
+.cta {
+  border: 2px solid var(--alert-success-border);
+  padding: 10px;
+  border-radius: 10px;
+  text-align: center;
+  text-decoration: none;
+  color: var(--alert-success-text);
+  min-width: 200px;
+
+  @media(max-width: 768px) {
+    flex-direction: column;
+    width: 100%;
+
+  }
+
+  &:hover {
+    background-color: var(--alert-success-bg);
+  }
 }

@@ -21,13 +21,15 @@ import Modal from '@/components/Modal'
 import Toast from '@/components/simple/Toast'
 
 const startDay = new Date().setDate(new Date().getDate() + 1)
-const startDateObject = new Date(startDay);
-startDateObject.setHours(9); // Set the hours to 9:00 AM
-startDateObject.setMinutes(0); // Set the minutes to 0
+const startDateObject = new Date(startDay)
+startDateObject.setHours(9) // Set the hours to 9:00 AM
+startDateObject.setMinutes(0) // Set the minutes to 0
 
 function New({ booking, unavailableDates }: any) {
   const [selectedDate, setSelectedDate] = useState<Date>(startDateObject)
-  const [selectedDateTime, setSelectedDateTime] = useState<Date | null>(startDateObject)
+  const [selectedDateTime, setSelectedDateTime] = useState<Date | null>(
+    startDateObject
+  )
   const [availableTimes, setAvailableTimes] = useState<any>([])
   const [isPrivate, setIsPrivate] = useState<boolean>(false)
   const [isShowModal, setIsShowModal] = useState<boolean>(false)
@@ -40,7 +42,7 @@ function New({ booking, unavailableDates }: any) {
   const tourUrl = '/authenticate?callbackUrl=/booking/new?tour=' + booking.url
 
   const { handleSaveLater, isSuccess, isTouched } = useSaveLater(
-    { ...booking, id: user?.uid },
+    { ...booking },
     tourUrl
   )
   const currentDay = new Date().setDate(new Date().getDate() + 1)
@@ -156,9 +158,9 @@ function New({ booking, unavailableDates }: any) {
   const handleAvailability = (date: Date) => {
     setSelectedDate(date)
     if (isDayTrip) {
-      const defaultTime = new Date(date);
-      defaultTime.setHours(9, 0, 0); // Set hours and minutes to 9:00 am
-      setSelectedDateTime(defaultTime);
+      const defaultTime = new Date(date)
+      defaultTime.setHours(9, 0, 0) // Set hours and minutes to 9:00 am
+      setSelectedDateTime(defaultTime)
     }
   }
 
@@ -194,11 +196,15 @@ function New({ booking, unavailableDates }: any) {
     <div>
       {isShowModal && (
         <Modal
+          modalCta={[
+            { ctaText: 'Home', ctaUrl: '/' },
+            { ctaText: 'Saved tours', ctaUrl: '/user/profile/' + user?.uid },
+          ]}
           id='success'
           onClose={handleModalClose}
           withCTA={true}
           modalTitle={'Success'}
-          modalDescription={'Your booking has been saved on your profile'}
+          modalDescription={`This tour has been saved on your profile. <br> Click on <em>"Saved tours"</em> to view all your saved items, or <em>"Home"</em> to go back to the home page.`}
         />
       )}
       <div onClick={() => setIsShowModal(false)}>
@@ -231,9 +237,9 @@ function New({ booking, unavailableDates }: any) {
               />
               <>
                 {selectedDate &&
-                  availableTimes &&
-                  availableTimes.length &&
-                  !isDayTrip ? (
+                availableTimes &&
+                availableTimes.length &&
+                !isDayTrip ? (
                   <ul className={styles.timesContainer}>
                     <p>Select starting time</p>
                     <div className={styles.times}>
@@ -410,6 +416,7 @@ export const getServerSideProps = async ({
       },
     }
   }
+
   if (tourData) {
     return {
       props: {

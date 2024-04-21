@@ -11,7 +11,6 @@ export default function ForgotPassword() {
     sendPasswordResetEmail(auth, emailRef.current)
   }
 
-  console.log(emailRef.current)
   return (
     <div className='formContainer'>
       <ResetPassword
