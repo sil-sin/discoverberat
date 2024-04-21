@@ -11,11 +11,13 @@ export const RatingRead: FC<Props> = ({ value = 5, readOnly = true }) => {
       <Rating
         value={value}
         count={5}
-        size='lg'
+        size='md'
         color='green'
         readOnly={readOnly}
-      />{' '}
+      />
+      {'  '}
       {value}
+      {'  '}
       reviews
     </div>
   )

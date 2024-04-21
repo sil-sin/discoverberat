@@ -26,6 +26,7 @@ export const Tour: FC<{ tour: any }> = ({ tour }) => {
         }}
         className={styles.tourContainer}
       >
+        <RatingRead />
         <Image
           priority
           width={800}
@@ -33,7 +34,6 @@ export const Tour: FC<{ tour: any }> = ({ tour }) => {
           alt={title + 'image'}
           src={imageUrl}
         />
-        Reviews : <RatingRead />
         <div dangerouslySetInnerHTML={{ __html: htmlTextField }} />
         <p>
           Price: {price} {currency} per person
