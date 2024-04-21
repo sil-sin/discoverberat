@@ -69,6 +69,11 @@
     cursor: pointer;
     font-size: 18px;
     font-weight: 700;
+    gap: 10px;
+}
+
+.tableSegment span:first-child {
+    flex-basis: 348px
 }
 
 .contactDetailsTable .contactDetailsEmail {

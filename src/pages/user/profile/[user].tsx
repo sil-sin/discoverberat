@@ -100,7 +100,13 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
       querySnapshot.forEach((documentSnapshot) => {
         const bookingData = documentSnapshot.data()
         const timestamp = bookingData.date
-        const date = new Date(timestamp._seconds * 1000)
+        const date = new Date(timestamp._seconds * 1000) // add filter for date before today
+
+        if (date < new Date()) {
+          console.log(date)
+
+          return
+        }
 
         // Format date as a string (adjust formatting as needed)
         const dateString = date.toLocaleString('en-US', {

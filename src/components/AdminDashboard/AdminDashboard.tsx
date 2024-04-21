@@ -62,7 +62,7 @@ export default function AdminDashboard({ bookings, user }: any) {
                 htmlFor={index + booking.uid}
                 className={styles.tableSegmentTitle}
               >
-                <span> {booking.title}</span> | <span>{booking.date}</span> |{' '}
+                <span> {booking.title}</span> <span>{booking.date}</span>
                 <span>{booking.isPaid ? 'Paid' : 'Not paid'}</span>
               </label>
               <div className={styles.tableWrapper}>
