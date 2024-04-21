@@ -32,12 +32,14 @@ export default function AdminDashboard({ bookings, user }: any) {
                 <tr>
                   <th>Booking name</th>
                   <th>Pickup</th>
+                  <th>Email</th>
                   <th>Date and Time</th>
                   <th>Payment</th>
                 </tr>
                 <tr>
                   <td>{bookings[0].title}</td>
                   <td>{bookings[0].pickup}</td>
+                  <td>{bookings[0].email}</td>
                   <td>{bookings[0].date}</td>
                   <td>{bookings[0].isPaid ? 'Paid' : 'Not paid'}</td>
                 </tr>

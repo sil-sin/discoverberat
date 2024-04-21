@@ -10,23 +10,12 @@ import { getFirestore } from 'firebase-admin/firestore'
 import Dashboard from '@/components/Dashboard/Dashboard'
 import AdminDashboard from '@/components/AdminDashboard/AdminDashboard'
 
-const ProfilePage: FC = ({ user, savedItems, data }: any) => {
-  if (!user || !data) {
+const ProfilePage: FC = ({ user, savedItems, upcomingBookings }: any) => {
+  if (!user) {
     return null
   }
 
-  const upcomingBookings =
-    data &&
-    data.sort((a: any, b: any) => {
-      // Convert date strings to Date objects
-      const dateA = new Date(a.date)
-      const dateB = new Date(b.date)
-
-      // Compare the dates
-      return dateA.getTime() - dateB.getTime()
-    })
-
-  if (user.isAdmin && data) {
+  if (user.isAdmin) {
     return (
       <div className={styles.container}>
         <div className={styles.userContainer}>
@@ -100,25 +89,14 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
       querySnapshot.forEach((documentSnapshot) => {
         const bookingData = documentSnapshot.data()
         const timestamp = bookingData.date
-        const date = new Date(timestamp._seconds * 1000) // add filter for date before today
+        const date = new Date(timestamp._seconds * 1000)
 
         if (date < new Date()) {
-          console.log(date)
-
           return
         }
 
-        // Format date as a string (adjust formatting as needed)
-        const dateString = date.toLocaleString('en-US', {
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric',
-          hour: 'numeric',
-          minute: 'numeric',
-        })
-
         if (authenticatedUser.uid === process.env.ADMIN_ID) {
-          data.push({ ...bookingData, date: dateString })
+          data.push(bookingData)
           return
         }
 
@@ -126,8 +104,25 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
           // Convert Firestore Timestamp to JavaScript Date
           // Or any other desired format
           // Add formatted date to bookingData and push it to the data array
-          data.push({ ...bookingData, date: dateString })
+          data.push(bookingData)
         }
+      })
+    })
+
+    // Sort the data array by date in ascending order
+    data.sort((a: any, b: any) => {
+      return a.date.seconds - b.date.seconds
+    })
+
+    // Format date as a string for each document in the sorted data array
+    data.forEach((item: any) => {
+      const date = new Date(item.date.seconds * 1000)
+      item.date = date.toLocaleString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
       })
     })
 
@@ -143,7 +138,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
     if (user.uid === process.env.ADMIN_ID) {
       return {
         props: {
-          data,
+          upcomingBookings: data,
           user: {
             ...authenticatedUser,
             displayName: user.displayName,

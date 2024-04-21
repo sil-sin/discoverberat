@@ -160,6 +160,7 @@
     background-color: var(--alert-warning-bg);
 }
 
+
 /* END Tables Accordion Styles */
 
 /* Data Page Media Queries */
@@ -181,9 +182,21 @@
     .contactDetailsMobile {
         display: none;
     }
+
+
 }
 
 @media (max-width: 860px) {
+    .upcomingBookingTable tbody {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-around;
+    }
+
+    .upcomingBookingTable tr {
+        display: flex;
+        flex-direction: column;
+    }
 
     .passengersDesktop,
     .contactDetailsDesktop {
