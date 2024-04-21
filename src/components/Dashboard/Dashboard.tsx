@@ -7,6 +7,7 @@ export default function Dashboard({ bookings, savedItems, user }: any) {
   if (!user) {
     return null
   }
+
   const itemLink = (item: any) => {
     return item.title.replace(/&/g, 'and').split(' ').join('-').toLowerCase()
   }
@@ -31,7 +32,7 @@ export default function Dashboard({ bookings, savedItems, user }: any) {
         </section>
         <section className={styles.upcomingBooking}>
           <h3>Upcoming booking</h3>
-          {bookings.length > 0 ? (
+          {bookings?.length > 0 ? (
             <table className={styles.upcomingBookingTable}>
               <tbody>
                 <tr>

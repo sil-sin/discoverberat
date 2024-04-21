@@ -151,7 +151,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
     return {
       props: {
         user: { ...authenticatedUser, displayName: user.displayName },
-        data,
+        upcomingBookings: data,
         savedItems: savedItems || null,
       },
     }
