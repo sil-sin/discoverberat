@@ -91,6 +91,9 @@ export const SignIn: FC<SignUpProps> = ({ className }) => {
               {fieldName.charAt(0).toUpperCase() + fieldName.slice(1)}
             </label>
             <input
+              autoComplete={
+                fieldName === 'password' ? 'current-password' : 'current-email'
+              }
               className={errors[fieldName as keyof Inputs] && styles.errorInput}
               type={fieldName === 'password' ? 'password' : 'text'}
               id={fieldName}
