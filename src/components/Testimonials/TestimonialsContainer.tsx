@@ -60,7 +60,7 @@ export const TestimonialContainer: FC<TestimonialContainerProps> = ({
         </p>
       </div>
       <Swiper
-        style={{ maxWidth: '900px', zIndex: 0 }}
+        style={{ maxWidth: '900px', width: '100%', zIndex: 0 }}
         effect={'coverflow'}
         grabCursor={true}
         centeredSlides={true}
