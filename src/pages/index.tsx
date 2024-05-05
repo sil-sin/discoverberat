@@ -1,16 +1,15 @@
 import Hero from '../components/sectors/Hero/index'
 import OurServices from '@/components/sectors/OurServices'
-
 import Tours from '@/components/sectors/Tours'
-import { Transfers } from '@/components/sectors/Transfers/Transfers'
 import Button from '@/components/simple/Button'
 import { getEntriesByType } from '@/utils/contentful/contentful'
 import { GetServerSideProps } from 'next'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
+import { TestimonialContainer } from '@/components/Testimonials/TestimonialsContainer'
 
 function Home(props: any) {
-  const { tours, transfers } = props
+  const { tours, transfers, reviews } = props
   const router = useRouter()
 
   if (!tours || !transfers) return
@@ -83,7 +82,7 @@ function Home(props: any) {
         >
           View all tours
         </Button>
-        <Transfers transfers={[...transfers]} />
+        <TestimonialContainer reviews={reviews} />
       </main>
     </>
   )
@@ -102,13 +101,16 @@ export const getServerSideProps: GetServerSideProps = async ({ res }) => {
     const tours = await getEntriesByType('tourPage')
     const transfers = await getEntriesByType('transfers')
     const services = await getEntriesByType('serviceCard')
+    const reviews = fetch(
+      'https://maps.googleapis.com/maps/api/place/details/json?place_id=ChIJQ1Y_cDuZWhMRu6CZ0pwtbwA&key=AIzaSyDLEwujzNxMGHIrC1i9ZGG_Lm3LkyKrLWE'
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        return data.result?.reviews.map((item: any) => item)
+      })
 
     return {
-      props: {
-        tours,
-        transfers,
-        services,
-      },
+      props: { reviews: [...(await reviews)], tours, transfers, services },
     }
   } catch (error) {
     console.error('Error fetching data:', error)
