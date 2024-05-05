@@ -8,7 +8,13 @@ import Button from '../../simple/Button/index'
 export const Hero: FC = () => {
   return (
     <div className={styles.heroContainer}>
-      <Image className={styles.heroImage} src={'/map-track-green.png'} alt='berat image' width={1000} height={600} />
+      <Image
+        className={styles.heroImage}
+        src={'/map-track-green.png'}
+        alt='berat image'
+        width={500}
+        height={500}
+      />
       <Button
         className={styles.bookTourButton}
         variant='primary'
@@ -18,7 +24,6 @@ export const Hero: FC = () => {
       >
         Book a Tour
       </Button>
-
     </div>
   )
 }
