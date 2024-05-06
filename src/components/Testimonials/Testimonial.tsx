@@ -2,13 +2,12 @@ import styles from './Testimonial.module.css'
 import Image from 'next/image'
 export const Testimonial = ({ review }: any) => {
   if (!review) return null
-  console.log(review)
 
   return (
     <>
       {review.text && (
         <div key={review?.author_name} className={styles.testimonialContainer}>
-          <h4>{review?.author_name}</h4>
+          <p className={styles.testimonialAuthor}>{review?.author_name}</p>
           <Image
             className={styles.testimonialImage}
             src={review?.profile_photo_url}
@@ -16,6 +15,7 @@ export const Testimonial = ({ review }: any) => {
             width={170}
             height={170}
           />
+
           <div className={styles.testimonialRating}>
             {Array(review?.rating)
               .fill(0)
@@ -24,8 +24,11 @@ export const Testimonial = ({ review }: any) => {
                   &#9733;
                 </span>
               ))}
+            <p className={styles.testimonialRelativeTime}>
+              ({review?.relative_time_description})
+            </p>
           </div>
-          <h4 className={styles.testimonialQuote}>&ldquo;</h4>
+          <p className={styles.testimonialQuote}>&ldquo;</p>
           <p className={styles.testimonialText}>{review?.text}</p>
         </div>
       )}

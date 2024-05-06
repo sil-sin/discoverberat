@@ -24,6 +24,7 @@
 .testimonialQuote {
     font-family: 'Times New Roman', Times, serif;
     font-size: 70px;
+    font-weight: bolder;
     margin: 0;
     margin-top: 20px;
     opacity: .4;
@@ -46,4 +47,15 @@
 .testimonialRating {
     margin-top: 20px;
     height: max-content;
+}
+
+.testimonialRelativeTime {
+    font-size: 12px;
+    opacity: .5;
+
+}
+
+.testimonialAuthor {
+    font-weight: 600;
+    font-size: 20px;
 }
