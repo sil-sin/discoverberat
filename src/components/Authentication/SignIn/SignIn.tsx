@@ -80,6 +80,7 @@ export const SignIn: FC<SignUpProps> = ({ className }) => {
   return (
     <div className={classnames(styles.formContainer, className)}>
       <form
+        data-testid='signin-form'
         className={classnames(styles.formContainer, className)}
         action=''
         method='post'

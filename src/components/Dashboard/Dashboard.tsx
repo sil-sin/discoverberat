@@ -13,9 +13,12 @@ export default function Dashboard({ bookings, savedItems, user }: any) {
   }
 
   return (
-    <div className={styles.body}>
+    <div data-testid='dashboard' className={styles.body}>
       <main className={styles.dataPage}>
-        <section className={styles.contactDetailsTable}>
+        <section
+          data-testid='contact-details-table'
+          className={styles.contactDetailsTable}
+        >
           <h3>User data</h3>
           <table className={''}>
             <tbody>
@@ -30,7 +33,10 @@ export default function Dashboard({ bookings, savedItems, user }: any) {
             </tbody>
           </table>
         </section>
-        <section className={styles.upcomingBooking}>
+        <section
+          data-testid='upcoming-booking'
+          className={styles.upcomingBooking}
+        >
           <h3>Upcoming booking</h3>
           {bookings?.length > 0 ? (
             <table className={styles.upcomingBookingTable}>

@@ -7,19 +7,29 @@ export default function AdminDashboard({ bookings, user }: any) {
   }
 
   return (
-    <div className={styles.body}>
+    <div data-testid='admin-dashboard' className={styles.body}>
       <main className={styles.dataPage}>
-        <section className={styles.contactDetailsTable}>
+        <section
+          data-testid='admin-dashboard-user-data'
+          className={styles.contactDetailsTable}
+        >
           <h3>User data</h3>
-          <table className={''}>
+          <table>
             <tbody>
               <tr>
                 <th>Full name</th>
                 <th>E-mail</th>
               </tr>
               <tr>
-                <td>{user.displayName}</td>
-                <td className={styles.contactDetailsEmail}>{user.email}</td>
+                <td data-testid='admin-dashboard-user-name'>
+                  {user.displayName}
+                </td>
+                <td
+                  data-testid='admin-dashboard-user-email'
+                  className={styles.contactDetailsEmail}
+                >
+                  {user.email}
+                </td>
               </tr>
             </tbody>
           </table>
@@ -37,7 +47,7 @@ export default function AdminDashboard({ bookings, user }: any) {
                   <th>Payment</th>
                 </tr>
                 <tr>
-                  <td>{bookings[0].title}</td>
+                  <td data-testid='admin-dashboard-upcoming-booking-name'>{bookings[0].title}</td>
                   <td>{bookings[0].pickup}</td>
                   <td>{bookings[0].email}</td>
                   <td>{bookings[0].date}</td>

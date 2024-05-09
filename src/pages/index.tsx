@@ -6,7 +6,7 @@ import { getEntriesByType } from '@/utils/contentful/contentful'
 import { GetServerSideProps } from 'next'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import { TestimonialContainer } from '@/components/Testimonials/TestimonialsContainer'
+import { TestimonialContainer } from '@/components/sectors/Testimonials/TestimonialsContainer'
 
 function Home(props: any) {
   const { tours, transfers, reviews } = props
