@@ -50,8 +50,8 @@
     width: 100%;
 
   }
+}
 
-  &:hover {
-    background-color: var(--alert-success-bg);
-  }
+.cta:hover {
+  background-color: var(--alert-success-bg);
 }
