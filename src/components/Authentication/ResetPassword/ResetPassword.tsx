@@ -1,7 +1,6 @@
 import React, { FC } from 'react'
-import styles from './Auth.module.css'
-import Button from '../../simple/Button'
-import { sendPasswordResetEmail } from 'firebase/auth'
+import styles from '../Auth.module.css'
+import Button from '@/components/simple/Button'
 
 type Props = {
   onChange?: (value: any) => void
