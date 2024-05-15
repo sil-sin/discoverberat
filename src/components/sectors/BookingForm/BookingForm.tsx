@@ -50,24 +50,34 @@ const BookingForm: FC<BookingFormProps> = forwardRef((props, ref) => {
       setValue('booker', user?.displayName)
       setValue('email', user?.email)
     }
-  }, [user?.displayName])
+  }, [setValue, user?.displayName, user?.email])
 
   useEffect(() => {
-    if (!guestNumber || (isPrivate && guestNumber < 2)) {
+    if (!guestNumber || guestNumber < 2) {
       setError('guestNumber', {
         type: 'custom',
-        message: `Guests must be at least ${isPrivate ? '2' : '2'}`,
+        message: `Guests must be at least 2`,
       })
     } else {
       setError('guestNumber', {})
     }
+
     if (!booker) {
       setError('booker', {
         type: 'custom',
-        message: 'Booker field is required',
+        message: 'Booker name field is required',
       })
     } else {
       setError('booker', {})
+    }
+
+    if (!email) {
+      setError('email', {
+        type: 'custom',
+        message: 'Booker email field is required',
+      })
+    } else {
+      setError('email', {})
     }
 
     if (!pickup) {
@@ -76,7 +86,7 @@ const BookingForm: FC<BookingFormProps> = forwardRef((props, ref) => {
         message: 'Pickup field is required',
       })
     }
-  }, [booker, guestNumber, isPrivate, pickup, setError])
+  }, [booker, email, guestNumber, isPrivate, pickup, setError])
 
   const getFormData = () => ({
     booker,
@@ -93,38 +103,44 @@ const BookingForm: FC<BookingFormProps> = forwardRef((props, ref) => {
   return (
     <div className={classnames(styles.bookingFormContainer, className)}>
       <h2>Booking information</h2>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form data-testid='booking-form' onSubmit={handleSubmit(onSubmit)}>
         <label htmlFor='booker'>Booker name:</label>
         <div>
           <input
+            data-testid='booker'
             placeholder='Enter a name for the booking'
             type='text'
             id='booker'
-            {...register('booker', { required: 'Booker field is required' })}
+            {...register('booker', {
+              required: 'Booker name field is required',
+            })}
           />
           {errors.booker?.message && (
             <Toast
+              data-testid='booker-error'
               isTextOnly
               isError
               message={errors.booker.message ?? 'Something went wrong!'}
             />
           )}
         </div>
-        <label htmlFor='booker'>Booker email:</label>
+        <label htmlFor='email'>Booker email:</label>
         <div>
           <input
-            placeholder='Enter a name for the booking'
-            type='emil'
+            data-testid='email'
+            placeholder='Enter an email for the booking'
+            type='email'
             id='email'
             {...register('email', {
               required: 'Booker email field is required',
             })}
           />
-          {errors.booker?.message && (
+          {errors.email?.message && (
             <Toast
+              data-testid='email-error'
               isTextOnly
               isError
-              message={errors.booker.message ?? 'Something went wrong!'}
+              message={errors.email.message ?? 'Something went wrong!'}
             />
           )}
         </div>
@@ -151,9 +167,7 @@ const BookingForm: FC<BookingFormProps> = forwardRef((props, ref) => {
             min={2}
             type='number'
             list='guestNumbers'
-            {...register('guestNumber', {
-              required: 'Guest number field is required',
-            })}
+            {...register('guestNumber')}
             id='guestNumber'
           />
           <datalist id='guestNumbers'>
