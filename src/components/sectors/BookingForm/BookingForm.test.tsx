@@ -18,7 +18,6 @@ jest.mock('@/components/simple/Toast', () => ({
 
 describe('BookingForm component', () => {
   const mockSubmit = jest.fn()
-
   const mockUser = { displayName: 'John Doe', email: 'john@example.com' }
   const mockError = { message: 'An error occurred' }
 
