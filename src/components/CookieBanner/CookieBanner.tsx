@@ -34,7 +34,7 @@ const CookieBanner = () => {
   return (
     <>
       {isVisible && (
-        <div className={styles.cookieBanner}>
+        <div data-testid='cookie-banner' className={styles.cookieBanner}>
           <div>
             <span className={styles.cookieText}>
               This website uses cookies.
@@ -52,6 +52,7 @@ const CookieBanner = () => {
             </span>
           </div>
           <Button
+            data-testid='cookie-banner-hide-button'
             variant='tertiary'
             className={styles.hideButton}
             onClick={hideBanner}

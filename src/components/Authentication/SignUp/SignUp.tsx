@@ -62,9 +62,8 @@ export const SignUp: FC<SignUpProps> = ({ className }) => {
       if (!data[fieldName]) {
         setError(fieldName as keyof Inputs, {
           type: 'manual',
-          message: `${
-            fieldName.charAt(0).toUpperCase() + fieldName.slice(1)
-          } is required`,
+          message: `${fieldName.charAt(0).toUpperCase() + fieldName.slice(1)
+            } is required`,
         })
 
         if (inputRefs[fieldName as keyof Inputs].current) {
@@ -85,6 +84,7 @@ export const SignUp: FC<SignUpProps> = ({ className }) => {
   return (
     <div className={classnames(styles.formContainer, className)}>
       <form
+        data-testid='sign-up-form'
         className={classnames(styles.formContainer, className)}
         action=''
         method='post'
@@ -101,8 +101,8 @@ export const SignUp: FC<SignUpProps> = ({ className }) => {
                 fieldName === 'password'
                   ? 'password'
                   : fieldName === 'email'
-                  ? 'email'
-                  : 'text'
+                    ? 'email'
+                    : 'text'
               }
               id={fieldName}
               placeholder={inputRefs[fieldName as keyof Inputs].placeholder}

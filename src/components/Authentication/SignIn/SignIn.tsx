@@ -38,9 +38,8 @@ export const SignIn: FC<SignUpProps> = ({ className }) => {
       if (!data[fieldName]) {
         setError(fieldName as keyof Inputs, {
           type: 'manual',
-          message: `${
-            fieldName.charAt(0).toUpperCase() + fieldName.slice(1)
-          } is required`,
+          message: `${fieldName.charAt(0).toUpperCase() + fieldName.slice(1)
+            } is required`,
         })
 
         // Focus on the current input field
@@ -80,6 +79,7 @@ export const SignIn: FC<SignUpProps> = ({ className }) => {
   return (
     <div className={classnames(styles.formContainer, className)}>
       <form
+        data-testid='sign-in-form'
         className={classnames(styles.formContainer, className)}
         action=''
         method='post'
@@ -103,13 +103,14 @@ export const SignIn: FC<SignUpProps> = ({ className }) => {
               {...inputRefs[fieldName as keyof Inputs]}
             />
             {errors[fieldName as keyof Inputs] && (
-              <p className={styles.errorText}>
+              <p data-testid='sign-in-error' className={styles.errorText}>
                 {(errors[fieldName as keyof Inputs] as any)?.message}
               </p>
             )}
           </div>
         ))}
         <Button
+          data-testid='forgot-password-link'
           className={styles.forgotPasswordLink}
           variant='link'
           text={'Forgot password'}
@@ -118,6 +119,7 @@ export const SignIn: FC<SignUpProps> = ({ className }) => {
           }}
         />
         <Button
+          data-testid="sign-in-button"
           type='submit'
           text={'Sign in'}
           className={styles.formButton}

@@ -55,7 +55,7 @@ const ContactForm: FC = () => {
   return (
     <div className={styles.container} id='contact'>
       <h2 className={styles.title}>Contact us</h2>
-      <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
+      <form data-testid='contact-form' className={styles.form} onSubmit={handleSubmit(onSubmit)}>
         <label htmlFor='name'>Name:</label>
         <input
           placeholder='eg. John Doe'
