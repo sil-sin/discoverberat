@@ -28,7 +28,7 @@ describe('ResetPassword', () => {
     it('calls the onSubmit function when the "Reset Password" button is clicked', () => {
         const onSubmit = jest.fn();
         render(<ResetPassword onSubmit={onSubmit} onChange={() => { }} />);
-        const resetPasswordButton: any = screen.getByRole('button', { name: 'Reset Password' });
+        const resetPasswordButton: any = screen.getByTitle('button');
         fireEvent.click(resetPasswordButton);
         expect(onSubmit).toHaveBeenCalled();
     });
