@@ -59,3 +59,13 @@
     font-weight: 600;
     font-size: 20px;
 }
+
+.moreLink {
+    color: var(--button-primary-active-bg);
+    cursor: pointer;
+    margin-left: 5px;
+}
+
+.moreLink:hover {
+    text-decoration: underline;
+}

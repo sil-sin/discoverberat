@@ -1,7 +1,20 @@
+import { useState } from 'react'
 import styles from './Testimonial.module.css'
 import Image from 'next/image'
+
 export const Testimonial = ({ review }: any) => {
+  const [showFullText, setShowFullText] = useState(false)
+  const characterLimit = 250
   if (!review) return null
+
+  const toggleShowFullText = () => {
+    setShowFullText(!showFullText)
+  }
+
+  const truncatedText =
+    review.text.length > characterLimit
+      ? review.text.substring(0, characterLimit) + '...'
+      : review.text
 
   return (
     <>
@@ -29,7 +42,14 @@ export const Testimonial = ({ review }: any) => {
             </p>
           </div>
           <p className={styles.testimonialQuote}>&ldquo;</p>
-          <p className={styles.testimonialText}>{review?.text}</p>
+          <p className={styles.testimonialText}>
+            {showFullText ? review.text : truncatedText}
+            {review.text.length > characterLimit && (
+              <small className={styles.moreLink} onClick={toggleShowFullText}>
+                {showFullText ? ' Show less' : ' Show more'}
+              </small>
+            )}
+          </p>
         </div>
       )}
     </>

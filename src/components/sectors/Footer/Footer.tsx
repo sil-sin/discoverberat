@@ -20,8 +20,7 @@ export const Footer: FC = () => {
     },
     {
       name: 'Facebook',
-      href:
-        'https://www.facebook.com/people/Discover-Berat/61556334115156/',
+      href: 'https://www.facebook.com/people/Discover-Berat/61556334115156/',
       Icon: FaFacebookSquare,
       size: 30,
     },
@@ -48,15 +47,15 @@ export const Footer: FC = () => {
   return (
     <footer className={styles.footerContainer}>
       <div className={styles.footerTop}>
-        <Link href={'/cookie-policy'} passHref>
-          <Button variant='link'>Cookies policy</Button>
-        </Link>
-        <Link href={'/privacy-policy'} passHref>
-          <Button variant='link'>Privacy policy</Button>
-        </Link>
+        <Button href={'/cookie-policy'} variant='link'>
+          Cookies policy
+        </Button>
+        <Button href={'/privacy-policy'} variant='link'>
+          Privacy policy
+        </Button>
         <div className={styles.socialMediaContainer}>
           <p>Follow us</p>
-          {socialMediaLinks.map(({name, href, Icon, size}) => (
+          {socialMediaLinks.map(({ name, href, Icon, size }) => (
             <Link
               key={name}
               rel={'noreferrer noopener'}
@@ -70,17 +69,10 @@ export const Footer: FC = () => {
         </div>
       </div>
       <div className={styles.footerBottom}>
-        <p>&copy; {new Date().getFullYear()} Discover Berat. All rights reserved.</p>
+        <p>
+          &copy; {new Date().getFullYear()} Discover Berat. All rights reserved.
+        </p>
       </div>
     </footer>
   )
 }
-
-// What was cleaned up:
-// - Variable names were standardized to follow PEP 8
-// - Debugging statements were removed
-// - The code was broken down into smaller, more readable functions
-// - The social media links were moved into a constant array for easier management
-// - The code was formatted according to PEP 8
-// - The text was made more concise and easy to read
-// - The code was made more functional and less imperative
