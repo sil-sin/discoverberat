@@ -82,7 +82,7 @@ function Home(props: any) {
         >
           View all tours
         </Button>
-        <TestimonialContainer reviews={reviews} />
+        {reviews && <TestimonialContainer reviews={reviews} />}
       </main>
     </>
   )
@@ -96,21 +96,41 @@ export const getServerSideProps: GetServerSideProps = async ({ res }) => {
     `public, s-maxage=${CACHE_TIME_SECONDS}, stale-while-revalidate=59`
   )
 
+  const reviews = fetch(
+    'https://maps.googleapis.com/maps/api/place/details/json?place_id=ChIJQ1Y_cDuZWhMRu6CZ0pwtbwA&key=AIzaSyDLEwujzNxMGHIrC1i9ZGG_Lm3LkyKrLWE'
+  )
+    .then((res) => res.json())
+    .then((data) => {
+      return data.result?.reviews.map((item: any) => item)
+    })
+
   try {
     // Your data fetching logic here
     const tours = await getEntriesByType('tourPage')
     const transfers = await getEntriesByType('transfers')
     const services = await getEntriesByType('serviceCard')
-    const reviews = fetch(
-      'https://maps.googleapis.com/maps/api/place/details/json?place_id=ChIJQ1Y_cDuZWhMRu6CZ0pwtbwA&key=AIzaSyDLEwujzNxMGHIrC1i9ZGG_Lm3LkyKrLWE'
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        return data.result?.reviews.map((item: any) => item)
-      })
+    const reviewData = await reviews
+    console.log(reviewData)
+
+    //! Making sure the google map reviews dont block the home page if they are empty or error
+    if (!reviewData) {
+      return {
+        props: {
+          reviews: null,
+          tours,
+          transfers,
+          services,
+        },
+      }
+    }
 
     return {
-      props: { reviews: [...(await reviews)], tours, transfers, services },
+      props: {
+        reviews: reviewData,
+        tours,
+        transfers,
+        services,
+      },
     }
   } catch (error) {
     console.error('Error fetching data:', error)

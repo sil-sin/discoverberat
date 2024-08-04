@@ -61,7 +61,8 @@
 
   /* alert colors */
   --alert-success-bg: #1ee46774;
-  --alert-success-typo: #3b794b;
+  --alert-success-typo: #fff;
+  --alert-success-text-only-typo: #1ee467db;
   --alert-success-border: #4a9e60;
   --alert-primary-active-bg: #499e5e;
   --alert-error-text-only-typo: #ef3f32db;

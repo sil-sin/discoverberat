@@ -51,11 +51,16 @@ const ContactForm: FC = () => {
       setIsSubmitted(true)
     }
   }, [errors.email, errors.message, errors.name])
+  console.log(errors)
 
   return (
     <div className={styles.container} id='contact'>
       <h2 className={styles.title}>Contact us</h2>
-      <form data-testid='contact-form' className={styles.form} onSubmit={handleSubmit(onSubmit)}>
+      <form
+        data-testid='contact-form'
+        className={styles.form}
+        onSubmit={handleSubmit(onSubmit)}
+      >
         <label htmlFor='name'>Name:</label>
         <input
           placeholder='eg. John Doe'

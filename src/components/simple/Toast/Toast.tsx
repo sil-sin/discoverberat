@@ -2,7 +2,6 @@ import { FC } from 'react'
 import styles from './Toast.module.css'
 import classNames from 'classnames'
 import Button from '../Button'
-import { MdClose } from 'react-icons/md'
 import { GiCancel } from 'react-icons/gi'
 
 type Props = {
