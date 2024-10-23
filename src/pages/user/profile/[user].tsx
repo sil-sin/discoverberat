@@ -27,7 +27,7 @@ const ProfilePage: FC = ({ user, savedItems, upcomingBookings }: any) => {
               height={50}
             />
             <h2 className={styles.title}>
-              {'Welcome, ' + user?.displayName ?? ''}
+              {'Welcome ' + user?.displayName}ß
             </h2>
           </div>
           <AdminDashboard bookings={upcomingBookings} user={user} />
