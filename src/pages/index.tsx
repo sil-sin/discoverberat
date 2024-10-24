@@ -110,7 +110,6 @@ export const getServerSideProps: GetServerSideProps = async ({ res }) => {
     const transfers = await getEntriesByType('transfers')
     const services = await getEntriesByType('serviceCard')
     const reviewData = await reviews
-    console.log(reviewData)
 
     //! Making sure the google map reviews dont block the home page if they are empty or error
     if (!reviewData) {
