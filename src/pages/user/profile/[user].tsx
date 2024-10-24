@@ -77,8 +77,10 @@ const ProfilePage: FC = () => {
     return <p>Loading...</p>
   }
 
+
   if (!user) {
     return <p>User is not authenticated.</p>
+
   }
 
   return (
