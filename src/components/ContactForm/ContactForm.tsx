@@ -51,7 +51,6 @@ const ContactForm: FC = () => {
       setIsSubmitted(true)
     }
   }, [errors.email, errors.message, errors.name])
-  console.log(errors)
 
   return (
     <div className={styles.container} id='contact'>
