@@ -128,7 +128,7 @@ function New({ booking, unavailableDates }: any) {
     const subject = `New booking from ${bookingData.booker} on ${bookingData.date}`
     const message = `Hi,<p> I'm ${bookingData.booker} and I just reserved this tour:</p> ${title} on ${bookingData.date} for ${bookingData.guestNumber} guests. I'll be in touch with you soon.`
     const bookingConfirmationSubject = `Booking confirmation:  ${title} on ${bookingData.date} for ${bookingData.guestNumber} guests`
-    const bookingConfirmationMessage = `Dear ${bookingData.booker}, <p>Thank you for you reservation of  ${title} on ${bookingData.date} for ${bookingData.guestNumber} guests. <p>See you soon !</p>`
+    const bookingConfirmationMessage = `Dear ${bookingData.booker}, <p>Thank you for your reservation of ${title} on ${bookingData.date} for ${bookingData.guestNumber} guests. <p>See you soon !</p>`
 
     if (formData.guestNumber && !isBookNow) {
       await addDoc(collection(db, 'bookings'), bookingData).then(

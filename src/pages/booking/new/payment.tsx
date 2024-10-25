@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import styles from './new.module.css'
 import Button from '../../../components/simple/Button/index'
-import PaypalCheckoutButton from '@/utils/payment/paypal'
+// import PaypalCheckoutButton from '@/utils/payment/paypal'
 import { getEntry } from '@/utils/contentful/contentful'
 import { getFirestore, addDoc, collection } from 'firebase/firestore'
 import app from '@/utils/firebase/firebaseConfig'
@@ -70,9 +70,9 @@ export default function Payment({ service }: any) {
         </div>
         <div className={styles.paypal}>
           <h3>Select a payment method</h3>
-          {disableCheckout && (
-            <PaypalCheckoutButton products={service} onSubmit={onSuccess} />
-          )}
+          {/*{disableCheckout && (*/}
+          {/*  <PaypalCheckoutButton products={service} onSubmit={onSuccess} />*/}
+          {/*)}*/}
         </div>
       </div>
     </PayPalScriptProvider>
