@@ -16,7 +16,7 @@
 }
 
 
-.footerTop * {
+.footerTop a {
   color: var(--text-inverse);
 }
 

@@ -1,0 +1,34 @@
+.container {
+    display: flex;
+    flex-direction: column;
+}
+
+.userInfo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 20px;
+    border-bottom: 1px solid var(--button-outline-active-border);
+}
+
+.userInfo img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+}
+
+.myItemsContainer {
+    padding: 10px 20px;
+}
+
+.bookingsList {
+    display: flex;
+    flex-direction: column;
+    list-style: none;
+}
+
+.bookingsList li:nth-child(1) {
+    background-color: var(--background-secondary);
+    padding: 10px;
+}

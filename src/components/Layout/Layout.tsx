@@ -1,3 +1,4 @@
+'use client'
 import { Navigation } from '@/components/sectors/Navigation/Navigation'
 import type { Metadata } from 'next'
 import { FC, ReactNode, useMemo } from 'react'
@@ -24,10 +25,6 @@ export const Layout: FC<Props> = ({ children, pageTitle }) => {
 
   return (
     <main>
-      <Head>
-        <title>{title}</title>
-        <link rel='shortcut icon' href='/favicon.ico' />
-      </Head>
       <Navigation className='navigationBar' />
       <div style={{ marginTop: '80px' }}>{children}</div>
       <Link

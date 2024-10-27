@@ -1,3 +1,4 @@
+'use client'
 import React, { useEffect, useState } from 'react'
 import styles from './CookieBanner.module.css' // Import CSS module
 import Link from 'next/link'

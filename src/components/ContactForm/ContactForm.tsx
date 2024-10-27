@@ -1,10 +1,11 @@
+'use client'
 import React, { FC, useEffect, useState } from 'react'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import styles from './ContactForm.module.css'
 import Button from '../simple/Button'
 import { getFirestore, addDoc, collection } from 'firebase/firestore'
 import app from '@/utils/firebase/firebaseConfig'
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/navigation'
 import Toast from '../simple/Toast'
 interface FormData {
   name: string

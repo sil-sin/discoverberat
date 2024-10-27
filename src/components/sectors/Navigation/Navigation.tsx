@@ -1,3 +1,4 @@
+'use client'
 import { FC, useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
 import { HEADER_LINKS } from './utils'
@@ -7,7 +8,7 @@ import { AiOutlineClose, AiOutlineMenu } from 'react-icons/ai'
 import classNames from 'classnames'
 import Link from 'next/link'
 import { useAuthContext } from '@/utils/auth/auth-provider'
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/navigation'
 import { UserMenuDropDown } from './components/UserMenuDropDown'
 import useResponsiveState from './utils/useResetState'
 

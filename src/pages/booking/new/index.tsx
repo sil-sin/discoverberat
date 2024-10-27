@@ -14,7 +14,7 @@ import { getTimes } from '@/helpers/getTimes'
 import BookingForm from '@/components/sectors/BookingForm/BookingForm'
 import { getFirestore as getFirestoreAdmin } from 'firebase-admin/firestore'
 import { useRouter } from 'next/router'
-import { adminSDK, initializeAdmin } from '@/pages/api/adminConfig'
+import { adminSDK, initializeAdmin } from '@/lib/adminConfig'
 
 import useSaveLater from '@/hooks/useSaveLater'
 import Modal from '@/components/Modal'
@@ -97,7 +97,7 @@ function New({ booking, unavailableDates }: any) {
       currency,
       isPaid: false,
       bookingId: id,
-
+      url,
       ...formData,
       uid: user?.uid,
       date: selectedDateTime,
@@ -146,8 +146,9 @@ function New({ booking, unavailableDates }: any) {
               subject: subject,
               html: message,
             },
+          }).finally(() => {
+            router.push('thank-you?id=' + res.id)
           })
-          router.push('new/thank-you?id=' + res.id)
         }
       )
     }

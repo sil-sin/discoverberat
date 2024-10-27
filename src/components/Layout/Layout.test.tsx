@@ -1,9 +1,9 @@
 import { render, screen } from '@testing-library/react'
 import { Layout } from './Layout'
 import { AuthProvider } from '@/utils/auth/auth-provider'
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/navigation'
 
-jest.mock('next/router', () => ({
+jest.mock('next/navigation', () => ({
   useRouter: jest.fn(),
 }))
 
