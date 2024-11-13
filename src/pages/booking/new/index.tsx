@@ -147,7 +147,7 @@ function New({ booking, unavailableDates }: any) {
               html: message,
             },
           }).finally(() => {
-            router.push('thank-you?id=' + res.id)
+            router.push('/booking/new/thank-you?id=' + res.id)
           })
         }
       )
