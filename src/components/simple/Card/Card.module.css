@@ -9,6 +9,9 @@
       max-height: 500px;
       position: relative;
       overflow: clip;
+      @media (max-width: 420px) {
+          max-width: 100%;
+      }
   }
 
   .image {
