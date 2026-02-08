@@ -1,30 +1,32 @@
-import React, { FC, useEffect, useState } from 'react'
-import { useForm, SubmitHandler } from 'react-hook-form'
-import styles from './ContactForm.module.css'
-import Button from '../simple/Button'
-import { getFirestore, addDoc, collection } from 'firebase/firestore'
-import app from '@/utils/firebase/firebaseConfig'
-import { useRouter } from 'next/router'
-import Toast from '../simple/Toast'
+'use client';
+
+import React, { FC, useEffect, useState } from 'react';
+import { useForm, SubmitHandler } from 'react-hook-form';
+import styles from './ContactForm.module.css';
+import Button from '../simple/Button';
+import { getFirestore, addDoc, collection } from 'firebase/firestore';
+import app from '@/utils/firebase/firebaseConfig';
+import { useRouter } from 'next/navigation';
+import Toast from '../simple/Toast';
 interface FormData {
-  name: string
-  email: string
-  message: string
+  name: string;
+  email: string;
+  message: string;
 }
 
 const ContactForm: FC = () => {
-  const [isSubmitted, setIsSubmitted] = useState(false)
+  const [isSubmitted, setIsSubmitted] = useState(false);
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormData>()
-  const router = useRouter()
+  } = useForm<FormData>();
+  const router = useRouter();
   const onSubmit: SubmitHandler<FormData> = (data) => {
-    const { name, email, message } = data
+    const { name, email, message } = data;
     const handleSendEmail = async () => {
       try {
-        const db = getFirestore(app)
+        const db = getFirestore(app);
 
         await addDoc(collection(db, 'mail'), {
           to: process.env.NEXT_PUBLIC_ADMIN,
@@ -32,39 +34,39 @@ const ContactForm: FC = () => {
             subject: `New message from ${name} (${email})`,
             html: message,
           },
-        })
-        setIsSubmitted(true)
-        router.push('#success')
+        });
+        setIsSubmitted(true);
+        router.push('#success');
         setTimeout(() => {
-          setIsSubmitted(false)
-        }, 3000)
+          setIsSubmitted(false);
+        }, 3000);
       } catch (error) {
-        setIsSubmitted(true)
-        console.error('Error sending email:', error)
+        setIsSubmitted(true);
+        console.error('Error sending email:', error);
       }
-    }
-    handleSendEmail()
-  }
+    };
+    handleSendEmail();
+  };
 
   useEffect(() => {
     if (errors.email || errors.name || errors.message) {
-      setIsSubmitted(true)
+      setIsSubmitted(true);
     }
-  }, [errors.email, errors.message, errors.name])
+  }, [errors.email, errors.message, errors.name]);
 
   return (
-    <div className={styles.container} id='contact'>
+    <div className={styles.container} id="contact">
       <h2 className={styles.title}>Contact us</h2>
       <form
-        data-testid='contact-form'
+        data-testid="contact-form"
         className={styles.form}
         onSubmit={handleSubmit(onSubmit)}
       >
-        <label htmlFor='name'>Name:</label>
+        <label htmlFor="name">Name:</label>
         <input
-          placeholder='eg. John Doe'
-          type='text'
-          id='name'
+          placeholder="eg. John Doe"
+          type="text"
+          id="name"
           {...register('name', { required: 'Name is required' })}
         />
         {isSubmitted && errors.name && (
@@ -72,16 +74,16 @@ const ContactForm: FC = () => {
             isTextOnly
             isError
             onClose={() => {
-              setIsSubmitted(false)
+              setIsSubmitted(false);
             }}
             message={errors.name.message ?? 'Something went wrong!'}
           />
         )}
-        <label htmlFor='email'>Email:</label>
+        <label htmlFor="email">Email:</label>
         <input
-          placeholder='eg. johndoe@example.com'
-          type='email'
-          id='form-email'
+          placeholder="eg. johndoe@example.com"
+          type="email"
+          id="form-email"
           {...register('email', {
             required: 'Email is required',
             pattern: /^\S+@\S+$/i,
@@ -92,16 +94,16 @@ const ContactForm: FC = () => {
             isTextOnly
             isError
             onClose={() => {
-              setIsSubmitted(false)
+              setIsSubmitted(false);
             }}
             message={errors.email.message ?? 'Something went wrong!'}
           />
         )}
-        <label htmlFor='message'>Message:</label>
+        <label htmlFor="message">Message:</label>
         <textarea
-          placeholder='Type your message here...'
+          placeholder="Type your message here..."
           rows={5}
-          id='message'
+          id="message"
           {...register('message', { required: 'Message is required' })}
         ></textarea>
         {isSubmitted && errors.message && (
@@ -109,27 +111,27 @@ const ContactForm: FC = () => {
             isTextOnly
             isError
             onClose={() => {
-              setIsSubmitted(false)
+              setIsSubmitted(false);
             }}
             message={errors.message.message ?? 'Something went wrong!'}
           />
         )}
 
-        <Button variant='primary' type='submit'>
+        <Button variant="primary" type="submit">
           Send
         </Button>
         {isSubmitted && Object.keys(errors).length === 0 && (
           <Toast
             isSuccess
             onClose={() => {
-              setIsSubmitted(false)
+              setIsSubmitted(false);
             }}
-            message='Message sent successfully!'
+            message="Message sent successfully!"
           />
         )}
       </form>
     </div>
-  )
-}
+  );
+};
 
-export default ContactForm
+export default ContactForm;

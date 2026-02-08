@@ -1,26 +1,28 @@
-import { FC, useState, useEffect, useRef } from 'react'
-import Image from 'next/image'
-import { HEADER_LINKS } from './utils'
-import styles from './Navigation.module.css'
-import Button from '@/components/simple/Button'
-import { AiOutlineClose, AiOutlineMenu } from 'react-icons/ai'
-import classNames from 'classnames'
-import Link from 'next/link'
-import { useAuthContext } from '@/utils/auth/auth-provider'
-import { useRouter } from 'next/router'
-import { UserMenuDropDown } from './components/UserMenuDropDown'
-import useResponsiveState from './utils/useResetState'
+'use client';
+
+import { FC, useState, useEffect, useRef } from 'react';
+import Image from 'next/image';
+import { HEADER_LINKS } from './utils';
+import styles from './Navigation.module.css';
+import Button from '@/components/simple/Button';
+import { AiOutlineClose, AiOutlineMenu } from 'react-icons/ai';
+import classNames from 'classnames';
+import Link from 'next/link';
+import { useAuthContext } from '@/utils/auth/auth-provider';
+import { useRouter } from 'next/navigation';
+import { UserMenuDropDown } from './components/UserMenuDropDown';
+import useResponsiveState from './utils/useResetState';
 
 export const Navigation: FC<{ className?: string }> = ({ className }) => {
-  const [isMenuShow, setIsMenuShow] = useState(false)
-  const [isShowUserMenu, setIsShowUserMenu] = useState(false)
-  const { user, loading } = useAuthContext()
-  const router = useRouter()
-  const [isLargeScreen] = useResponsiveState()
+  const [isMenuShow, setIsMenuShow] = useState(false);
+  const [isShowUserMenu, setIsShowUserMenu] = useState(false);
+  const { user, loading } = useAuthContext();
+  const router = useRouter();
+  const [isLargeScreen] = useResponsiveState();
 
   useEffect(() => {
-    setIsShowUserMenu(false)
-  }, [isLargeScreen])
+    setIsShowUserMenu(false);
+  }, [isLargeScreen]);
 
   return (
     <nav className={classNames(className, styles.navbarContainer)}>
@@ -28,47 +30,47 @@ export const Navigation: FC<{ className?: string }> = ({ className }) => {
         <Link className={styles.logo} href={'/'}>
           <Image
             priority
-            src='/main_logo.svg'
+            src="/main_logo.svg"
             width={200}
             height={100}
             className={styles.logoImage}
-            alt='Discover Berat'
+            alt="Discover Berat"
           />
         </Link>
         <Button
-          buttonName='Menu button'
-          aria-label='Menu'
+          buttonName="Menu button"
+          aria-label="Menu"
           className={styles.menuButton}
-          variant='secondary'
+          variant="secondary"
           onClick={() => {
-            setIsMenuShow(!isMenuShow)
+            setIsMenuShow(!isMenuShow);
           }}
         >
           {isMenuShow ? (
             <AiOutlineClose
               size={20}
               className={styles.menuIcon}
-              name='Menu close'
+              name="Menu close"
             />
           ) : (
             <AiOutlineMenu
               size={20}
               className={styles.menuIcon}
-              name='Menu open'
+              name="Menu open"
             />
           )}
         </Button>
       </div>
       <ul
         className={classNames(
-          isMenuShow ? styles.navbarLinksShow : styles.navbarLinksContainer
+          isMenuShow ? styles.navbarLinksShow : styles.navbarLinksContainer,
         )}
       >
         {HEADER_LINKS.map((link: any) => (
           <li key={link.title}>
             <Button
               onClick={() => setIsMenuShow(false)}
-              variant='link'
+              variant="link"
               href={link.href}
               text={link.title}
             />
@@ -76,23 +78,23 @@ export const Navigation: FC<{ className?: string }> = ({ className }) => {
         ))}
         <li>
           <Button
-            variant='secondary'
+            variant="secondary"
             onClick={() => {
               user?.uid
                 ? setIsShowUserMenu(!isShowUserMenu)
-                : (router.push('/authenticate'), setIsMenuShow(false))
+                : (router.push('/authenticate'), setIsMenuShow(false));
             }}
             text={
               loading
                 ? '...'
                 : user
-                ? user?.displayName?.split(' ')[0] ?? ''
-                : 'Sign in'
+                  ? (user?.displayName?.split(' ')[0] ?? '')
+                  : 'Sign in'
             }
           />
           {isShowUserMenu && <UserMenuDropDown />}
         </li>
       </ul>
     </nav>
-  )
-}
+  );
+};

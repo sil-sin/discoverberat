@@ -31,7 +31,7 @@
   --button-disabled-bg: #b0b0b092;
   --button-disabled-typo: #ffffffcc;
   /* Link Tokens */
-  --link-color: #2d3137;
+  --link-color: var(--button-secondary-typo);
   /* Normal link color */
   --link-hover-color: #4a9e60;
   /* Link color on hover, slightly lighter */

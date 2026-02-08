@@ -1,26 +1,28 @@
-import Card from '@/components/simple/Card'
-import React, { FC } from 'react'
-import styles from './Tours.module.css'
-import { Tour } from '@/utils/types'
+'use client';
+
+import Card from '@/components/simple/Card';
+import React, { FC } from 'react';
+import styles from './Tours.module.css';
+import { Tour } from '@/utils/types';
 
 export const Tours: FC<any> = (props: {
-  tours: Tour[]
-  pageTitle?: string
+  tours: Tour[];
+  pageTitle?: string;
 }) => {
-  const { tours } = props
+  const { tours } = props;
 
   if (!tours) {
     return (
       <div>
         <h1> No tours found </h1>
       </div>
-    )
+    );
   }
   const toursCards = (toursByCategory: Tour[]) =>
     toursByCategory?.map((tour: Tour) => {
-      const { title, description, price, currency, image, url } = tour.fields
+      const { title, description, price, currency, image, url } = tour.fields;
 
-      const imgUrl = image?.fields?.file?.url as string
+      const imgUrl = image?.fields?.file?.url as string;
 
       return (
         <div key={title} className={styles.tourCards}>
@@ -34,16 +36,16 @@ export const Tours: FC<any> = (props: {
             isLoading={!tours}
             learnMoreLink={`/tours/${url}`}
             onClick={() => {
-              window.location.href = `/booking/new?tour=${url}`
+              window.location.href = `/booking/new?tour=${url}`;
             }}
           />
         </div>
-      )
-    })
+      );
+    });
 
   const sortedTours = tours
     ?.filter((tour: any) => tour.fields?.category?.includes(''))
-    .sort((a: any, b: any) => a.fields.price - b.fields.price)
+    .sort((a: any, b: any) => a.fields.price - b.fields.price);
 
   return (
     <div className={styles.toursContainer}>
@@ -54,5 +56,5 @@ export const Tours: FC<any> = (props: {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
