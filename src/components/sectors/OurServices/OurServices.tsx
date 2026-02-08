@@ -18,7 +18,7 @@ export const OurServices: FC = () => {
     {
       title: 'Transport and Transfers',
       icon: <MdEmojiTransportation size={50} />,
-      link: 'services/transport',
+      link: '/services/transfers',
     },
     {
       title: 'Accommodation Booking',

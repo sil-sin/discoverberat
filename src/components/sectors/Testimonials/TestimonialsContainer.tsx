@@ -1,49 +1,51 @@
-import React, { FC, useState, useEffect } from 'react'
-import styles from './TestimonialContainer.module.css'
-import { Testimonial } from './Testimonial'
-import { Swiper, SwiperSlide } from 'swiper/react'
-import 'swiper/swiper-bundle.css' // Import Swiper styles
-import 'swiper/css/navigation'
-import 'swiper/css/pagination'
+'use client';
+
+import React, { FC, useState, useEffect } from 'react';
+import styles from './TestimonialContainer.module.css';
+import { Testimonial } from './Testimonial';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import 'swiper/swiper-bundle.css'; // Import Swiper styles
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
 import {
   EffectCoverflow,
   Keyboard,
   Navigation,
   Pagination,
-} from 'swiper/modules'
+} from 'swiper/modules';
 
 interface Review {
-  author_name: string
-  text: string
-  profile_photo_url: string
-  rating: number
+  author_name: string;
+  text: string;
+  profile_photo_url: string;
+  rating: number;
 }
 
 interface TestimonialContainerProps {
-  reviews: Review[]
+  reviews: Review[];
 }
 
 export const TestimonialContainer: FC<TestimonialContainerProps> = ({
   reviews,
 }) => {
-  const [currentSlide, setCurrentSlide] = useState(0)
+  const [currentSlide, setCurrentSlide] = useState(0);
 
   const nextSlide = () => {
     setCurrentSlide(
       (prevSlide) =>
-        (prevSlide + 1) % reviews.filter((review) => review.text).length
-    )
-  }
+        (prevSlide + 1) % reviews.filter((review) => review.text).length,
+    );
+  };
 
   const prevSlide = () => {
     setCurrentSlide(
       (prevSlide) =>
         (prevSlide - 1 + reviews.filter((review) => review.text).length) %
-        reviews.filter((review) => review.text).length
-    )
-  }
+        reviews.filter((review) => review.text).length,
+    );
+  };
   const averageRating =
-    reviews.reduce((acc, review) => acc + review.rating, 0) / reviews.length
+    reviews.reduce((acc, review) => acc + review.rating, 0) / reviews.length;
 
   return (
     <section className={styles.sectionContainer}>
@@ -94,9 +96,9 @@ export const TestimonialContainer: FC<TestimonialContainerProps> = ({
               >
                 <Testimonial review={review} />
               </SwiperSlide>
-            )
+            ),
         )}
       </Swiper>
     </section>
-  )
-}
+  );
+};

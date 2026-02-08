@@ -1,28 +1,30 @@
-import { marked } from 'marked'
-import React, { FC } from 'react'
-import Image from 'next/image'
-import styles from './Tour.module.css'
-import Button from '../simple/Button'
-import { useRouter } from 'next/router'
+'use client';
+
+import { marked } from 'marked';
+import React, { FC } from 'react';
+import Image from 'next/image';
+import styles from './Tour.module.css';
+import Button from '../simple/Button';
+import { useRouter } from 'next/navigation';
 // import { RatingRead } from '../simple/Rating/Rating'
 
 export const Tour: FC<{ tour: any }> = ({ tour }) => {
-  const { price, title, description, currency, imgUrl, url } = tour
-  const router = useRouter()
+  const { price, title, description, currency, imgUrl, url } = tour;
+  const router = useRouter();
   const imageUrl = imgUrl
     ? imgUrl.includes('https://')
       ? imgUrl
       : `https:${imgUrl}`
-    : 'vercel.svg'
+    : 'vercel.svg';
 
-  const htmlTextField = marked(description ?? '')
+  const htmlTextField = marked(description ?? '');
 
   return (
     <div className={styles.container}>
       <h1>{title}</h1>
       <article
         onContextMenu={(event: React.MouseEvent) => {
-          event.preventDefault()
+          event.preventDefault();
         }}
         className={styles.tourContainer}
       >
@@ -41,13 +43,13 @@ export const Tour: FC<{ tour: any }> = ({ tour }) => {
         <Button
           className={styles.button}
           onClick={() => {
-            router.push(`/booking/new?tour=${url}`)
+            router.push(`/booking/new?tour=${url}`);
           }}
-          variant='primary'
+          variant="primary"
         >
           Book Tour
         </Button>
       </article>
     </div>
-  )
-}
+  );
+};
