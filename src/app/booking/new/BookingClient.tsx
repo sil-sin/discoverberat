@@ -1,7 +1,7 @@
 'use client';
 
 import Button from '@/components/simple/Button';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import styles from './new.module.css';
 import { addDoc, collection, getFirestore } from 'firebase/firestore';
 import app from '@/utils/firebase/firebaseConfig';
@@ -33,7 +33,6 @@ export function BookingClient({
   const [selectedDateTime, setSelectedDateTime] = useState<Date | null>(
     startDateObject,
   );
-  const [availableTimes, setAvailableTimes] = useState<any>([]);
   const [isPrivate, setIsPrivate] = useState<boolean>(false);
   const [isShowModal, setIsShowModal] = useState<boolean>(false);
   const [warning, setWarning] = useState<boolean>(false);
@@ -61,27 +60,27 @@ export function BookingClient({
     type,
   } = booking;
 
-  useEffect(() => {
-    if (isSuccess) {
-      setIsShowModal(isSuccess);
-    } else {
-      setIsShowModal(false);
-      setWarning(isTouched);
-    }
-  }, [isSuccess, isTouched]);
+  // Sync modal open state from isSuccess without useEffect
+  const [prevIsSuccess, setPrevIsSuccess] = useState(isSuccess);
+  if (prevIsSuccess !== isSuccess) {
+    setPrevIsSuccess(isSuccess);
+    setIsShowModal(isSuccess);
+  }
+
+  const availableTimes = useMemo(
+    () => (!isDayTrip ? getTimes(selectedDate) : []),
+    [isDayTrip, selectedDate],
+  );
 
   useEffect(() => {
-    setTimeout(() => {
-      setWarning(false);
-    }, 5000);
+    setWarning(isTouched);
+  }, [isTouched]);
+
+  useEffect(() => {
+    if (!warning) return;
+    const timer = setTimeout(() => setWarning(false), 5000);
+    return () => clearTimeout(timer);
   }, [warning]);
-
-  useEffect(() => {
-    if (!isDayTrip) {
-      const times: any = getTimes(selectedDate);
-      setAvailableTimes(times);
-    }
-  }, [isDayTrip, selectedDate]);
 
   const handleBookNow = async (isBookNow: boolean) => {
     if (!user) {

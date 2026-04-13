@@ -1,6 +1,6 @@
 'use client';
 
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import styles from './ContactForm.module.css';
 import Button from '../simple/Button';
@@ -48,12 +48,6 @@ const ContactForm: FC = () => {
     handleSendEmail();
   };
 
-  useEffect(() => {
-    if (errors.email || errors.name || errors.message) {
-      setIsSubmitted(true);
-    }
-  }, [errors.email, errors.message, errors.name]);
-
   return (
     <div className={styles.container} id="contact">
       <h2 className={styles.title}>Contact us</h2>
@@ -69,7 +63,7 @@ const ContactForm: FC = () => {
           id="name"
           {...register('name', { required: 'Name is required' })}
         />
-        {isSubmitted && errors.name && (
+        {errors.name && (
           <Toast
             isTextOnly
             isError
@@ -89,7 +83,7 @@ const ContactForm: FC = () => {
             pattern: /^\S+@\S+$/i,
           })}
         />
-        {isSubmitted && errors.email && (
+        {errors.email && (
           <Toast
             isTextOnly
             isError
@@ -106,7 +100,7 @@ const ContactForm: FC = () => {
           id="message"
           {...register('message', { required: 'Message is required' })}
         ></textarea>
-        {isSubmitted && errors.message && (
+        {errors.message && (
           <Toast
             isTextOnly
             isError

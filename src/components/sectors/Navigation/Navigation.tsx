@@ -21,6 +21,7 @@ export const Navigation: FC<{ className?: string }> = ({ className }) => {
   const [isLargeScreen] = useResponsiveState();
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsShowUserMenu(false);
   }, [isLargeScreen]);
 

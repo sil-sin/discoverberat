@@ -1,10 +1,11 @@
 import classnames from 'classnames'
-import { FC } from 'react'
+import { FC, useState } from 'react'
 import styles from '../Auth.module.css'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import Button from '@/components/simple/Button'
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth'
 import { useRouter, useSearchParams } from 'next/navigation'
+import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai'
 
 type SignUpProps = {
   className?: string
@@ -15,6 +16,7 @@ type Inputs = {
   password: string
 }
 export const SignIn: FC<SignUpProps> = ({ className }) => {
+  const [showPassword, setShowPassword] = useState(false)
   const {
     register,
     handleSubmit,
@@ -91,18 +93,30 @@ export const SignIn: FC<SignUpProps> = ({ className }) => {
             <label htmlFor={fieldName}>
               {fieldName.charAt(0).toUpperCase() + fieldName.slice(1)}
             </label>
-            <input
-              autoComplete={
-                fieldName === 'password' ? 'current-password' : 'current-email'
-              }
-              className={errors[fieldName as keyof Inputs] && styles.errorInput}
-              type={fieldName === 'password' ? 'password' : 'text'}
-              id={fieldName}
-              placeholder={
-                fieldName.charAt(0).toUpperCase() + fieldName.slice(1)
-              }
-              {...inputRefs[fieldName as keyof Inputs]}
-            />
+            <div className={fieldName === 'password' ? styles.passwordWrapper : undefined}>
+              <input
+                autoComplete={
+                  fieldName === 'password' ? 'current-password' : 'current-email'
+                }
+                className={errors[fieldName as keyof Inputs] && styles.errorInput}
+                type={fieldName === 'password' ? (showPassword ? 'text' : 'password') : 'text'}
+                id={fieldName}
+                placeholder={
+                  fieldName.charAt(0).toUpperCase() + fieldName.slice(1)
+                }
+                {...inputRefs[fieldName as keyof Inputs]}
+              />
+              {fieldName === 'password' && (
+                <button
+                  type='button'
+                  className={styles.passwordToggle}
+                  onClick={() => setShowPassword(!showPassword)}
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                >
+                  {showPassword ? <AiOutlineEyeInvisible size={20} /> : <AiOutlineEye size={20} />}
+                </button>
+              )}
+            </div>
             {errors[fieldName as keyof Inputs] && (
               <p data-testid='sign-in-error' className={styles.errorText}>
                 {(errors[fieldName as keyof Inputs] as any)?.message}

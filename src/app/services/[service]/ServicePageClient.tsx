@@ -27,9 +27,9 @@ const services: Service[] = [
 export function ServicePageClient({ service }: { service: Service | null }) {
   const handleContentChange = (event: React.FocusEvent<any>) => {
     if (service) {
-      service.title = event.target.innerHTML;
+      const updatedService = { ...service, title: event.target.innerHTML };
       const updatedServices = services.map((s) =>
-        s.link === service.link ? service : s,
+        s.link === service.link ? updatedService : s,
       );
       localStorage.setItem('services', JSON.stringify(updatedServices));
     }
