@@ -1,7 +1,6 @@
 import '@/styles/globals.css';
 import { AuthProvider } from '@/utils/auth/auth-provider';
 import Layout from '@/components/Layout';
-import { ColorSchemeScript } from '@mantine/core';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -16,9 +15,6 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <head>
-        <ColorSchemeScript defaultColorScheme="auto" />
-      </head>
       <body>
         <AuthProvider>
           <Layout>{children}</Layout>

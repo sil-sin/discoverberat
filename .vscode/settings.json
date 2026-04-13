@@ -1,9 +1,9 @@
 {
-  "workbench.colorCustomizations": {
-    "titleBar.activeBackground": "#128bdc",
-    "titleBar.inactiveBackground": "#128bdc7a",
-    "activityBar.background": "#333333",
-    "sideBar.background": "#222222"
-  },
-  "cSpell.words": ["blueimp", "datetime", "discoverberat", "mantine", "swiper"]
+  "cSpell.words": [
+    "blueimp",
+    "datetime",
+    "discoverberat",
+    "mantine",
+    "swiper"
+  ]
 }

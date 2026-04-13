@@ -25,7 +25,6 @@ const customJestConfig = {
   transform: {
     '^.+\\.(js|jsx|ts|tsx)$': ['babel-jest', { presets: ['next/babel'] }],
   },
-  preset: 'ts-jest',
   testMatch: ['**/?(*.)+(spec|test).[tj]s?(x)'],
 }
 

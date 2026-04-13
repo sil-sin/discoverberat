@@ -1,10 +1,11 @@
 import { signUpWithEmail } from '@/utils/auth/emailSignUp'
 import classnames from 'classnames'
-import { FC, useRef } from 'react'
+import { FC, useRef, useState } from 'react'
 import styles from '../Auth.module.css'
 
 import { SubmitHandler, useForm } from 'react-hook-form'
 import Button from '@/components/simple/Button'
+import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai'
 
 type SignUpProps = {
   className?: string
@@ -17,6 +18,7 @@ type Inputs = {
   password: string
 }
 export const SignUp: FC<SignUpProps> = ({ className }) => {
+  const [showPassword, setShowPassword] = useState(false)
   const {
     register,
     handleSubmit,
@@ -48,9 +50,9 @@ export const SignUp: FC<SignUpProps> = ({ className }) => {
           message: 'Password must be at least 8 characters long',
         },
         pattern: {
-          value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/,
+          value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z\d]).{8,}$/,
           message:
-            'Password must contain at least one lowercase letter, one uppercase letter, and one number',
+            'Password must contain at least one uppercase letter, one lowercase letter, one number, and one symbol',
         },
       }),
       placeholder: 'Password',
@@ -95,19 +97,31 @@ export const SignUp: FC<SignUpProps> = ({ className }) => {
             <label htmlFor={fieldName}>
               {inputRefs[fieldName as keyof Inputs].label}
             </label>
-            <input
-              className={errors[fieldName as keyof Inputs] && styles.errorInput}
-              type={
-                fieldName === 'password'
-                  ? 'password'
-                  : fieldName === 'email'
-                    ? 'email'
-                    : 'text'
-              }
-              id={fieldName}
-              placeholder={inputRefs[fieldName as keyof Inputs].placeholder}
-              {...inputRefs[fieldName as keyof Inputs].ref}
-            />
+            <div className={fieldName === 'password' ? styles.passwordWrapper : undefined}>
+              <input
+                className={errors[fieldName as keyof Inputs] && styles.errorInput}
+                type={
+                  fieldName === 'password'
+                    ? (showPassword ? 'text' : 'password')
+                    : fieldName === 'email'
+                      ? 'email'
+                      : 'text'
+                }
+                id={fieldName}
+                placeholder={inputRefs[fieldName as keyof Inputs].placeholder}
+                {...inputRefs[fieldName as keyof Inputs].ref}
+              />
+              {fieldName === 'password' && (
+                <button
+                  type='button'
+                  className={styles.passwordToggle}
+                  onClick={() => setShowPassword(!showPassword)}
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                >
+                  {showPassword ? <AiOutlineEyeInvisible size={20} /> : <AiOutlineEye size={20} />}
+                </button>
+              )}
+            </div>
             {errors[fieldName as keyof Inputs] && (
               <p className={styles.errorText}>
                 {errors[fieldName as keyof Inputs]?.message}

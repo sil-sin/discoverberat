@@ -7,21 +7,21 @@ import { parseCookies, setCookie } from 'nookies';
 import Button from '../simple/Button';
 
 const CookieBanner = () => {
-  const [isVisible, setIsVisible] = useState(false);
-
-  useEffect(() => {
+  const [isVisible, setIsVisible] = useState(() => {
+    if (typeof window === 'undefined') return false;
     const cookies = parseCookies();
     const hasVisitedBefore = cookies.visitedBefore === 'true';
     const lastHideTimestamp = cookies.lastHideTimestamp;
     const hideUntil = new Date(
       Number(lastHideTimestamp) + 90 * 24 * 60 * 60 * 1000,
     ); // 90 days
+    return !hasVisitedBefore || !lastHideTimestamp || new Date() >= hideUntil;
+  });
 
-    if (!hasVisitedBefore) {
-      setIsVisible(true);
+  useEffect(() => {
+    const cookies = parseCookies();
+    if (cookies.visitedBefore !== 'true') {
       setCookie(null, 'visitedBefore', 'true', { path: '/' });
-    } else if (!lastHideTimestamp || new Date() >= hideUntil) {
-      setIsVisible(true);
     }
   }, []);
 
