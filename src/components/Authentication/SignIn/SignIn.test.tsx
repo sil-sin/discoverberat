@@ -1,7 +1,7 @@
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import { SignIn } from "./SignIn";
 import React from "react";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 // Import Firebase initialization
 import { initializeApp } from 'firebase/app';
@@ -12,8 +12,15 @@ import { firebaseConfig } from "@/utils/firebase/firebaseConfig";
 initializeApp(firebaseConfig);
 
 // Mock the useRouter hook
-jest.mock('next/router', () => ({
+// next/jest does not load .env.local in tests, so the real getAuth fails without an API key
+jest.mock('firebase/auth', () => ({
+    ...jest.requireActual('firebase/auth'),
+    getAuth: jest.fn(() => ({})),
+}));
+
+jest.mock('next/navigation', () => ({
     useRouter: jest.fn(),
+    useSearchParams: () => new URLSearchParams('callbackUrl=/some/callback/url'),
 }));
 
 describe('SignIn component', () => {

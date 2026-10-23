@@ -14,9 +14,13 @@ const clientEdit = contentful.createClient({
 
 export default client
 
-export async function getEntriesByType(entry: string) {
+export async function getEntriesByType(
+  entry: string,
+  query: Record<string, unknown> = {},
+) {
   const response = await client.getEntries({
     content_type: entry,
+    ...query,
   })
 
   return response.items

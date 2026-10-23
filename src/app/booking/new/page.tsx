@@ -16,17 +16,66 @@ type Props = {
   searchParams: Promise<{ tour?: string; service?: string }>;
 };
 
+const MAX_BOOKINGS_PER_DAY = 3;
+
+async function createBooking(
+  idToken: string,
+  dateKey: string,
+  booking: Record<string, any>,
+) {
+  'use server';
+  const { uid, email } = await adminSDK.auth().verifyIdToken(idToken);
+  if (!/^\d{2}\/\d{2}\/\d{4}, 00:00:00$/.test(dateKey)) {
+    throw new Error('Invalid booking date');
+  }
+  const db = getFirestoreAdmin();
+
+  return db.runTransaction(async (tx) => {
+    // Every booking for a day writes this doc, so concurrent bookings conflict and retry instead of overbooking.
+    const dayLock = db
+      .collection('bookingDayLocks')
+      .doc(encodeURIComponent(dateKey));
+    await tx.get(dayLock);
+    const taken = await tx.get(
+      db.collection('unavailableDates').where('date', '==', dateKey),
+    );
+    if (taken.size >= MAX_BOOKINGS_PER_DAY) return null;
+
+    const { title, booker, date, guestNumber } = booking;
+    const bookingRef = db.collection('bookings').doc();
+    tx.set(dayLock, { updatedAt: new Date() });
+    tx.create(bookingRef, { ...booking, uid });
+    tx.create(db.collection('unavailableDates').doc(), { uid, date: dateKey });
+    tx.create(db.collection('mail').doc(), {
+      to: email,
+      message: {
+        subject: `Booking confirmation:  ${title} on ${date} for ${guestNumber} guests`,
+        html: `Dear ${booker}, <p>Thank you for your reservation of ${title} on ${date} for ${guestNumber} guests. <p>See you soon !</p>`,
+      },
+    });
+    tx.create(db.collection('mail').doc(), {
+      to: process.env.NEXT_PUBLIC_ADMIN,
+      message: {
+        subject: `New booking from ${booker} on ${date}`,
+        html: `Hi,<p> I'm ${booker} and I just reserved this tour:</p> ${title} on ${date} for ${guestNumber} guests. I'll be in touch with you soon.`,
+      },
+    });
+    return bookingRef.id;
+  });
+}
+
 async function getBookingData(tourSlug?: string, serviceSlug?: string) {
   const tourData: any = tourSlug
-    ? (await getEntriesByType('tourPage')).find(
-        (tour: any) => tour.fields.url === tourSlug,
-      )
+    ? (await getEntriesByType('tourPage', { 'fields.url': tourSlug, limit: 1 }))[0]
     : null;
 
   const serviceData: any = serviceSlug
-    ? (await getEntriesByType('serviceCard')).find(
-        (service: any) => service.fields.url === serviceSlug,
-      )
+    ? (
+        await getEntriesByType('serviceCard', {
+          'fields.url': serviceSlug,
+          limit: 1,
+        })
+      )[0]
     : null;
 
   if (!adminSDK) {
@@ -48,7 +97,7 @@ async function getBookingData(tourSlug?: string, serviceSlug?: string) {
   });
 
   const datesWithMoreThanTwoOccurrences = Array.from(dateCountMap.entries())
-    .filter(([, count]) => count > 2)
+    .filter(([, count]) => count >= MAX_BOOKINGS_PER_DAY)
     .map(([date]) => date);
 
   if (serviceData) {
@@ -86,6 +135,10 @@ export default async function BookingNewPage({ searchParams }: Props) {
   }
 
   return (
-    <BookingClient booking={booking} unavailableDates={unavailableDates} />
+    <BookingClient
+      booking={booking}
+      unavailableDates={unavailableDates}
+      createBooking={createBooking}
+    />
   );
 }

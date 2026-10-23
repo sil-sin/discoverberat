@@ -34,8 +34,13 @@ async function getUserData(userId: string) {
     }
 
     const db = getFirestore();
-    const bookingQuery = db.collectionGroup('bookings');
-    const savedItemsQuery = db.collectionGroup('savedBooking');
+    const bookingQuery =
+      authenticatedUser.uid === process.env.ADMIN_ID
+        ? db.collection('bookings').where('date', '>=', new Date())
+        : db.collection('bookings').where('uid', '==', authenticatedUser.uid);
+    const savedItemsQuery = db
+      .collection('savedBooking')
+      .where('uid', '==', authenticatedUser.uid);
 
     let data: FirebaseFirestore.DocumentData[] = [];
 
@@ -43,20 +48,10 @@ async function getUserData(userId: string) {
       querySnapshot.forEach((documentSnapshot) => {
         const bookingData = documentSnapshot.data();
         const timestamp = bookingData.date;
-        const date = new Date(timestamp._seconds * 1000);
-
-        if (date < new Date()) {
+        if (!timestamp || new Date(timestamp._seconds * 1000) < new Date()) {
           return;
         }
-
-        if (authenticatedUser.uid === process.env.ADMIN_ID) {
-          data.push(bookingData);
-          return;
-        }
-
-        if (authenticatedUser.uid === bookingData.uid && bookingData.date) {
-          data.push(bookingData);
-        }
+        data.push(bookingData);
       });
     });
 
@@ -77,10 +72,8 @@ async function getUserData(userId: string) {
 
     const savedItems: any[] = [];
     await savedItemsQuery.get().then((querySnapshot) => {
-      return querySnapshot.forEach((documentSnapshot) => {
-        authenticatedUser.uid === documentSnapshot.data().uid
-          ? savedItems.push(documentSnapshot.data())
-          : null;
+      querySnapshot.forEach((documentSnapshot) => {
+        savedItems.push(documentSnapshot.data());
       });
     });
 

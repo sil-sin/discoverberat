@@ -4,8 +4,7 @@ import React, { FC, useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import styles from './ContactForm.module.css';
 import Button from '../simple/Button';
-import { getFirestore, addDoc, collection } from 'firebase/firestore';
-import app from '@/utils/firebase/firebaseConfig';
+import { sendContactMessage } from './actions';
 import { useRouter } from 'next/navigation';
 import Toast from '../simple/Toast';
 interface FormData {
@@ -19,6 +18,8 @@ const ContactForm: FC = () => {
   const {
     register,
     handleSubmit,
+    setError,
+    clearErrors,
     formState: { errors },
   } = useForm<FormData>();
   const router = useRouter();
@@ -26,22 +27,16 @@ const ContactForm: FC = () => {
     const { name, email, message } = data;
     const handleSendEmail = async () => {
       try {
-        const db = getFirestore(app);
-
-        await addDoc(collection(db, 'mail'), {
-          to: process.env.NEXT_PUBLIC_ADMIN,
-          message: {
-            subject: `New message from ${name} (${email})`,
-            html: message,
-          },
-        });
+        await sendContactMessage(name, email, message);
         setIsSubmitted(true);
         router.push('#success');
         setTimeout(() => {
           setIsSubmitted(false);
         }, 3000);
       } catch (error) {
-        setIsSubmitted(true);
+        setError('root', {
+          message: 'Could not send your message. Please try again.',
+        });
         console.error('Error sending email:', error);
       }
     };
@@ -114,6 +109,14 @@ const ContactForm: FC = () => {
         <Button variant="primary" type="submit">
           Send
         </Button>
+        {errors.root && (
+          <Toast
+            isTextOnly
+            isError
+            onClose={() => clearErrors('root')}
+            message={errors.root.message ?? 'Something went wrong!'}
+          />
+        )}
         {isSubmitted && Object.keys(errors).length === 0 && (
           <Toast
             isSuccess
