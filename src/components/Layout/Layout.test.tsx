@@ -1,10 +1,19 @@
 import { render, screen } from '@testing-library/react'
 import { Layout } from './Layout'
 import { AuthProvider } from '@/utils/auth/auth-provider'
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/navigation'
 
-jest.mock('next/router', () => ({
+jest.mock('next/navigation', () => ({
   useRouter: jest.fn(),
+}))
+
+jest.mock('@/utils/auth/auth-provider', () => ({
+  AuthProvider: ({ children }: { children: React.ReactNode }) => children,
+  useAuthContext: () => ({ user: null, loading: false }),
+}))
+jest.mock('@/utils/auth/signOut', () => ({ signOutUser: jest.fn() }))
+jest.mock('@/components/ContactForm/actions', () => ({
+  sendContactMessage: jest.fn(),
 }))
 
 describe('Layout Component', () => {

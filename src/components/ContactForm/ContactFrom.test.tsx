@@ -1,7 +1,7 @@
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import ContactForm from "./ContactForm";
 import React from "react";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 // Import Firebase initialization
 import { initializeApp } from 'firebase/app';
@@ -12,9 +12,11 @@ import { firebaseConfig } from "@/utils/firebase/firebaseConfig";
 initializeApp(firebaseConfig);
 
 // Mock the useRouter hook
-jest.mock('next/router', () => ({
+jest.mock('next/navigation', () => ({
     useRouter: jest.fn(),
 }));
+
+jest.mock('./actions', () => ({ sendContactMessage: jest.fn() }));
 
 describe('ContactForm component', () => {
     beforeEach(() => {

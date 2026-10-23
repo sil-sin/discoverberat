@@ -37,10 +37,12 @@ export const revalidate = 43200; // 12 hours
 async function getReviews() {
   try {
     const res = await fetch(
-      'https://maps.googleapis.com/maps/api/place/details/json?place_id=ChIJQ1Y_cDuZWhMRu6CZ0pwtbwA&key=AIzaSyDLEwujzNxMGHIrC1i9ZGG_Lm3LkyKrLWE',
+      `https://maps.googleapis.com/maps/api/place/details/json?place_id=ChIJQ1Y_cDuZWhMRu6CZ0pwtbwA&key=${process.env.GOOGLE_PLACES_KEY}`,
       { next: { revalidate: 43200 } },
     );
     const data = await res.json();
+    if (data.status !== 'OK')
+      console.error('Google Places reviews:', data.status, data.error_message);
     return data.result?.reviews?.map((item: any) => item) || null;
   } catch {
     return null;

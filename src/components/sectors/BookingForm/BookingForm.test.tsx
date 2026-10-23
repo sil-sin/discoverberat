@@ -1,7 +1,6 @@
 // src/components/sectors/BookingForm/BookingForm.test.tsx
 import React from 'react'
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
-import '@testing-library/jest-dom/extend-expect'
 import BookingForm from './BookingForm'
 import { useAuthContext } from '@/utils/auth/auth-provider'
 
