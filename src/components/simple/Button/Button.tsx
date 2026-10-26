@@ -3,6 +3,7 @@
 import { FC, ReactNode } from 'react'
 import styles from './Button.module.css'
 import classnames from 'classnames'
+import Link from 'next/link'
 
 type Props = {
   onClick?: () => void
@@ -27,13 +28,13 @@ export const Button: FC<Props> = ({
   buttonName,
 }) => {
   return variant === 'link' ? (
-    <a
-      href={href}
+    <Link
+      href={href ?? ''}
       onClick={onClick}
       className={classnames(styles.link, className)}
     >
       {text || children}
-    </a>
+    </Link>
   ) : (
     <button
       type={type}

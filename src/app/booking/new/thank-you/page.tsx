@@ -1,4 +1,5 @@
 import { Suspense } from 'react';
+import Loader from '@/components/simple/Loader';
 import { ThankYouClient } from './ThankYouClient';
 import type { Metadata } from 'next';
 import { adminSDK } from '@/utils/firebase/adminConfig';
@@ -25,7 +26,7 @@ async function getBooking(idToken: string, id: string) {
 
 export default function ThankYouPage() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<Loader />}>
       <ThankYouClient getBooking={getBooking} />
     </Suspense>
   );
