@@ -1,4 +1,5 @@
 import { createClient } from 'contentful'
+import { cache } from 'react'
 import contentfulConfig from './contentfulConfig'
 
 const client = createClient({
@@ -8,20 +9,20 @@ const client = createClient({
 
 export default client
 
-export async function getEntriesByType(
+export const getEntriesByType = cache(async (
   entry: string,
   query: Record<string, unknown> = {},
-) {
+) => {
   const response = await client.getEntries({
     content_type: entry,
     ...query,
   })
 
   return response.items
-}
-export async function getEntry(entryId: string, query?: {}) {
+})
+export const getEntry = cache(async (entryId: string, query?: {}) => {
   const response = query
     ? await client.getEntry(entryId, query)
     : await client.getEntry(entryId)
   return response
-}
+})

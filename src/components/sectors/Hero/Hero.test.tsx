@@ -13,7 +13,7 @@ jest.mock('next/image', () => ({
   ) => <img {...props} />, // Mock Next.js Image component
 }))
 
-jest.mock('next/router', () => ({
+jest.mock('next/navigation', () => ({
   useRouter: jest.fn(),
 }))
 

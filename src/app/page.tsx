@@ -2,7 +2,7 @@ import Hero from '@/components/sectors/Hero/index';
 import OurServices from '@/components/sectors/OurServices';
 import Tours from '@/components/sectors/Tours';
 import { getEntriesByType } from '@/utils/contentful/contentful';
-import { TestimonialContainer } from '@/components/sectors/Testimonials/TestimonialsContainer';
+// import { TestimonialContainer } from '@/components/sectors/Testimonials/TestimonialsContainer';
 import type { Metadata } from 'next';
 import { HomeClient } from './HomeClient';
 
@@ -34,26 +34,26 @@ export const metadata: Metadata = {
 
 export const revalidate = 43200; // 12 hours
 
-async function getReviews() {
-  try {
-    const res = await fetch(
-      `https://maps.googleapis.com/maps/api/place/details/json?place_id=ChIJQ1Y_cDuZWhMRu6CZ0pwtbwA&key=${process.env.GOOGLE_PLACES_KEY}`,
-      { next: { revalidate: 43200 } },
-    );
-    const data = await res.json();
-    if (data.status !== 'OK')
-      console.error('Google Places reviews:', data.status, data.error_message);
-    return data.result?.reviews?.map((item: any) => item) || null;
-  } catch {
-    return null;
-  }
-}
+// async function getReviews() {
+//   try {
+//     const res = await fetch(
+//       `https://maps.googleapis.com/maps/api/place/details/json?place_id=ChIJQ1Y_cDuZWhMRu6CZ0pwtbwA&key=${process.env.GOOGLE_PLACES_KEY}`,
+//       { next: { revalidate: 43200 } },
+//     );
+//     const data = await res.json();
+//     if (data.status !== 'OK')
+//       console.error('Google Places reviews:', data.status, data.error_message);
+//     return data.result?.reviews?.map((item: any) => item) || null;
+//   } catch {
+//     return null;
+//   }
+// }
 
 export default async function Home() {
-  const [tours, transfers, reviews] = await Promise.all([
+  const [tours, transfers] = await Promise.all([
     getEntriesByType('tourPage'),
     getEntriesByType('transfers'),
-    getReviews(),
+    // getReviews(),
   ]);
 
   if (!tours || !transfers) return null;
@@ -68,7 +68,7 @@ export default async function Home() {
       <OurServices />
       <Tours tours={topTours} pageTitle={'Top Tours'} />
       <HomeClient />
-      {reviews && <TestimonialContainer reviews={reviews} />}
+      {/* {reviews && <TestimonialContainer reviews={reviews} />} */}
     </div>
   );
 }

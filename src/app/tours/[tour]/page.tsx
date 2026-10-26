@@ -9,6 +9,11 @@ type Props = {
   params: Promise<{ tour: string }>;
 };
 
+export async function generateStaticParams() {
+  const entries = await getEntriesByType('tourPage');
+  return entries.map((e: any) => ({ tour: e.fields.url }));
+}
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { tour: tourSlug } = await params;
   const entries = await getEntriesByType('tourPage');

@@ -9,6 +9,13 @@ type Props = {
   params: Promise<{ transfer: string }>;
 };
 
+export async function generateStaticParams() {
+  const entries = await getEntriesByType('transfers');
+  return entries.map((e: any) => ({
+    transfer: (e.fields.from + '-' + e.fields.to).toLowerCase(),
+  }));
+}
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { transfer: transferSlug } = await params;
   const entries = await getEntriesByType('transfers');

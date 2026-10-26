@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  reactCompiler: true,
   images: {
     remotePatterns: [
       {
@@ -28,6 +29,15 @@ const nextConfig = {
         pathname: '/**',
       }
     ],
+  },
+  async headers() {
+    if (process.env.VERCEL_ENV !== 'preview') return []
+    return [
+      {
+        source: '/:path*',
+        headers: [{ key: 'X-Robots-Tag', value: 'noindex, nofollow' }],
+      },
+    ]
   },
 }
 

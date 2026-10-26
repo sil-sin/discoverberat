@@ -1,4 +1,5 @@
 import { Suspense } from 'react';
+import Loader from '@/components/simple/Loader';
 import { AuthClient } from './AuthClient';
 import type { Metadata } from 'next';
 
@@ -9,7 +10,7 @@ export const metadata: Metadata = {
 
 export default function AuthPage() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<Loader />}>
       <AuthClient />
     </Suspense>
   );
