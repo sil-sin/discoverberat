@@ -77,9 +77,11 @@ export function BookingClient({
     [isDayTrip, selectedDate],
   );
 
-  useEffect(() => {
+  const [prevIsTouched, setPrevIsTouched] = useState(isTouched);
+  if (prevIsTouched !== isTouched) {
+    setPrevIsTouched(isTouched);
     setWarning(isTouched);
-  }, [isTouched]);
+  }
 
   useEffect(() => {
     if (!warning) return;

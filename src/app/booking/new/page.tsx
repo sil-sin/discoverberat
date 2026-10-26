@@ -1,6 +1,6 @@
 import { getEntriesByType, getEntry } from '@/utils/contentful/contentful';
 import { getFirestore as getFirestoreAdmin } from 'firebase-admin/firestore';
-import { adminSDK, initializeAdmin } from '@/utils/firebase/adminConfig';
+import { adminSDK } from '@/utils/firebase/adminConfig';
 
 import type { Metadata } from 'next';
 import { sendMail } from '@/utils/mail';
@@ -126,10 +126,6 @@ async function getBookingData(tourSlug?: string, serviceSlug?: string) {
         })
       )[0]
     : null;
-
-  if (!adminSDK) {
-    initializeAdmin();
-  }
 
   const db = getFirestoreAdmin();
   const unavailableDates = await db
