@@ -50,9 +50,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
     return onIdTokenChanged(auth, async (user) => {
       if (user) {
-        setUser(user);
         const token = await user.getIdToken();
         nookies.set(null, 'token', token, { path: '/' });
+        setUser(user);
 
         // TODO: later implementation, edit mode on page , if user is admin
         // if (user.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL) {

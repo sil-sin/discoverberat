@@ -17,80 +17,82 @@ type Props = {
 };
 
 async function getUserData(userId: string) {
+  const cookieStore = await cookies();
+  const token = cookieStore.get('token')?.value;
+
+  if (!token) {
+    return { user: null, error: 'No token' };
+  }
+
+  let authenticatedUser, user;
   try {
-    const cookieStore = await cookies();
-    const token = cookieStore.get('token')?.value;
-
-    if (!token) {
-      return { user: null, error: 'No token' };
-    }
-
-    const authenticatedUser = await adminSDK.auth().verifyIdToken(token);
-    const user = await adminSDK.auth().getUser(authenticatedUser.uid);
-
-    // Redirect if user is accessing wrong profile
-    if (userId !== user.uid) {
-      return { redirect: '/user/profile/' + user.uid };
-    }
-
-    const db = getFirestore();
-    const bookingQuery =
-      authenticatedUser.uid === process.env.ADMIN_ID
-        ? db.collection('bookings').where('date', '>=', new Date())
-        : db.collection('bookings').where('uid', '==', authenticatedUser.uid);
-    const savedItemsQuery = db
-      .collection('savedBooking')
-      .where('uid', '==', authenticatedUser.uid);
-
-    let data: FirebaseFirestore.DocumentData[] = [];
-
-    await bookingQuery.get().then((querySnapshot) => {
-      querySnapshot.forEach((documentSnapshot) => {
-        const bookingData = documentSnapshot.data();
-        const timestamp = bookingData.date;
-        if (!timestamp || new Date(timestamp._seconds * 1000) < new Date()) {
-          return;
-        }
-        data.push(bookingData);
-      });
-    });
-
-    data.sort((a: any, b: any) => {
-      return a.date.seconds - b.date.seconds;
-    });
-
-    data.forEach((item: any) => {
-      const date = new Date(item.date.seconds * 1000);
-      item.date = date.toLocaleString('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-        hour: 'numeric',
-        minute: 'numeric',
-      });
-    });
-
-    const savedItems: any[] = [];
-    await savedItemsQuery.get().then((querySnapshot) => {
-      querySnapshot.forEach((documentSnapshot) => {
-        savedItems.push(documentSnapshot.data());
-      });
-    });
-
-    const isAdmin = user.uid === process.env.ADMIN_ID;
-    return {
-      user: {
-        ...authenticatedUser,
-        displayName: user.displayName,
-        picture: user.photoURL,
-        isAdmin,
-      },
-      upcomingBookings: data,
-      savedItems: isAdmin ? [] : savedItems,
-    };
+    authenticatedUser = await adminSDK.auth().verifyIdToken(token);
+    user = await adminSDK.auth().getUser(authenticatedUser.uid);
   } catch (error) {
+    console.error('Profile token check failed:', error);
     return { user: null, error: 'Authentication failed' };
   }
+
+  // Redirect if user is accessing wrong profile
+  if (userId !== user.uid) {
+    return { redirect: '/user/profile/' + user.uid };
+  }
+
+  const db = getFirestore();
+  const bookingQuery =
+    authenticatedUser.uid === process.env.ADMIN_ID
+      ? db.collection('bookings').where('date', '>=', new Date())
+      : db.collection('bookings').where('uid', '==', authenticatedUser.uid);
+  const savedItemsQuery = db
+    .collection('savedBooking')
+    .where('uid', '==', authenticatedUser.uid);
+
+  let data: FirebaseFirestore.DocumentData[] = [];
+
+  await bookingQuery.get().then((querySnapshot) => {
+    querySnapshot.forEach((documentSnapshot) => {
+      const bookingData = documentSnapshot.data();
+      const timestamp = bookingData.date;
+      if (!timestamp || new Date(timestamp._seconds * 1000) < new Date()) {
+        return;
+      }
+      data.push(bookingData);
+    });
+  });
+
+  data.sort((a: any, b: any) => {
+    return a.date.seconds - b.date.seconds;
+  });
+
+  data.forEach((item: any) => {
+    const date = new Date(item.date.seconds * 1000);
+    item.date = date.toLocaleString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric',
+    });
+  });
+
+  const savedItems: any[] = [];
+  await savedItemsQuery.get().then((querySnapshot) => {
+    querySnapshot.forEach((documentSnapshot) => {
+      savedItems.push(documentSnapshot.data());
+    });
+  });
+
+  const isAdmin = user.uid === process.env.ADMIN_ID;
+  return {
+    user: {
+      ...authenticatedUser,
+      displayName: user.displayName,
+      picture: user.photoURL,
+      isAdmin,
+    },
+    upcomingBookings: data,
+    savedItems: isAdmin ? [] : savedItems,
+  };
 }
 
 export default async function UserProfilePage({ params }: Props) {
