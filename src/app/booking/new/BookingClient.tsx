@@ -13,10 +13,12 @@ import useSaveLater from '@/hooks/useSaveLater';
 import Modal from '@/components/Modal';
 import Toast from '@/components/simple/Toast';
 
-const startDay = new Date().setDate(new Date().getDate() + 1);
-const startDateObject = new Date(startDay);
-startDateObject.setHours(9);
-startDateObject.setMinutes(0);
+const getStartDate = () => {
+  const startDate = new Date();
+  startDate.setDate(startDate.getDate() + 1);
+  startDate.setHours(9, 0, 0, 0);
+  return startDate;
+};
 
 type BookingClientProps = {
   booking: any;
@@ -33,9 +35,9 @@ export function BookingClient({
   unavailableDates,
   createBooking,
 }: BookingClientProps) {
-  const [selectedDate, setSelectedDate] = useState<Date>(startDateObject);
+  const [selectedDate, setSelectedDate] = useState<Date>(getStartDate);
   const [selectedDateTime, setSelectedDateTime] = useState<Date | null>(
-    startDateObject,
+    selectedDate,
   );
   const [isPrivate, setIsPrivate] = useState<boolean>(false);
   const [isShowModal, setIsShowModal] = useState<boolean>(false);
@@ -61,7 +63,6 @@ export function BookingClient({
     description,
     url,
     isDayTrip,
-    type,
   } = booking;
 
   // Sync modal open state from isSuccess without useEffect
@@ -96,18 +97,12 @@ export function BookingClient({
     const formData = await bookingFormRef.current.getFormData();
 
     const bookingData = {
-      type,
-      title,
-      price,
-      currency,
-      isPaid: false,
       bookingId: id,
       ...formData,
-      uid: user?.uid,
       date: selectedDateTime,
     };
 
-    const isInvalid = !formData.booker || !formData.guestNumber;
+    const isInvalid = !formData.booker || !(formData.guestNumber >= 2);
     if (!selectedDate) return alert('Please select a date');
     if (isInvalid) return alert('Please fill in all fields');
     if (isBookNow) return;
@@ -126,11 +121,9 @@ export function BookingClient({
 
   const handleAvailability = (date: Date) => {
     setSelectedDate(date);
-    if (isDayTrip) {
-      const defaultTime = new Date(date);
-      defaultTime.setHours(9, 0, 0);
-      setSelectedDateTime(defaultTime);
-    }
+    const defaultTime = new Date(date);
+    defaultTime.setHours(9, 0, 0);
+    setSelectedDateTime(defaultTime);
   };
 
   const nextDay = new Date(currentDay);

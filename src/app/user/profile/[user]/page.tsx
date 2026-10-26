@@ -113,7 +113,7 @@ export default async function UserProfilePage({ params }: Props) {
   }
 
   if (!result.user) {
-    redirect('/authenticate?callback=/user/profile/' + userId);
+    redirect('/authenticate?callbackUrl=/user/profile/' + userId);
   }
 
   return (

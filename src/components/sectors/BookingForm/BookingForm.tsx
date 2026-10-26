@@ -167,7 +167,7 @@ const BookingForm: FC<BookingFormProps> = forwardRef((props, ref) => {
             min={2}
             type='number'
             list='guestNumbers'
-            {...register('guestNumber')}
+            {...register('guestNumber', { valueAsNumber: true })}
             id='guestNumber'
           />
           <datalist id='guestNumbers'>

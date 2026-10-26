@@ -1,22 +1,27 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useSyncExternalStore } from 'react';
 import styles from './CookieBanner.module.css'; // Import CSS module
 import Link from 'next/link';
 import { parseCookies, setCookie } from 'nookies';
 import Button from '../simple/Button';
 
+const subscribe = () => () => {};
+
+const getShouldShow = () => {
+  const cookies = parseCookies();
+  const hasVisitedBefore = cookies.visitedBefore === 'true';
+  const lastHideTimestamp = cookies.lastHideTimestamp;
+  const hideUntil = new Date(
+    Number(lastHideTimestamp) + 90 * 24 * 60 * 60 * 1000,
+  ); // 90 days
+  return !hasVisitedBefore || !lastHideTimestamp || new Date() >= hideUntil;
+};
+
 const CookieBanner = () => {
-  const [isVisible, setIsVisible] = useState(() => {
-    if (typeof window === 'undefined') return false;
-    const cookies = parseCookies();
-    const hasVisitedBefore = cookies.visitedBefore === 'true';
-    const lastHideTimestamp = cookies.lastHideTimestamp;
-    const hideUntil = new Date(
-      Number(lastHideTimestamp) + 90 * 24 * 60 * 60 * 1000,
-    ); // 90 days
-    return !hasVisitedBefore || !lastHideTimestamp || new Date() >= hideUntil;
-  });
+  const shouldShow = useSyncExternalStore(subscribe, getShouldShow, () => false);
+  const [isHidden, setIsHidden] = useState(false);
+  const isVisible = shouldShow && !isHidden;
 
   useEffect(() => {
     const cookies = parseCookies();
@@ -30,7 +35,7 @@ const CookieBanner = () => {
       path: '/',
       maxAge: 90 * 24 * 60 * 60,
     });
-    setIsVisible(false);
+    setIsHidden(true);
   };
 
   return (

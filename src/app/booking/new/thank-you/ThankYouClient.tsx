@@ -2,48 +2,35 @@
 
 import React, { useEffect, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { getFirestore, doc, getDoc, DocumentData } from 'firebase/firestore';
 import styles from './thank-you.module.css';
 import Button from '@/components/simple/Button';
 import { useAuthContext } from '@/utils/auth/auth-provider';
 
-export function ThankYouClient() {
+type Props = {
+  getBooking: (idToken: string, id: string) => Promise<Record<string, any> | null>;
+};
+
+export function ThankYouClient({ getBooking }: Props) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const id = searchParams.get('id') || '';
-  const db = getFirestore();
-  const [booking, setBooking] = useState<DocumentData | null>(null);
+  const [booking, setBooking] = useState<Record<string, any> | null>(null);
   const { user } = useAuthContext();
 
   useEffect(() => {
-    const fetchBooking = async () => {
-      if (db && id) {
-        const docRef = doc(db, 'bookings', id);
-
-        try {
-          const docSnapshot = await getDoc(docRef);
-
-          if (docSnapshot.exists()) {
-            const data = docSnapshot.data() as DocumentData;
-            setBooking(data);
-          } else {
-            console.warn('Document does not exist');
-            setBooking(null);
-          }
-        } catch (error) {
-          console.error('Error fetching document:', error);
-        }
-      }
-    };
-
-    fetchBooking();
-  }, [db, id]);
+    if (!user || !id) return;
+    user
+      .getIdToken()
+      .then((idToken) => getBooking(idToken, id))
+      .then(setBooking)
+      .catch((error) => console.error('Error fetching booking:', error));
+  }, [getBooking, user, id]);
 
   if (!booking) {
     return <p>Loading...</p>;
   }
 
-  const formattedDate = new Date(booking.date.seconds * 1000).toLocaleString(
+  const formattedDate = new Date(booking.date).toLocaleString(
     'en-GB',
     {
       weekday: 'long',
@@ -86,13 +73,13 @@ export function ThankYouClient() {
           <Button
             variant="primary"
             onClick={() =>
-              router.push(`/${booking.type === 'tour' ? 'tours' : '/'}`)
+              router.push(booking.type === 'tour' ? '/tours' : '/')
             }
             text="Book another"
           />
           <Button
             variant="secondary"
-            onClick={() => router.push('/user/profile/' + user?.displayName)}
+            onClick={() => router.push('/user/profile/' + user?.uid)}
             text="See all bookings"
           />
         </div>
