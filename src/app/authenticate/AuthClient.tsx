@@ -22,7 +22,8 @@ export function AuthClient() {
   useEffect(() => {
     if (user) {
       const profilePath = '/user/profile/' + user?.uid;
-      router.push(callbackUrl ?? profilePath);
+      const isLocalPath = /^\/(?![/\\])/.test(callbackUrl ?? '');
+      router.push(isLocalPath ? callbackUrl! : profilePath);
     }
   }, [router, callbackUrl, user]);
 

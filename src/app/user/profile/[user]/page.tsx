@@ -77,27 +77,16 @@ async function getUserData(userId: string) {
       });
     });
 
-    if (user.uid === process.env.ADMIN_ID) {
-      return {
-        user: {
-          ...authenticatedUser,
-          displayName: user.displayName,
-          picture: user.photoURL,
-          isAdmin: true,
-        },
-        upcomingBookings: data,
-        savedItems: [],
-      };
-    }
-
+    const isAdmin = user.uid === process.env.ADMIN_ID;
     return {
       user: {
         ...authenticatedUser,
         displayName: user.displayName,
         picture: user.photoURL,
+        isAdmin,
       },
       upcomingBookings: data,
-      savedItems: savedItems || [],
+      savedItems: isAdmin ? [] : savedItems,
     };
   } catch (error) {
     return { user: null, error: 'Authentication failed' };
@@ -113,7 +102,7 @@ export default async function UserProfilePage({ params }: Props) {
   }
 
   if (!result.user) {
-    redirect('/authenticate?callback=/user/profile/' + userId);
+    redirect('/authenticate?callbackUrl=/user/profile/' + userId);
   }
 
   return (

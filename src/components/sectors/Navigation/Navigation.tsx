@@ -1,6 +1,6 @@
 'use client';
 
-import { FC, useState, useEffect, useRef } from 'react';
+import { FC, useState } from 'react';
 import Image from 'next/image';
 import { HEADER_LINKS } from './utils';
 import styles from './Navigation.module.css';
@@ -20,10 +20,11 @@ export const Navigation: FC<{ className?: string }> = ({ className }) => {
   const router = useRouter();
   const [isLargeScreen] = useResponsiveState();
 
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
+  const [prevIsLargeScreen, setPrevIsLargeScreen] = useState(isLargeScreen);
+  if (prevIsLargeScreen !== isLargeScreen) {
+    setPrevIsLargeScreen(isLargeScreen);
     setIsShowUserMenu(false);
-  }, [isLargeScreen]);
+  }
 
   return (
     <nav className={classNames(className, styles.navbarContainer)}>

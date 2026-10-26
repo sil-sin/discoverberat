@@ -26,9 +26,9 @@ const BookingForm: FC<BookingFormProps> = forwardRef((props, ref) => {
     handleSubmit,
     watch,
     setValue,
-    setError,
     formState: { errors },
   } = useForm<BookingFormProps>({
+    mode: 'onChange',
     defaultValues: {
       booker: user?.displayName ?? '',
       guestNumber: 2,
@@ -51,42 +51,6 @@ const BookingForm: FC<BookingFormProps> = forwardRef((props, ref) => {
       setValue('email', user?.email)
     }
   }, [setValue, user?.displayName, user?.email])
-
-  useEffect(() => {
-    if (!guestNumber || guestNumber < 2) {
-      setError('guestNumber', {
-        type: 'custom',
-        message: `Guests must be at least 2`,
-      })
-    } else {
-      setError('guestNumber', {})
-    }
-
-    if (!booker) {
-      setError('booker', {
-        type: 'custom',
-        message: 'Booker name field is required',
-      })
-    } else {
-      setError('booker', {})
-    }
-
-    if (!email) {
-      setError('email', {
-        type: 'custom',
-        message: 'Booker email field is required',
-      })
-    } else {
-      setError('email', {})
-    }
-
-    if (!pickup) {
-      setError('pickup', {
-        type: 'custom',
-        message: 'Pickup field is required',
-      })
-    }
-  }, [booker, email, guestNumber, isPrivate, pickup, setError])
 
   const getFormData = () => ({
     booker,
@@ -167,7 +131,11 @@ const BookingForm: FC<BookingFormProps> = forwardRef((props, ref) => {
             min={2}
             type='number'
             list='guestNumbers'
-            {...register('guestNumber')}
+            {...register('guestNumber', {
+              valueAsNumber: true,
+              required: 'Guests must be at least 2',
+              min: { value: 2, message: 'Guests must be at least 2' },
+            })}
             id='guestNumber'
           />
           <datalist id='guestNumbers'>

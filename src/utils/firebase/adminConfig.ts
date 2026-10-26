@@ -30,7 +30,6 @@ export const initializeAdmin = () => {
   if (!admin.apps.length) {
     admin.initializeApp({
       credential: admin.credential.cert(serviceAccount),
-      databaseURL: 'https://discover-berat.firebaseio.com',
     })
   }
 }

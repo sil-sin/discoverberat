@@ -42,6 +42,7 @@ export const Toast: FC<Props> = ({
             isInfo && styles.warning
           )}
           variant='tertiary'
+          buttonName='Close'
           onClick={onClose}
         >
           {withCLoseButton && <GiCancel size={20} />}

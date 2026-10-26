@@ -23,6 +23,7 @@ export const Button: FC<Props> = ({
   children,
   className,
   isDisabled,
+  type = 'button',
   buttonName,
 }) => {
   return variant === 'link' ? (
@@ -35,9 +36,10 @@ export const Button: FC<Props> = ({
     </a>
   ) : (
     <button
-      name={buttonName ?? 'button'}
-      title={buttonName ?? 'button'}
-      aria-label={buttonName ?? 'button'}
+      type={type}
+      name={buttonName}
+      title={buttonName}
+      aria-label={buttonName}
       onClick={onClick}
       className={classnames(
         className,

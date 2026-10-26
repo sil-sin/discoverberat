@@ -33,6 +33,7 @@ export const Modal: FC<Props> = ({
     <div id={id} className={classNames(className, styles.modalContainer)}>
       <Button
         variant='tertiary'
+        buttonName='Close'
         className={styles.closeButton}
         onClick={onClose}
       >

@@ -20,27 +20,6 @@ export function UserProfileClient({
     return null;
   }
 
-  if (user.isAdmin) {
-    return (
-      <div className={styles.container}>
-        <div className={styles.userContainer}>
-          <div className={styles.userInfo}>
-            <Image
-              src={user.picture || '/avatar.svg'}
-              alt={user.displayName ?? 'Profile Picture'}
-              width={50}
-              height={50}
-            />
-            <h2
-              className={styles.title}
-            >{`Welcome, ${user?.displayName || 'Admin'}`}</h2>
-          </div>
-          <AdminDashboard bookings={upcomingBookings} user={user} />
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className={styles.container}>
       <div className={styles.userContainer}>
@@ -52,14 +31,18 @@ export function UserProfileClient({
             height={50}
           />
           <h2 className={styles.title}>
-            {`Welcome, ${user?.displayName || 'User'}`}
+            {`Welcome, ${user.displayName || (user.isAdmin ? 'Admin' : 'User')}`}
           </h2>
         </div>
-        <Dashboard
-          bookings={upcomingBookings}
-          savedItems={savedItems}
-          user={user}
-        />
+        {user.isAdmin ? (
+          <AdminDashboard bookings={upcomingBookings} user={user} />
+        ) : (
+          <Dashboard
+            bookings={upcomingBookings}
+            savedItems={savedItems}
+            user={user}
+          />
+        )}
       </div>
     </div>
   );
