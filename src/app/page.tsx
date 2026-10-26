@@ -63,12 +63,12 @@ export default async function Home() {
   );
 
   return (
-    <main className="main">
+    <div className="main">
       <Hero />
       <OurServices />
       <Tours tours={topTours} pageTitle={'Top Tours'} />
       <HomeClient />
       {reviews && <TestimonialContainer reviews={reviews} />}
-    </main>
+    </div>
   );
 }
