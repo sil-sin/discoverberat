@@ -7,7 +7,7 @@ import {
   useEffect,
   useState,
 } from 'react';
-import { User, getAuth, onAuthStateChanged } from 'firebase/auth';
+import { User, getAuth, onIdTokenChanged } from 'firebase/auth';
 import app from '../firebase/firebaseConfig';
 import nookies from 'nookies';
 import { googleProvider } from './googleProvider';
@@ -48,7 +48,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     const auth = getAuth(app);
     if (!auth) return;
 
-    return auth.onAuthStateChanged(async (user) => {
+    return onIdTokenChanged(auth, async (user) => {
       if (user) {
         setUser(user);
         const token = await user.getIdToken();

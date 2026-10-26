@@ -1,6 +1,6 @@
 'use server';
 
-import { adminSDK } from '@/utils/firebase/adminConfig';
+import { sendMail } from '@/utils/mail';
 
 export async function sendContactMessage(
   name: string,
@@ -11,14 +11,9 @@ export async function sendContactMessage(
     throw new Error('Invalid contact message');
   }
 
-  await adminSDK
-    .firestore()
-    .collection('mail')
-    .add({
-      to: process.env.NEXT_PUBLIC_ADMIN,
-      message: {
-        subject: `New message from ${name} (${email})`,
-        html: message,
-      },
-    });
+  await sendMail(
+    process.env.NEXT_PUBLIC_ADMIN,
+    `New message from ${name} (${email})`,
+    message,
+  );
 }

@@ -110,7 +110,7 @@ describe('BookingForm component', () => {
       expect(mockSubmit).toHaveBeenCalledWith(
         {
           booker: 'Jane Doe',
-          guestNumber: '3',
+          guestNumber: 3,
           isPrivate: false,
           pickup: 'Hotel',
           email: 'jane@example.com',
