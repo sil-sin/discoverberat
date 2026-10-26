@@ -1,0 +1,16 @@
+name: main-only-from-preview
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, edited, synchronize, reopened]
+permissions: {}
+jobs:
+  check-source:
+    runs-on: ubuntu-latest
+    steps:
+      - if: github.head_ref != 'preview'
+        env:
+          HEAD_REF: ${{ github.head_ref }}
+        run: |
+          echo "PRs into main must come from preview (got $HEAD_REF)"
+          exit 1
