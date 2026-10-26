@@ -23,7 +23,7 @@
       object-position: 50% 70%;
   }
 
-  .button {
+  .cardContainer .button {
       font-weight: 400;
       text-shadow: 0.4px 0 0 black;
       width: 100%;

@@ -2,6 +2,10 @@ import React from 'react'
 import { render, screen } from '@testing-library/react'
 import Dashboard from './Dashboard'
 
+jest.mock('next/navigation', () => ({
+  useRouter: jest.fn(),
+}))
+
 describe('Dashboard component', () => {
   test('renders Dashboard component', () => {
     render(

@@ -2,8 +2,11 @@ import React from 'react'
 import styles from './Dashboard.module.css'
 
 import classNames from 'classnames'
+import { useRouter } from 'next/navigation'
 import Button from '../simple/Button/index'
 export default function Dashboard({ bookings, savedItems, user }: any) {
+  const router = useRouter()
+
   if (!user) {
     return null
   }
@@ -142,9 +145,7 @@ export default function Dashboard({ bookings, savedItems, user }: any) {
                           variant='tertiary'
                           text=' More info'
                           onClick={() =>
-                            (window.location.href = `/tours/${itemLink(
-                              savedItem
-                            )}`)
+                            router.push(`/tours/${itemLink(savedItem)}`)
                           }
                         />
                       </td>

@@ -2,6 +2,7 @@
 
 import Card from '@/components/simple/Card';
 import React, { FC } from 'react';
+import { useRouter } from 'next/navigation';
 import styles from './Tours.module.css';
 import { Tour } from '@/utils/types';
 
@@ -10,6 +11,7 @@ export const Tours: FC<any> = (props: {
   pageTitle?: string;
 }) => {
   const { tours } = props;
+  const router = useRouter();
 
   if (!tours) {
     return (
@@ -35,9 +37,7 @@ export const Tours: FC<any> = (props: {
             currency={currency}
             isLoading={!tours}
             learnMoreLink={`/tours/${url}`}
-            onClick={() => {
-              window.location.href = `/booking/new?tour=${url}`;
-            }}
+            onClick={() => router.push(`/booking/new?tour=${url}`)}
           />
         </div>
       );

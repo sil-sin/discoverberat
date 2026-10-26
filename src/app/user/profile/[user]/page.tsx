@@ -24,18 +24,17 @@ async function getUserData(userId: string) {
     return { user: null, error: 'No token' };
   }
 
-  let authenticatedUser, user;
+  let authenticatedUser;
   try {
     authenticatedUser = await adminSDK.auth().verifyIdToken(token);
-    user = await adminSDK.auth().getUser(authenticatedUser.uid);
   } catch (error) {
     console.error('Profile token check failed:', error);
     return { user: null, error: 'Authentication failed' };
   }
 
   // Redirect if user is accessing wrong profile
-  if (userId !== user.uid) {
-    return { redirect: '/user/profile/' + user.uid };
+  if (userId !== authenticatedUser.uid) {
+    return { redirect: '/user/profile/' + authenticatedUser.uid };
   }
 
   const db = getFirestore();
@@ -47,17 +46,21 @@ async function getUserData(userId: string) {
     .collection('savedBooking')
     .where('uid', '==', authenticatedUser.uid);
 
+  const [user, bookingsSnapshot, savedItemsSnapshot] = await Promise.all([
+    adminSDK.auth().getUser(authenticatedUser.uid),
+    bookingQuery.get(),
+    savedItemsQuery.get(),
+  ]);
+
   let data: FirebaseFirestore.DocumentData[] = [];
 
-  await bookingQuery.get().then((querySnapshot) => {
-    querySnapshot.forEach((documentSnapshot) => {
-      const bookingData = documentSnapshot.data();
-      const timestamp = bookingData.date;
-      if (!timestamp || new Date(timestamp._seconds * 1000) < new Date()) {
-        return;
-      }
-      data.push(bookingData);
-    });
+  bookingsSnapshot.forEach((documentSnapshot) => {
+    const bookingData = documentSnapshot.data();
+    const timestamp = bookingData.date;
+    if (!timestamp || new Date(timestamp._seconds * 1000) < new Date()) {
+      return;
+    }
+    data.push(bookingData);
   });
 
   data.sort((a: any, b: any) => {
@@ -75,12 +78,7 @@ async function getUserData(userId: string) {
     });
   });
 
-  const savedItems: any[] = [];
-  await savedItemsQuery.get().then((querySnapshot) => {
-    querySnapshot.forEach((documentSnapshot) => {
-      savedItems.push(documentSnapshot.data());
-    });
-  });
+  const savedItems = savedItemsSnapshot.docs.map((doc) => doc.data());
 
   const isAdmin = user.uid === process.env.ADMIN_ID;
   return {

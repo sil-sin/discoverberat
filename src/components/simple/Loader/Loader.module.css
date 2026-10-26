@@ -1,0 +1,105 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 50vh;
+  padding: 16px;
+}
+
+.scene {
+  width: min(240px, 70vw);
+  overflow: hidden;
+}
+
+.hills {
+  fill: #47a66a33;
+  animation: scroll 6s linear infinite;
+}
+
+.trail {
+  stroke: #2d3137;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-dasharray: 6 6;
+  animation: walk 0.6s linear infinite;
+}
+
+.hiker {
+  fill: #2d3137;
+  stroke: #2d3137;
+  stroke-width: 3;
+  stroke-linecap: round;
+  animation: bob 0.6s ease-in-out infinite;
+}
+
+.backpack {
+  fill: #47a66a;
+  stroke: none;
+}
+
+.pole {
+  stroke: #47a66a;
+  stroke-width: 2;
+}
+
+.leg,
+.arm {
+  transform-box: fill-box;
+  transform-origin: top center;
+}
+
+.legFront {
+  animation: stride 0.6s ease-in-out infinite alternate;
+}
+
+.legBack {
+  animation: stride 0.6s ease-in-out infinite alternate-reverse;
+}
+
+.arm {
+  transform: rotate(-35deg);
+}
+
+.text {
+  margin: 0;
+  color: #2d3137;
+}
+
+@keyframes scroll {
+  to {
+    transform: translateX(-160px);
+  }
+}
+
+@keyframes walk {
+  to {
+    stroke-dashoffset: 12;
+  }
+}
+
+@keyframes bob {
+  50% {
+    transform: translateY(-1.5px);
+  }
+}
+
+@keyframes stride {
+  from {
+    transform: rotate(-22deg);
+  }
+  to {
+    transform: rotate(22deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hills,
+  .trail,
+  .hiker,
+  .legFront,
+  .legBack {
+    animation: none;
+  }
+}
