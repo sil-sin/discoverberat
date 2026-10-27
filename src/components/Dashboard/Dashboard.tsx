@@ -1,158 +1,243 @@
-import React from 'react'
+import React, { CSSProperties, useState } from 'react'
 import styles from './Dashboard.module.css'
-
 import classNames from 'classnames'
 import { useRouter } from 'next/navigation'
 import Button from '../simple/Button/index'
+import PaypalCheckoutButton from '@/utils/payment/paypal'
+import { FiCalendar } from 'react-icons/fi'
+
+function PaymentStatus({ isPaid }: { isPaid: boolean }) {
+  return (
+    <span className={classNames(styles.status, isPaid && styles.paid)}>
+      {isPaid ? 'Paid' : 'Pay on location'}
+    </span>
+  )
+}
+
+// ponytail: bookings store no tour length, so every event gets 3 hours; add a duration field in Contentful to make it exact.
+const TOUR_LENGTH_MS = 3 * 60 * 60 * 1000
+
+const icsTime = (date: Date) => date.toISOString().replace(/[-:]|\.\d{3}/g, '')
+const icsText = (text: string) => text.replace(/([,;\\])/g, '\\$1').replace(/\n/g, '\\n')
+
+function AddToCalendar({ booking }: { booking: any }) {
+  const menuId = `calendar-${booking.id}`
+  const anchor = `--${menuId}`
+  const startDate = new Date(booking.startsAt)
+  const start = icsTime(startDate)
+  const end = icsTime(new Date(startDate.getTime() + TOUR_LENGTH_MS))
+  const google = new URLSearchParams({
+    action: 'TEMPLATE',
+    text: booking.title,
+    dates: `${start}/${end}`,
+    location: booking.pickup,
+  })
+  const ics = [
+    'BEGIN:VCALENDAR',
+    'VERSION:2.0',
+    'PRODID:-//Discover Berat//Bookings//EN',
+    'BEGIN:VEVENT',
+    `UID:${booking.id}@discoverberat`,
+    `DTSTAMP:${start}`,
+    `DTSTART:${start}`,
+    `DTEND:${end}`,
+    `SUMMARY:${icsText(booking.title)}`,
+    `LOCATION:${icsText(booking.pickup)}`,
+    'END:VEVENT',
+    'END:VCALENDAR',
+  ].join('\r\n')
+
+  return (
+    <>
+      <button
+        type='button'
+        popoverTarget={menuId}
+        className={styles.action}
+        style={{ anchorName: anchor } as CSSProperties}
+      >
+        <FiCalendar aria-hidden />
+        Add to calendar
+      </button>
+      <div
+        id={menuId}
+        popover='auto'
+        className={styles.menu}
+        style={{ positionAnchor: anchor } as CSSProperties}
+        onClick={(event) => event.currentTarget.hidePopover()}
+      >
+        <a
+          href={`https://calendar.google.com/calendar/render?${google}`}
+          target='_blank'
+          rel='noreferrer noopener'
+        >
+          Google Calendar
+        </a>
+        <a
+          href={`data:text/calendar;charset=utf-8,${encodeURIComponent(ics)}`}
+          download={`${booking.title}.ics`}
+        >
+          Apple or Outlook
+        </a>
+      </div>
+    </>
+  )
+}
+
+const guests = (count: number) => `${count} guest${count === 1 ? '' : 's'}`
+
 export default function Dashboard({ bookings, savedItems, user }: any) {
   const router = useRouter()
+  const [payingId, setPayingId] = useState<string | null>(null)
 
   if (!user) {
     return null
   }
 
-  return (
-    <div data-testid='dashboard' className={styles.body}>
-      <main className={styles.dataPage}>
-        <section
-          data-testid='contact-details-table'
-          className={styles.contactDetailsTable}
-        >
-          <h3>User data</h3>
-          <table className={''}>
-            <tbody>
-              <tr>
-                <th>Full name</th>
-                <th>E-mail</th>
-              </tr>
-              <tr>
-                <td>{user.displayName}</td>
-                <td className={styles.contactDetailsEmail}>{user.email}</td>
-              </tr>
-            </tbody>
-          </table>
-        </section>
-        <section
-          data-testid='upcoming-booking'
-          className={styles.upcomingBooking}
-        >
-          <h3>Upcoming booking</h3>
-          {bookings?.length > 0 ? (
-            <table className={styles.upcomingBookingTable}>
-              <tbody>
-                <tr>
-                  <th>Booking name</th>
-                  <th>Pickup</th>
-                  <th>Date and Time</th>
-                  <th>Payment</th>
-                </tr>
-                <tr>
-                  <td>{bookings[0].title}</td>
-                  <td>{bookings[0].pickup}</td>
-                  <td>{bookings[0].date}</td>
-                  <td>{bookings[0].isPaid ? 'Paid' : 'Not paid'}</td>
-                </tr>
-              </tbody>
-            </table>
-          ) : (
-            <p>No upcoming booking</p>
-          )}
-        </section>
+  const [nextBooking, ...laterBookings] = bookings ?? []
 
-        <section className={styles.bookingTable}>
-          <h3>Bookings</h3>
-          {bookings?.map((booking: any, index: any) => (
-            <div key={index + booking.uid} className={styles.tableSegment}>
-              <input
-                type='checkbox'
-                id={index + booking.uid}
-                name='segment-checker'
-                value=''
-              />
-              <label
-                htmlFor={index + booking.uid}
-                className={styles.tableSegmentTitle}
-              >
-                {booking.title}
-              </label>
-              <div className={styles.tableWrapper}>
-                <table>
-                  <tbody>
-                    <tr>
-                      <th>Time and date</th>
-                      <td>{booking.date}</td>
-                    </tr>
-                    <tr>
-                      <th>Pickup location</th>
-                      <td>{booking.pickup}</td>
-                    </tr>
-                    <tr>
-                      <th>Booker name</th>
-                      <td>{booking.booker}</td>
-                    </tr>
-                    <tr>
-                      <th>Price</th>
-                      <td>
+  const actions = (booking: any) =>
+    payingId === booking.id ? (
+      <div className={styles.payment}>
+        <PaypalCheckoutButton
+          bookingId={booking.id}
+          onPaid={() => {
+            setPayingId(null)
+            router.refresh()
+          }}
+        />
+        <button
+          type='button'
+          className={styles.action}
+          onClick={() => setPayingId(null)}
+        >
+          Cancel
+        </button>
+      </div>
+    ) : (
+      <div className={styles.actions}>
+        {!booking.isPaid && (
+          <button
+            type='button'
+            className={classNames(styles.action, styles.pay)}
+            onClick={() => setPayingId(booking.id)}
+          >
+            Pay now
+          </button>
+        )}
+        <AddToCalendar booking={booking} />
+      </div>
+    )
+
+  return (
+    <div data-testid='dashboard' className={styles.dashboard}>
+      <section data-testid='upcoming-booking'>
+        <h2 className={styles.heading}>Your next tour</h2>
+        {nextBooking ? (
+          <article className={styles.ticket}>
+            <div className={styles.ticketMain}>
+              <h3 className={styles.ticketTitle}>{nextBooking.title}</h3>
+              <dl className={styles.details}>
+                <div>
+                  <dt>Pickup</dt>
+                  <dd>{nextBooking.pickup}</dd>
+                </div>
+                <div>
+                  <dt>Guests</dt>
+                  <dd>{guests(nextBooking.guestNumber)}</dd>
+                </div>
+                <div>
+                  <dt>Total</dt>
+                  <dd>
+                    {nextBooking.currency}
+                    {nextBooking.price * nextBooking.guestNumber}
+                  </dd>
+                </div>
+              </dl>
+              {actions(nextBooking)}
+            </div>
+            <div className={styles.ticketStub}>
+              <time className={styles.ticketDate} dateTime={nextBooking.startsAt}>
+                {nextBooking.date}
+              </time>
+              <PaymentStatus isPaid={nextBooking.isPaid} />
+            </div>
+          </article>
+        ) : (
+          <div className={styles.empty}>
+            <p>You have no upcoming tours.</p>
+            <Button variant='link' href='/tours'>
+              Browse tours
+            </Button>
+          </div>
+        )}
+      </section>
+
+      {laterBookings.length > 0 && (
+        <section>
+          <h2 className={styles.heading}>Later bookings</h2>
+          <ul className={styles.list}>
+            {laterBookings.map((booking: any) => (
+              <li key={booking.id}>
+                <details className={styles.booking}>
+                  <summary className={styles.row}>
+                    <time className={styles.rowDate} dateTime={booking.startsAt}>
+                      {booking.date}
+                    </time>
+                    <span className={styles.rowTitle}>{booking.title}</span>
+                    <PaymentStatus isPaid={booking.isPaid} />
+                  </summary>
+                  <dl className={styles.details}>
+                    <div>
+                      <dt>Pickup</dt>
+                      <dd>{booking.pickup}</dd>
+                    </div>
+                    <div>
+                      <dt>Booked by</dt>
+                      <dd>{booking.booker}</dd>
+                    </div>
+                    <div>
+                      <dt>Guests</dt>
+                      <dd>{guests(booking.guestNumber)}</dd>
+                    </div>
+                    <div>
+                      <dt>Total</dt>
+                      <dd>
                         {booking.currency}
-                        {booking.price}
-                      </td>
-                    </tr>
-                    <tr>
-                      <th>Payment</th>
-                      <td>{booking.isPaid ? 'Paid' : 'Pay on location'}</td>
-                    </tr>
-                    <tr>
-                      <th>Guest number</th>
-                      <td>{booking.guestNumber} guest(s)</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          ))}
+                        {booking.price * booking.guestNumber}
+                      </dd>
+                    </div>
+                  </dl>
+                  {actions(booking)}
+                </details>
+              </li>
+            ))}
+          </ul>
         </section>
-        <section className={classNames(styles.bookingTable, styles.savedItems)}>
-          <h3>Saved items</h3>
-          {savedItems?.map((savedItem: any) => (
-            <div key={savedItem.id} className={styles.tableSegment}>
-              <input
-                type='checkbox'
-                id={savedItem.id}
-                name='segment-checker'
-                value=''
-              />
-              <label
-                htmlFor={savedItem.id}
-                className={styles.tableSegmentTitle}
-              >
-                {savedItem.title}
-              </label>
-              <div className={styles.tableWrapper}>
-                <table>
-                  <tbody>
-                    <tr>
-                      <th>Price</th>
-                      <td>
-                        {savedItem.currency}
-                        {savedItem.price} / person
-                      </td>
-                      <td>
-                        <Button
-                          variant='tertiary'
-                          text=' More info'
-                          onClick={() =>
-                            router.push(`/tours/${savedItem.url}`)
-                          }
-                        />
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          ))}
-        </section>
-      </main>
+      )}
+
+      <section>
+        <h2 className={styles.heading}>Saved for later</h2>
+        {savedItems?.length > 0 ? (
+          <ul className={styles.list}>
+            {savedItems.map((savedItem: any) => (
+              <li key={savedItem.id} className={styles.row}>
+                <span className={styles.rowTitle}>{savedItem.title}</span>
+                <span className={styles.rowDate}>
+                  {savedItem.currency}
+                  {savedItem.price} per person
+                </span>
+                <Button variant='link' href={`/tours/${savedItem.url}`}>
+                  View tour
+                </Button>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className={styles.muted}>
+            Tours you save for later show up here.
+          </p>
+        )}
+      </section>
     </div>
   )
 }

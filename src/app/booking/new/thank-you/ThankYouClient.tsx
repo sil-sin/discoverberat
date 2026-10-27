@@ -79,20 +79,9 @@ export function ThankYouClient({ getBooking }: Props) {
           ) : (
             <>
               <p>Pay now online, or pay on location.</p>
-              <p>
-                Refunds exclude PayPal fees. See our{' '}
-                <Button variant="link" href="/refund-policy">
-                  refund policy
-                </Button>
-                .
-              </p>
               <PaypalCheckoutButton
                 bookingId={id}
                 onPaid={() => setBooking({ ...booking, isPaid: true })}
-                onError={(error) => {
-                  console.error('PayPal payment failed:', error);
-                  alert('Payment failed. Please try again or pay on location.');
-                }}
               />
             </>
           )}

@@ -60,7 +60,7 @@ async function getUserData(userId: string) {
     if (!timestamp || new Date(timestamp._seconds * 1000) < new Date()) {
       return;
     }
-    data.push(bookingData);
+    data.push({ ...bookingData, id: documentSnapshot.id });
   });
 
   data.sort((a: any, b: any) => {
@@ -69,12 +69,15 @@ async function getUserData(userId: string) {
 
   data.forEach((item: any) => {
     const date = new Date(item.date.seconds * 1000);
-    item.date = date.toLocaleString('en-US', {
-      year: 'numeric',
-      month: 'long',
+    item.startsAt = date.toISOString();
+    item.date = date.toLocaleString('en-GB', {
+      timeZone: 'Europe/Tirane',
+      weekday: 'short',
       day: 'numeric',
-      hour: 'numeric',
-      minute: 'numeric',
+      month: 'long',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
     });
   });
 

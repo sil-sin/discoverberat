@@ -6,29 +6,26 @@
 .userInfo {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 10px;
-  padding: 20px;
-  border-bottom: 1px solid var(--button-outline-active-border);
+  gap: 16px;
+  width: min(100% - 32px, 760px);
+  margin: 0 auto;
+  padding: 40px 0 0;
 }
 
 .userInfo img {
-  width: 50px;
-  height: 50px;
   border-radius: 50%;
 }
 
-.myItemsContainer {
-  padding: 10px 20px;
+.title {
+  margin: 0;
+  font-size: 2rem;
+  line-height: 1.2;
+  font-weight: 700;
+  color: var(--text-default);
 }
 
-.bookingsList {
-  display: flex;
-  flex-direction: column;
-  list-style: none;
-}
-
-.bookingsList li:nth-child(1) {
-  background-color: var(--background-secondary);
-  padding: 10px;
+.email {
+  margin: 4px 0 0;
+  color: #5f6670;
+  word-break: break-word;
 }
