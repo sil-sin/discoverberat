@@ -32,7 +32,8 @@ export async function POST(request: Request) {
     event_type === 'PAYMENT.CAPTURE.REVERSED'
   ) {
     // Refunds exclude the PayPal fee, so they are always partial; any refund means a cancellation.
-    await bookingsCollection().doc(bookingId).update({ isPaid: false });
+    const ref = bookingsCollection().doc(bookingId);
+    if ((await ref.get()).exists) await ref.update({ isPaid: false });
   }
 
   return new Response(null, { status: 200 });

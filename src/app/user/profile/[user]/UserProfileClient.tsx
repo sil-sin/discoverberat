@@ -23,17 +23,20 @@ export function UserProfileClient({
   return (
     <div className={styles.container}>
       <div className={styles.userContainer}>
-        <div className={styles.userInfo}>
+        <header className={styles.userInfo}>
           <Image
             src={user.picture || '/avatar.svg'}
-            alt={user.displayName ?? 'Profile Picture'}
-            width={50}
-            height={50}
+            alt=""
+            width={64}
+            height={64}
           />
-          <h2 className={styles.title}>
-            {`Welcome, ${user.displayName || (user.isAdmin ? 'Admin' : 'User')}`}
-          </h2>
-        </div>
+          <div>
+            <h1 className={styles.title}>
+              {`Hi, ${user.displayName?.split(' ')[0] || (user.isAdmin ? 'Admin' : 'there')}`}
+            </h1>
+            <p className={styles.email}>{user.email}</p>
+          </div>
+        </header>
         {user.isAdmin ? (
           <AdminDashboard bookings={upcomingBookings} user={user} />
         ) : (
