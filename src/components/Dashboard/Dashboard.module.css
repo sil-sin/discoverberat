@@ -1,9 +1,6 @@
 .dashboard {
-  --ink: var(--text-default);
-  --muted: #5f6670;
-  --green-text: #2f7a4a;
-  --tint: #eef6f0;
-  --line: #e2e5e3;
+  --green-text: var(--brand);
+  --tint: var(--brand-soft);
 
   display: grid;
   gap: 48px;
@@ -30,6 +27,7 @@
   grid-template-columns: 1fr 220px;
   border: 1px solid var(--line);
   border-radius: 16px;
+  corner-shape: squircle;
   background: var(--background-default);
 }
 
@@ -54,6 +52,7 @@
   padding: 28px 24px;
   border-left: 2px dashed var(--line);
   border-radius: 0 15px 15px 0;
+  corner-shape: squircle;
   background: var(--tint);
 }
 
@@ -119,6 +118,7 @@
   padding: 9px 16px;
   border: 1px solid var(--line);
   border-radius: 10px;
+  corner-shape: squircle;
   background: var(--background-default);
   color: var(--ink);
   font: inherit;
@@ -161,7 +161,10 @@
 }
 
 .menu a {
-  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 12px;
   border-radius: 6px;
 }
 

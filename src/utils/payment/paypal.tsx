@@ -3,6 +3,7 @@
 import { PayPalButtons, PayPalScriptProvider } from '@paypal/react-paypal-js';
 import { useAuthContext } from '@/utils/auth/auth-provider';
 import Button from '@/components/simple/Button';
+import { toast } from '@/components/simple/Toast';
 import { capturePayPalOrder, createPayPalOrder } from './actions';
 
 type Props = {
@@ -40,7 +41,7 @@ const PaypalCheckoutButton = ({ bookingId, onPaid }: Props) => {
           }}
           onError={(error) => {
             console.error('PayPal payment failed:', error);
-            alert('Payment failed. Please try again or pay on location.');
+            toast.error('Payment failed. Please try again or pay on location.');
           }}
         />
       </PayPalScriptProvider>

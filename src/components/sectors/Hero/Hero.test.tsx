@@ -22,7 +22,7 @@ describe('Hero component', () => {
     render(<Hero />)
 
     // Check if the image is rendered
-    const image = screen.getByAltText('berat image')
+    const image = screen.getByAltText('Discover Berat')
     expect(image).toBeInTheDocument()
     expect(image).toHaveAttribute('src', '/map-track-green.png')
     expect(image).toHaveAttribute('width', '500')

@@ -3,10 +3,11 @@ import { FC, ReactNode } from 'react'
 import { Footer } from '../sectors/Footer/Footer'
 import React from 'react'
 
-import ContactForm from '../ContactForm/ContactForm'
 import Link from 'next/link'
 import Image from 'next/image'
 import CookieBanner from '../CookieBanner/CookieBanner'
+import { WHATSAPP_URL } from '../sectors/Navigation/utils'
+import { Toaster } from '../simple/Toast'
 
 type Props = {
   children: ReactNode
@@ -14,11 +15,14 @@ type Props = {
 
 export const Layout: FC<Props> = ({ children }) => {
   return (
-    <main>
+    <main
+      style={{ display: 'flex', flexDirection: 'column', minHeight: '100dvh' }}
+    >
       <Navigation className='navigationBar' />
-      <div style={{ marginTop: '80px' }}>{children}</div>
+      <div style={{ marginTop: '80px', flex: 1 }}>{children}</div>
       <Link
-        href='https://wa.me/355692921203'
+        href={WHATSAPP_URL}
+        aria-label='Chat with us on WhatsApp'
         className='whatsapp-button'
         target='_blank'
       >
@@ -32,8 +36,8 @@ export const Layout: FC<Props> = ({ children }) => {
           />
         </div>
       </Link>
-      <ContactForm />
       <CookieBanner />
+      <Toaster />
       <Footer />
     </main>
   )

@@ -1,80 +1,69 @@
 'use client';
 
-import React, { FC } from 'react';
+import type {} from 'react/canary';
+import React, { FC, ViewTransition } from 'react';
 import styles from './Card.module.css';
 import Image from 'next/image';
+import Link from 'next/link';
 import classNames from 'classnames';
-import Button from '../Button';
+import { FiArrowUpRight } from 'react-icons/fi';
 
 type Props = {
-  title?: string;
-  imageSrc?: string;
-  description?: string;
+  title: string;
+  imageSrc: string;
+  blurDataURL?: string;
+  imageTransitionName?: string;
   price?: number;
-  isLoading?: boolean;
-  className?: string;
-  iconCard?: boolean;
-  cardIcon?: any;
   currency?: string;
-  learnMoreLink?: string;
-  onClick?: () => void;
+  learnMoreLink: string;
+  className?: string;
 };
 
 export const Card: FC<Props> = ({
-  title = 'Card Title',
-  imageSrc = '/vercel.svg',
+  title,
+  imageSrc,
+  blurDataURL,
+  imageTransitionName,
   price,
   currency,
-  isLoading = false,
-  className,
-  iconCard = false,
-  cardIcon,
-  onClick,
   learnMoreLink,
+  className,
 }) => {
-  if (iconCard) {
-    return (
-      <div className={classNames(styles.iconCardContainer, className)}>
-        <div className={styles.cardIcon}>{cardIcon}</div>
-        <div className={styles.iconCardTitle}>
-          <div> {title}</div>
-        </div>
-      </div>
-    );
-  }
-  return (
-    <>
-      <div className={classNames(styles.cardContainer, className)}>
-        <Image
-          loading="lazy"
-          className={styles.image}
-          src={imageSrc}
-          width={400}
-          height={250}
-          alt="Explore Berat"
-        />
-        <div className={styles.title}> {title}</div>
+  const image = (
+    <Image
+      loading="lazy"
+      className={styles.image}
+      src={imageSrc}
+      placeholder={blurDataURL ? 'blur' : 'empty'}
+      blurDataURL={blurDataURL}
+      width={480}
+      height={600}
+      sizes="(min-width: 1120px) 360px, (min-width: 700px) 50vw, 100vw"
+      alt=""
+    />
+  );
 
+  return (
+    <Link href={learnMoreLink} className={classNames(styles.card, className)}>
+      {imageTransitionName ? (
+        <ViewTransition name={imageTransitionName}>{image}</ViewTransition>
+      ) : (
+        image
+      )}
+      <span className={styles.overlay}>
+        <span className={styles.title}>{title}</span>
         {price && (
-          <p className={styles.price}>
-            <span>
-              From
-              <span className={styles.priceSpan}>
-                {currency}
-                {price}
-              </span>
-              /person
-            </span>
-            <Button variant="link" href={learnMoreLink} text="Tour details" />
-          </p>
+          <span className={styles.price}>
+            From{' '}
+            <strong>
+              {currency}
+              {price}
+            </strong>{' '}
+            per person
+          </span>
         )}
-        <div className={styles.linkButton}>
-          <Button onClick={onClick} variant="primary" className={styles.button}>
-            Book Tour
-          </Button>
-        </div>
-      </div>
-      {isLoading && <div className={styles.cardSkeleton}></div>}
-    </>
+      </span>
+      <FiArrowUpRight aria-hidden className={styles.arrow} />
+    </Link>
   );
 };

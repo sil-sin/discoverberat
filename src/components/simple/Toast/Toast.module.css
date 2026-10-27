@@ -46,3 +46,123 @@
     margin-left: 6px;
     max-height: 20px;
 }
+.toaster {
+  position: fixed;
+  z-index: 20;
+  left: 50%;
+  bottom: max(16px, env(safe-area-inset-bottom));
+  translate: -50% 0;
+  display: grid;
+  gap: 8px;
+  width: min(100% - 32px, 420px);
+  pointer-events: none;
+}
+
+.toast {
+  --accent: var(--button-primary-bg);
+
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 4px 12px;
+  padding: 14px 14px 14px 16px;
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--accent);
+  border-radius: 12px;
+  corner-shape: squircle;
+  background: var(--background-default);
+  color: var(--text-default);
+  box-shadow: 0 10px 30px rgba(45, 49, 55, 0.16);
+  pointer-events: auto;
+  transition: opacity 0.2s ease, translate 0.2s ease;
+
+  @starting-style {
+    opacity: 0;
+    translate: 0 12px;
+  }
+}
+
+.toastError {
+  --accent: var(--alert-error-border);
+}
+
+.toastInfo {
+  --accent: #3b6fb6;
+}
+
+.icon {
+  flex: none;
+  margin-top: 2px;
+  font-size: 1.25rem;
+  color: var(--accent);
+}
+
+.message {
+  flex: 1;
+  margin: 0;
+  line-height: 1.45;
+}
+
+.link {
+  color: var(--button-primary-bg);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.dismiss {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  margin: -4px -4px 0 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.dismiss:hover {
+  background: var(--background-secondary);
+  color: var(--text-default);
+}
+
+.toastActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  width: 100%;
+}
+
+.toastActions button {
+  min-height: 40px;
+  padding: 0 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--background-default);
+  color: var(--text-default);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.toastActions button:hover {
+  background: var(--background-secondary);
+}
+
+.toastActions .confirm {
+  border-color: var(--alert-error-border);
+  background: var(--alert-error-border);
+  color: #fff;
+}
+
+.toastActions .confirm:hover {
+  background: #d63a2f;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toast {
+    transition: none;
+  }
+}

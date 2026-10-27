@@ -4,7 +4,6 @@ import React, { useEffect, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import styles from './thank-you.module.css';
 import Button from '@/components/simple/Button';
-import Loader from '@/components/simple/Loader';
 import { useAuthContext } from '@/utils/auth/auth-provider';
 import PaypalCheckoutButton from '@/utils/payment/paypal';
 
@@ -17,6 +16,7 @@ export function ThankYouClient({ getBooking }: Props) {
   const searchParams = useSearchParams();
   const id = searchParams.get('id') || '';
   const [booking, setBooking] = useState<Record<string, any> | null>(null);
+  const [isMissing, setIsMissing] = useState(false);
   const { user } = useAuthContext();
 
   useEffect(() => {
@@ -24,12 +24,47 @@ export function ThankYouClient({ getBooking }: Props) {
     user
       .getIdToken()
       .then((idToken) => getBooking(idToken, id))
-      .then(setBooking)
-      .catch((error) => console.error('Error fetching booking:', error));
+      .then((result) => (result ? setBooking(result) : setIsMissing(true)))
+      .catch((error) => {
+        console.error('Error fetching booking:', error);
+        setIsMissing(true);
+      });
   }, [getBooking, user, id]);
 
+  if (isMissing || !id) {
+    return (
+      <div className={styles.container}>
+        <div className={styles.detailsContainer}>
+          <h3 className={styles.title}>We could not find this booking</h3>
+          <p>Your bookings are listed on your profile.</p>
+          <Button
+            variant="primary"
+            onClick={() =>
+              router.push(user ? '/user/profile/' + user.uid : '/authenticate')
+            }
+            text="See all bookings"
+          />
+        </div>
+      </div>
+    );
+  }
+
   if (!booking) {
-    return <Loader text="Loading your booking..." />;
+    return (
+      <div className={styles.container}>
+        <div
+          className={styles.detailsContainer}
+          aria-busy="true"
+          aria-label="Loading your booking"
+        >
+          <span className="skeleton" style={{ width: '60%', height: '1.5rem', margin: '0 auto' }} />
+          <span className="skeleton" />
+          <span className="skeleton" style={{ width: '85%' }} />
+          <span className="skeleton" style={{ width: '40%' }} />
+          <span className="skeleton" style={{ height: '3rem' }} />
+        </div>
+      </div>
+    );
   }
 
   const formattedDate = new Date(booking.date).toLocaleString(

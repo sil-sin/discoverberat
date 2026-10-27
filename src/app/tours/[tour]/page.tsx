@@ -1,5 +1,6 @@
 import { getEntriesByType } from '@/utils/contentful/contentful';
 import Tour from '@/components/Tour';
+import Tours from '@/components/sectors/Tours';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
@@ -38,8 +39,19 @@ export default async function TourPage({ params }: Props) {
   }
 
   return (
-    <Tour
-      tour={{ ...tour.fields, imgUrl: tour.fields.image.fields.file.url }}
-    />
+    <>
+      <Tour
+        tour={{
+          ...tour.fields,
+          id: tour.sys.id,
+          imgUrl: tour.fields.image.fields.file.url,
+          blurDataURL: tour.fields.image.fields.file.blurDataURL,
+        }}
+      />
+      <Tours
+        tours={entries.filter((entry: any) => entry !== tour).slice(0, 3)}
+        pageTitle="More tours"
+      />
+    </>
   );
 }
