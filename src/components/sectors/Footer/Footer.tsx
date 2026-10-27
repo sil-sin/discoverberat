@@ -53,6 +53,9 @@ export const Footer: FC = () => {
         <Button href={'/privacy-policy'} variant='link'>
           Privacy policy
         </Button>
+        <Button href={'/refund-policy'} variant='link'>
+          Refund policy
+        </Button>
         <div className={styles.socialMediaContainer}>
           <p>Follow us</p>
           {socialMediaLinks.map(({ name, href, Icon, size }) => (
