@@ -9,7 +9,7 @@ import {
 } from 'react';
 import { User, getAuth, onIdTokenChanged } from 'firebase/auth';
 import app from '../firebase/firebaseConfig';
-import nookies from 'nookies';
+import { setSessionToken } from './session';
 import { googleProvider } from './googleProvider';
 import { signOutUser } from './signOut';
 
@@ -44,14 +44,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
     if (!auth) return;
 
     return onIdTokenChanged(auth, async (user) => {
-      if (user) {
-        const token = await user.getIdToken();
-        nookies.set(null, 'token', token, { path: '/' });
-        setUser(user);
-      } else {
-        setUser(null);
-        nookies.set(null, 'token', '', { path: '/' });
-      }
+      await setSessionToken(user && (await user.getIdToken()));
+      setUser(user);
       setLoading(false);
     });
   }, []);
