@@ -1,4 +1,4 @@
-import type { DocumentData } from 'firebase-admin/firestore';
+import type { DocumentData, DocumentReference } from 'firebase-admin/firestore';
 import { adminSDK } from '@/utils/firebase/adminConfig';
 import { sendMail } from '@/utils/mail';
 
@@ -40,6 +40,8 @@ export async function paypalFetch(path: string, body?: object) {
   return data;
 }
 
+export const CANCEL_DEADLINE_MS = 24 * 60 * 60 * 1000;
+
 export const bookingsCollection = () => adminSDK.firestore().collection('bookings');
 
 export function bookingSummary(booking: DocumentData) {
@@ -50,12 +52,35 @@ export function bookingSummary(booking: DocumentData) {
   return {
     unitAmount: (unitCents / 100).toFixed(2),
     amount: ((unitCents * booking.guestNumber) / 100).toFixed(2),
-    date: booking.date.toDate().toLocaleString('en-GB', {
-      timeZone: 'Europe/Tirane',
-      dateStyle: 'medium',
-      timeStyle: 'short',
-    }),
+    date: formatBookingDate(booking),
   };
+}
+
+export const formatBookingDate = (booking: DocumentData) =>
+  booking.date.toDate().toLocaleString('en-GB', {
+    timeZone: 'Europe/Tirane',
+    dateStyle: 'medium',
+    timeStyle: 'short',
+  });
+
+// Deletes the booking and frees its day slot; bookings made before dateKey was stored keep their slot.
+export async function releaseBooking(ref: DocumentReference, booking: DocumentData) {
+  const db = adminSDK.firestore();
+  await db.runTransaction(async (tx) => {
+    const dayLock = booking.dateKey
+      ? (
+          await tx.get(
+            db
+              .collection('unavailableDates')
+              .where('uid', '==', booking.uid)
+              .where('date', '==', booking.dateKey)
+              .limit(1),
+          )
+        ).docs[0]
+      : undefined;
+    tx.delete(ref);
+    if (dayLock) tx.delete(dayLock.ref);
+  });
 }
 
 type Capture = {

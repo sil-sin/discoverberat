@@ -4,6 +4,8 @@ import Dashboard from './Dashboard'
 
 jest.mock('next/navigation', () => ({ useRouter: jest.fn() }))
 jest.mock('@/utils/payment/paypal', () => () => null)
+jest.mock('@/utils/payment/actions', () => ({ cancelBooking: jest.fn() }))
+jest.mock('@/utils/auth/auth-provider', () => ({ useAuthContext: () => ({ user: null }) }))
 
 const user = { displayName: 'Test User', email: 'test@example.com' }
 const booking = {
@@ -53,5 +55,21 @@ describe('Dashboard component', () => {
       'href',
       expect.stringContaining('dates=20261030T090000Z%2F20261030T120000Z')
     )
+  })
+
+  test('shows Cancel booking only when allowed and marks pending refunds', () => {
+    render(
+      <Dashboard
+        bookings={[
+          { ...booking, cancellationRequested: true },
+          { ...booking, id: 'booking-2', canCancel: true },
+        ]}
+        savedItems={[]}
+        user={user}
+      />
+    )
+
+    expect(screen.getByText('Refund pending')).toBeInTheDocument()
+    expect(screen.getAllByText('Cancel booking')).toHaveLength(1)
   })
 })

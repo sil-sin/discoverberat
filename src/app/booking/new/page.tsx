@@ -70,6 +70,7 @@ async function createBooking(
     isPrivate: Boolean(input.isPrivate),
     guestNumber,
     date,
+    dateKey,
     uid,
   };
   const db = getFirestoreAdmin();

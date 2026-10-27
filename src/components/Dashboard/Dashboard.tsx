@@ -4,12 +4,18 @@ import classNames from 'classnames'
 import { useRouter } from 'next/navigation'
 import Button from '../simple/Button/index'
 import PaypalCheckoutButton from '@/utils/payment/paypal'
+import { cancelBooking } from '@/utils/payment/actions'
+import { useAuthContext } from '@/utils/auth/auth-provider'
 import { FiCalendar } from 'react-icons/fi'
 
-function PaymentStatus({ isPaid }: { isPaid: boolean }) {
+function PaymentStatus({ booking }: { booking: any }) {
   return (
-    <span className={classNames(styles.status, isPaid && styles.paid)}>
-      {isPaid ? 'Paid' : 'Pay on location'}
+    <span className={classNames(styles.status, booking.isPaid && styles.paid)}>
+      {booking.cancellationRequested
+        ? 'Refund pending'
+        : booking.isPaid
+          ? 'Paid'
+          : 'Pay on location'}
     </span>
   )
 }
@@ -87,6 +93,7 @@ const guests = (count: number) => `${count} guest${count === 1 ? '' : 's'}`
 
 export default function Dashboard({ bookings, savedItems, user }: any) {
   const router = useRouter()
+  const { user: firebaseUser } = useAuthContext()
   const [payingId, setPayingId] = useState<string | null>(null)
 
   if (!user) {
@@ -94,6 +101,21 @@ export default function Dashboard({ bookings, savedItems, user }: any) {
   }
 
   const [nextBooking, ...laterBookings] = bookings ?? []
+
+  const handleCancel = async (booking: any) => {
+    const message = booking.isPaid
+      ? 'Cancel this booking? We refund your payment minus the PayPal fee.'
+      : 'Cancel this booking?'
+    if (!firebaseUser || !confirm(message)) return
+    const { error } = await cancelBooking(
+      await firebaseUser.getIdToken(),
+      booking.id,
+    ).catch(() => ({
+      error: 'Your booking could not be cancelled. Please try again.',
+    }))
+    if (error) return alert(error)
+    router.refresh()
+  }
 
   const actions = (booking: any) =>
     payingId === booking.id ? (
@@ -125,6 +147,15 @@ export default function Dashboard({ bookings, savedItems, user }: any) {
           </button>
         )}
         <AddToCalendar booking={booking} />
+        {booking.canCancel && (
+          <button
+            type='button'
+            className={styles.action}
+            onClick={() => handleCancel(booking)}
+          >
+            Cancel booking
+          </button>
+        )}
       </div>
     )
 
@@ -159,7 +190,7 @@ export default function Dashboard({ bookings, savedItems, user }: any) {
               <time className={styles.ticketDate} dateTime={nextBooking.startsAt}>
                 {nextBooking.date}
               </time>
-              <PaymentStatus isPaid={nextBooking.isPaid} />
+              <PaymentStatus booking={nextBooking} />
             </div>
           </article>
         ) : (
@@ -184,7 +215,7 @@ export default function Dashboard({ bookings, savedItems, user }: any) {
                       {booking.date}
                     </time>
                     <span className={styles.rowTitle}>{booking.title}</span>
-                    <PaymentStatus isPaid={booking.isPaid} />
+                    <PaymentStatus booking={booking} />
                   </summary>
                   <dl className={styles.details}>
                     <div>

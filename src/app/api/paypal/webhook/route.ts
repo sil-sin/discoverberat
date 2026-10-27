@@ -1,4 +1,4 @@
-import { bookingsCollection, markPaid, paypalFetch } from '@/utils/payment/paypalServer';
+import { bookingsCollection, markPaid, paypalFetch, releaseBooking } from '@/utils/payment/paypalServer';
 
 export async function POST(request: Request) {
   const event = await request.json();
@@ -33,7 +33,9 @@ export async function POST(request: Request) {
   ) {
     // Refunds exclude the PayPal fee, so they are always partial; any refund means a cancellation.
     const ref = bookingsCollection().doc(bookingId);
-    if ((await ref.get()).exists) await ref.update({ isPaid: false });
+    const booking = (await ref.get()).data();
+    if (booking?.cancellationRequested) await releaseBooking(ref, booking);
+    else if (booking) await ref.update({ isPaid: false });
   }
 
   return new Response(null, { status: 200 });

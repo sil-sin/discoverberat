@@ -29,3 +29,9 @@
   color: #5f6670;
   word-break: break-word;
 }
+
+.deleteAccount {
+  width: min(100% - 32px, 760px);
+  margin: 0 auto;
+  padding: 40px 0;
+}

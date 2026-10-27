@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation';
 import { adminSDK } from '@/utils/firebase/adminConfig';
 import { getFirestore } from 'firebase-admin/firestore';
 import { UserProfileClient } from './UserProfileClient';
+import { CANCEL_DEADLINE_MS } from '@/utils/payment/paypalServer';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -70,6 +71,9 @@ async function getUserData(userId: string) {
   data.forEach((item: any) => {
     const date = new Date(item.date.seconds * 1000);
     item.startsAt = date.toISOString();
+    item.canCancel =
+      !item.cancellationRequested &&
+      date.getTime() - Date.now() >= CANCEL_DEADLINE_MS;
     item.date = date.toLocaleString('en-GB', {
       timeZone: 'Europe/Tirane',
       weekday: 'short',
