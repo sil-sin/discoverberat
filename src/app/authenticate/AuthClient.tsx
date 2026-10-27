@@ -27,17 +27,14 @@ export function AuthClient() {
     }
   }, [router, callbackUrl, user]);
 
-  useEffect(() => {
-    setTimeout(() => {
-      if (callbackUrl) {
-        alert('Please sign in to continue');
-      }
-    });
-  }, [callbackUrl]);
-
   return (
     <div className={styles.container}>
       <div className={styles.formContainer}>
+        {callbackUrl && (
+          <p role="status" className={styles.notice}>
+            Sign in or create an account to continue.
+          </p>
+        )}
         <div className={styles.tabButtons}>
           <Button
             onClick={() => setIsSignUp(true)}

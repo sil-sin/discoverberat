@@ -1,20 +1,19 @@
 :root {
   /* button colors */
-  --font: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', Oxygen,
-    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  --button-primary-bg: #47a66a;
+  --font: var(--font-body), system-ui, sans-serif;
+  --button-primary-bg: #2f7a4a;
   --button-primary-bg-gradient: #296041;
   --button-primary-typo: #ffffff;
-  --button-primary-hover-bg: #4a9e60;
+  --button-primary-hover-bg: #286b40;
   /* Slightly lighter shade for hover */
-  --button-primary-active-bg: #499e5e;
+  --button-primary-active-bg: #225c37;
   /* Slightly lighter shade for active */
   --button-secondary-bg: #fff;
-  --button-secondary-typo: #51a56a;
+  --button-secondary-typo: #2f7a4a;
   --button-secondary-hover-bg: #f4f4f4;
   --button-secondary-active-bg: #b0b0b0;
   --button-outline-border: rgba(45, 49, 55, 0.15);
-  --button-secondary-outline-border: #51a56a;
+  --button-secondary-outline-border: #2f7a4a;
   --button-tertiary-bg: #fff;
   --button-tertiary-typo: #2d3137;
   --button-tertiary-hover-bg: #f4f4f4;
@@ -42,7 +41,7 @@
   --link-background-hover: #c8c8c8;
 
   /* text color */
-  --text-default: #2d3137;
+  --text-default: #1f2533;
   --text-secondary: #868686;
   --text-inverse: #ffffff;
 
@@ -73,6 +72,21 @@
   --alert-warning-typo: #8d7e0b;
   --alert-warning-border: #ffd000b4;
 
+  /* theme */
+  --brand: var(--button-primary-bg);
+  --brand-strong: #225c37;
+  --brand-soft: #eef6f0;
+  --accent: #2b9aa8;
+  --ink: #1f2533;
+  --muted: #5f6670;
+  --line: #e2e5e3;
+  --line-strong: #cfd5d1;
+  --surface: #f5f8f6;
+  --radius-sm: 10px;
+  --radius: 14px;
+  --radius-lg: 20px;
+  --shadow-soft: 0 1px 2px rgba(31, 37, 51, 0.06), 0 8px 24px rgba(31, 37, 51, 0.08);
+
 }
 
 * {
@@ -92,9 +106,8 @@
 }
 
 *:focus-visible {
-  outline: 1px auto var(--button-outline-hover-border) !important;
-  background-color: var(--background-secondary) !important;
-  color: var(--text-default) !important;
+  outline: 2px solid var(--button-primary-bg) !important;
+  outline-offset: 2px;
 }
 
 html,
@@ -106,11 +119,19 @@ body {
 }
 
 body {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Oxygen,
-    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-family: var(--font-body), system-ui, -apple-system, 'Segoe UI', sans-serif;
   color: rgb(var(--foreground-rgb));
   background: rgb(var(--background-end-rgb));
   margin: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display), var(--font-body), sans-serif;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
 }
 
 a {
@@ -125,8 +146,8 @@ a {
 
 .whatsapp-button {
   position: fixed;
-  bottom: 60px;
-  right: 20px;
+  bottom: max(60px, calc(env(safe-area-inset-bottom) + 16px));
+  right: max(20px, env(safe-area-inset-right));
   z-index: 10;
   cursor: pointer;
   background-color: #169836;
@@ -145,12 +166,9 @@ a {
 }
 
 .viewAll {
-  position: relative;
-  left: 50%;
-  transform: translateX(-50%);
-  cursor: pointer;
-  font-weight: 700 !important;
-  font-size: 1.2rem !important;
+  display: flex;
+  justify-content: center;
+  padding: 8px 16px 64px;
 }
 
 .formContainer {
@@ -166,4 +184,29 @@ a {
   display: block;
   width: 100%;
   color: var(--primary-font);
+}
+.skeleton {
+  display: block;
+  height: 1em;
+  border-radius: 6px;
+  background: linear-gradient(90deg, #eceeed 25%, #f6f7f6 50%, #eceeed 75%) 0 0 / 200% 100%;
+  animation: skeleton 1.4s ease-in-out infinite;
+}
+
+@keyframes skeleton {
+  to {
+    background-position: -200% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton {
+    animation: none;
+  }
+
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
 }

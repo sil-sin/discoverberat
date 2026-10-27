@@ -44,11 +44,7 @@ const CookieBanner = () => {
         <div data-testid="cookie-banner" className={styles.cookieBanner}>
           <div>
             <span className={styles.cookieText}>
-              This website uses cookies.
-            </span>
-            <span className={styles.cookieText}>
-              {' '}
-              Why we use cookies? Click to learn more
+              We use only the cookies the site needs to work.
               <Button
                 variant="link"
                 href="/cookie-policy"

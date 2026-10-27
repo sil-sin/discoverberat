@@ -13,8 +13,10 @@ type Props = {
   children?: ReactNode
   className?: string
   isDisabled?: boolean
+  isLoading?: boolean
   type?: 'submit' | 'reset' | 'button'
   buttonName?: string
+  popoverTarget?: string
 }
 export const Button: FC<Props> = ({
   onClick,
@@ -24,8 +26,10 @@ export const Button: FC<Props> = ({
   children,
   className,
   isDisabled,
+  isLoading,
   type = 'button',
   buttonName,
+  popoverTarget,
 }) => {
   return variant === 'link' ? (
     <Link
@@ -42,13 +46,16 @@ export const Button: FC<Props> = ({
       title={buttonName}
       aria-label={buttonName}
       onClick={onClick}
+      popoverTarget={popoverTarget}
       className={classnames(
         className,
         styles.button,
         styles[`${variant}`],
-        isDisabled && styles.disabled
+        isDisabled && styles.disabled,
+        isLoading && styles.loading
       )}
-      disabled={isDisabled}
+      disabled={isDisabled || isLoading}
+      aria-busy={isLoading}
     >
       {text || children}
     </button>

@@ -14,7 +14,27 @@ export const getEntriesByType = cache(async (
     content_type: entry,
     ...query,
   })
+  if (entry === 'tourPage') {
+    await Promise.all(
+      response.items.map(async (item: any) => {
+        const file = item.fields?.image?.fields?.file
+        if (file?.url) file.blurDataURL = await getBlurDataURL(file.url)
+      }),
+    )
+  }
 
   return response.items
 })
+
+// Contentful asset URLs change with each upload, so the thumbnail can be cached forever.
+const getBlurDataURL = (url: string) =>
+  fetch(`${url.startsWith('//') ? 'https:' : ''}${url}?w=16&q=50&fm=jpg`, {
+    cache: 'force-cache',
+  })
+    .then(async (res) =>
+      res.ok
+        ? `data:image/jpeg;base64,${Buffer.from(await res.arrayBuffer()).toString('base64')}`
+        : undefined,
+    )
+    .catch(() => undefined)
 export const getEntry = cache((entryId: string) => client.getEntry(entryId))

@@ -8,54 +8,53 @@ import {
   where,
   addDoc,
 } from 'firebase/firestore'
-import { useState } from 'react'
+import { toast } from '@/components/simple/Toast'
 
-const useSaveLater = (booking: any, url: string) => {
-  const [isSuccess, setIsSuccess] = useState(false)
-  const [isTouched, setIsTouched] = useState(false)
+type SavedTour = {
+  id: string
+  title: string
+  price: number
+  currency?: string
+  url: string
+}
+
+const useSaveLater = ({ id, title, price, currency = '€', url }: SavedTour) => {
   const { user } = useAuthContext()
   const router = useRouter()
 
   const handleSaveLater = async () => {
     if (!user) {
-      return router.replace(
-        '/authenticate?callbackUrl=/booking/new?tour=' + url
-      )
+      const here = window.location.pathname + window.location.search
+      return router.push('/authenticate?callbackUrl=' + encodeURIComponent(here))
     }
 
     const db = getFirestore()
 
     try {
-      // Check if a document with the same content exists
       const querySnapshot = await getDocs(
         query(collection(db, 'savedBooking'), where('uid', '==', user.uid))
       )
-
-      //find by id
-      const existingBooking = querySnapshot.docs.find((doc) => {
-        return doc.data().id === booking.id
-      })
-
-      if (existingBooking) {
-        console.warn('Duplicate document found. Not saving.')
-        setIsSuccess(false)
-        setIsTouched(true)
-        // No existing document found, proceed to save
-      } else {
-        // Document with the same content already exists
-        await addDoc(collection(db, 'savedBooking'), {
-          ...booking,
-          uid: user.uid,
-        })
-        setIsSuccess(true)
-        router.push('#success')
+      const link = { label: 'View saved tours', href: '/user/profile/' + user.uid }
+      if (querySnapshot.docs.some((doc) => doc.data().id === id)) {
+        return toast.info('This tour is already saved.', link)
       }
+
+      await addDoc(collection(db, 'savedBooking'), {
+        id,
+        title,
+        price,
+        currency,
+        url,
+        uid: user.uid,
+      })
+      toast.success('Tour saved for later.', link)
     } catch (error) {
       console.error('Error saving booking:', error)
+      toast.error('This tour could not be saved. Please try again.')
     }
   }
 
-  return { handleSaveLater, isSuccess, isTouched }
+  return { handleSaveLater }
 }
 
 export default useSaveLater

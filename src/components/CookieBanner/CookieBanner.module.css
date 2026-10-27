@@ -17,7 +17,7 @@
 }
 
 .cookieLink {
-    color: var(--button-secondary-typo);
+    color: #8fd3a6;
 }
 
 .hideButton {
@@ -31,4 +31,16 @@
 
 .hideButton:hover {
     background-color: #777;
+}
+@media (max-width: 640px) {
+    .cookieBanner {
+        left: 12px;
+        right: 88px;
+        bottom: max(12px, env(safe-area-inset-bottom));
+        width: auto;
+        flex-direction: column;
+        gap: 4px;
+        border-radius: 12px;
+        font-size: 0.875rem;
+    }
 }

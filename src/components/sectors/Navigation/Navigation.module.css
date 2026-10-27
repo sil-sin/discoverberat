@@ -17,19 +17,40 @@
 .navbarLinksShow {
   display: flex;
   flex-direction: column;
-  align-items: stretch;
   list-style: none;
-  gap: 10px;
-  padding: 0;
+  padding: 4px 0 16px;
   margin: 0;
 }
 
 .navbarLinksShow li {
-  text-align: center;
+  border-bottom: 1px solid #eef0ef;
+}
+
+.navbarLinksShow li > a,
+.logout {
+  display: flex;
+  align-items: center;
   width: 100%;
-  margin: 0;
-  padding: 10px;
-  border-bottom: 0.5px inset var(--link-background-hover);
+  min-height: 52px;
+  padding: 0 8px;
+  font-size: 1.0625rem;
+}
+
+.navbarLinksShow .userButton {
+  width: 100%;
+  margin: 16px 0 0;
+}
+
+.logout {
+  border: 0;
+  background: none;
+  color: var(--text-default);
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.desktopOnly {
+  display: none;
 }
 
 .menuButton {
@@ -64,8 +85,23 @@
     padding: 0;
   }
 
-  .navbarLinksShow a {
+  .navbarLinksShow li > a {
+    min-height: 0;
     padding: 0;
+    font-size: inherit;
+  }
+
+  .navbarLinksShow .userButton {
+    width: auto;
+    margin: 10px;
+  }
+
+  .desktopOnly {
+    display: list-item;
+  }
+
+  .mobileOnly {
+    display: none;
   }
 
   .navbarLinksShow {
@@ -77,7 +113,9 @@
     position: static;
   }
 
-  .menuButton {
+  /* Doubled to beat the Button's own display: inline-flex. */
+  .menuButton.menuButton,
+  .backdrop {
     display: none;
   }
 
@@ -93,4 +131,13 @@
   padding: 0;
   max-width: 200px;
   height: 70px;
+}
+.userButton {
+  anchor-name: --user-button;
+}
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
 }

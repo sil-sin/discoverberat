@@ -1,17 +1,25 @@
 'use client';
 
 import Card from '@/components/simple/Card';
-import React, { FC } from 'react';
-import { useRouter } from 'next/navigation';
+import React, { FC, useState } from 'react';
+import classNames from 'classnames';
 import styles from './Tours.module.css';
 import { Tour } from '@/utils/types';
+
+// Contentful categories are free text, so filters match keywords in the category and title.
+const FILTERS: Record<string, RegExp> = {
+  History: /histor|city|museum|apollonia/i,
+  Nature: /nature|hiking|canyon|waterfall|lagoon/i,
+  Wine: /wine/i,
+};
 
 export const Tours: FC<any> = (props: {
   tours: Tour[];
   pageTitle?: string;
+  withFilters?: boolean;
 }) => {
-  const { tours } = props;
-  const router = useRouter();
+  const { tours, withFilters } = props;
+  const [filter, setFilter] = useState<string | null>(null);
 
   if (!tours) {
     return (
@@ -22,39 +30,56 @@ export const Tours: FC<any> = (props: {
   }
   const toursCards = (toursByCategory: Tour[]) =>
     toursByCategory?.map((tour: Tour) => {
-      const { title, description, price, currency, image, url } = tour.fields;
+      const { title, price, currency, image, url } = tour.fields;
 
       const imgUrl = image?.fields?.file?.url as string;
 
       return (
-        <div key={title} className={styles.tourCards}>
+        <li key={title}>
           <Card
             title={title}
-            description={description}
-            imageSrc={imgUrl ? 'https:' + imgUrl : ''}
+            imageSrc={imgUrl ? 'https:' + imgUrl : '/berat.svg'}
+            blurDataURL={image?.fields?.file?.blurDataURL}
             price={price}
-            className={styles.tourCard}
             currency={currency}
-            isLoading={!tours}
             learnMoreLink={`/tours/${url}`}
-            onClick={() => router.push(`/booking/new?tour=${url}`)}
+            imageTransitionName={`tour-image-${url}`}
           />
-        </div>
+        </li>
       );
     });
 
   const sortedTours = tours
     ?.filter((tour: any) => tour.fields?.category?.includes(''))
+    .filter(
+      (tour: any) =>
+        !filter ||
+        FILTERS[filter].test(`${tour.fields.category} ${tour.fields.title}`),
+    )
     .sort((a: any, b: any) => a.fields.price - b.fields.price);
 
   return (
-    <div className={styles.toursContainer}>
-      <div>
-        <h2 className={styles.tourCategory}>{props.pageTitle ?? 'Tours'}</h2>
-        <div className={styles.tourCardsContainer}>
-          {toursCards(sortedTours)}
+    <section className={styles.toursContainer}>
+      {props.pageTitle && <h2>{props.pageTitle}</h2>}
+      {withFilters && (
+        <div className={styles.filters} role="group" aria-label="Filter tours">
+          {[null, ...Object.keys(FILTERS)].map((name) => (
+            <button
+              key={name ?? 'All'}
+              type="button"
+              aria-pressed={filter === name}
+              className={classNames(
+                styles.filter,
+                filter === name && styles.active,
+              )}
+              onClick={() => setFilter(name)}
+            >
+              {name ?? 'All'}
+            </button>
+          ))}
         </div>
-      </div>
-    </div>
+      )}
+      <ul className={styles.tourCardsContainer}>{toursCards(sortedTours)}</ul>
+    </section>
   );
 };

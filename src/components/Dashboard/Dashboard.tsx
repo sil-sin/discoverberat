@@ -6,6 +6,7 @@ import Button from '../simple/Button/index'
 import PaypalCheckoutButton from '@/utils/payment/paypal'
 import { cancelBooking } from '@/utils/payment/actions'
 import { useAuthContext } from '@/utils/auth/auth-provider'
+import { toast } from '@/components/simple/Toast'
 import { FiCalendar } from 'react-icons/fi'
 
 function PaymentStatus({ booking }: { booking: any }) {
@@ -95,6 +96,7 @@ export default function Dashboard({ bookings, savedItems, user }: any) {
   const router = useRouter()
   const { user: firebaseUser } = useAuthContext()
   const [payingId, setPayingId] = useState<string | null>(null)
+  const [cancellingId, setCancellingId] = useState<string | null>(null)
 
   if (!user) {
     return null
@@ -104,16 +106,25 @@ export default function Dashboard({ bookings, savedItems, user }: any) {
 
   const handleCancel = async (booking: any) => {
     const message = booking.isPaid
-      ? 'Cancel this booking? We refund your payment minus the PayPal fee.'
-      : 'Cancel this booking?'
-    if (!firebaseUser || !confirm(message)) return
-    const { error } = await cancelBooking(
-      await firebaseUser.getIdToken(),
-      booking.id,
-    ).catch(() => ({
-      error: 'Your booking could not be cancelled. Please try again.',
-    }))
-    if (error) return alert(error)
+      ? `Cancel ${booking.title}? We refund your payment minus the PayPal fee.`
+      : `Cancel ${booking.title}?`
+    if (!firebaseUser || !(await toast.confirm(message, 'Cancel booking'))) return
+    setCancellingId(booking.id)
+    const { error } = await firebaseUser
+      .getIdToken()
+      .then((idToken) => cancelBooking(idToken, booking.id))
+      .catch(() => ({
+        error: 'Your booking could not be cancelled. Please try again.',
+      }))
+    if (error) {
+      setCancellingId(null)
+      return toast.error(error)
+    }
+    toast.success(
+      booking.isPaid
+        ? 'Cancellation requested. We will refund your payment soon.'
+        : 'Booking cancelled.',
+    )
     router.refresh()
   }
 
@@ -151,9 +162,11 @@ export default function Dashboard({ bookings, savedItems, user }: any) {
           <button
             type='button'
             className={styles.action}
+            disabled={cancellingId === booking.id}
+            aria-busy={cancellingId === booking.id}
             onClick={() => handleCancel(booking)}
           >
-            Cancel booking
+            {cancellingId === booking.id ? 'Cancelling…' : 'Cancel booking'}
           </button>
         )}
       </div>

@@ -1,6 +1,8 @@
 'use client';
 
 import Image from 'next/image';
+import { useState } from 'react';
+import { toast } from '@/components/simple/Toast';
 import styles from './user.module.css';
 import Dashboard from '@/components/Dashboard/Dashboard';
 import AdminDashboard from '@/components/AdminDashboard/AdminDashboard';
@@ -19,22 +21,27 @@ export function UserProfileClient({
   savedItems,
   upcomingBookings,
 }: Props) {
+  const [isDeleting, setIsDeleting] = useState(false);
+
   if (!user) {
     return null;
   }
 
   const handleDeleteAccount = async () => {
-    if (
-      !confirm(
-        'Delete your account? Your saved tours and personal details are removed. This cannot be undone.',
-      )
-    ) {
-      return;
-    }
+    const isConfirmed = await toast.confirm(
+      'Delete your account? Your saved tours and personal details are removed. This cannot be undone.',
+      'Delete account',
+    );
+    if (!isConfirmed) return;
+    setIsDeleting(true);
     const { error } = await deleteAccount().catch(() => ({
       error: 'Your account could not be deleted. Please try again.',
     }));
-    if (error) return alert(error);
+    if (error) {
+      setIsDeleting(false);
+      return toast.error(error);
+    }
+    toast.success('Your account is deleted.');
     signOutUser();
   };
 
@@ -65,9 +72,24 @@ export function UserProfileClient({
           />
         )}
         {!user.isAdmin && (
-          <section className={styles.deleteAccount}>
-            <Button variant="tertiary" onClick={handleDeleteAccount}>
-              Delete my account
+          <section
+            className={styles.dangerZone}
+            aria-labelledby="danger-zone-title"
+          >
+            <div>
+              <h2 id="danger-zone-title">Danger zone</h2>
+              <p>
+                Deleting your account removes your saved tours and your personal
+                details from past bookings. You cannot undo this.
+              </p>
+            </div>
+            <Button
+              variant="tertiary"
+              className={styles.deleteButton}
+              isLoading={isDeleting}
+              onClick={handleDeleteAccount}
+            >
+              Delete account
             </Button>
           </section>
         )}

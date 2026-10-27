@@ -7,14 +7,10 @@ export function HomeClient() {
   const router = useRouter();
 
   return (
-    <Button
-      className="viewAll"
-      variant="tertiary"
-      onClick={() => {
-        router.push('/tours');
-      }}
-    >
-      View all tours
-    </Button>
+    <div className="viewAll">
+      <Button variant="secondary" onClick={() => router.push('/tours')}>
+        View all tours
+      </Button>
+    </div>
   );
 }

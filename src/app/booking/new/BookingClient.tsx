@@ -1,7 +1,7 @@
 'use client';
 
 import Button from '@/components/simple/Button';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import styles from './new.module.css';
 import { useAuthContext } from '@/utils/auth/auth-provider';
 import ReactCalendar from 'react-calendar';
@@ -10,8 +10,7 @@ import { getTimes } from '@/helpers/getTimes';
 import BookingForm from '@/components/sectors/BookingForm/BookingForm';
 import { useRouter } from 'next/navigation';
 import useSaveLater from '@/hooks/useSaveLater';
-import Modal from '@/components/Modal';
-import Toast from '@/components/simple/Toast';
+import { toast } from '@/components/simple/Toast';
 
 const getStartDate = () => {
   const startDate = new Date();
@@ -40,17 +39,13 @@ export function BookingClient({
     selectedDate,
   );
   const [isPrivate, setIsPrivate] = useState<boolean>(false);
-  const [isShowModal, setIsShowModal] = useState<boolean>(false);
-  const [warning, setWarning] = useState<boolean>(false);
+  const [isBooking, setIsBooking] = useState(false);
   const router = useRouter();
 
   const bookingFormRef = useRef<any>(null);
   const { user } = useAuthContext();
 
-  const { handleSaveLater, isSuccess, isTouched } = useSaveLater(
-    { ...booking },
-    booking.url,
-  );
+  const { handleSaveLater } = useSaveLater(booking);
   const currentDay = new Date().setDate(new Date().getDate() + 1);
 
   const {
@@ -63,29 +58,10 @@ export function BookingClient({
     isDayTrip,
   } = booking;
 
-  // Sync modal open state from isSuccess without useEffect
-  const [prevIsSuccess, setPrevIsSuccess] = useState(isSuccess);
-  if (prevIsSuccess !== isSuccess) {
-    setPrevIsSuccess(isSuccess);
-    setIsShowModal(isSuccess);
-  }
-
   const availableTimes = useMemo(
     () => (!isDayTrip ? getTimes(selectedDate) : []),
     [isDayTrip, selectedDate],
   );
-
-  const [prevIsTouched, setPrevIsTouched] = useState(isTouched);
-  if (prevIsTouched !== isTouched) {
-    setPrevIsTouched(isTouched);
-    setWarning(isTouched);
-  }
-
-  useEffect(() => {
-    if (!warning) return;
-    const timer = setTimeout(() => setWarning(false), 5000);
-    return () => clearTimeout(timer);
-  }, [warning]);
 
   const handleBookNow = async (isBookNow: boolean) => {
     if (!user) {
@@ -94,29 +70,27 @@ export function BookingClient({
       );
     }
 
-    const formData = await bookingFormRef.current.getFormData();
+    setIsBooking(true);
+    const error = await (async () => {
+      const formData = await bookingFormRef.current.getFormData();
+      const isInvalid = !(await bookingFormRef.current.validate());
+      if (!selectedDate) return 'Select a date for your tour.';
+      if (isInvalid) return 'Check the highlighted booking fields.';
+      if (isBookNow) return null;
 
-    const bookingData = {
-      bookingId: id,
-      ...formData,
-      date: selectedDateTime,
-    };
+      const day = new Date(selectedDate);
+      day.setHours(0, 0, 0, 0);
+      const bookingId = await createBooking(
+        await user.getIdToken(),
+        day.toLocaleString('en-GB'),
+        { bookingId: id, ...formData, date: selectedDateTime },
+      );
+      if (!bookingId) return 'This date is fully booked. Pick another date.';
+      router.push('new/thank-you?id=' + bookingId);
+    })().catch(() => 'Your booking could not be saved. Please try again.');
 
-    const isInvalid = !(await bookingFormRef.current.validate());
-    if (!selectedDate) return alert('Please select a date');
-    if (isInvalid) return alert('Please fill in all fields');
-    if (isBookNow) return;
-
-    const day = new Date(selectedDate);
-    day.setHours(0, 0, 0, 0);
-    const bookingId = await createBooking(
-      await user.getIdToken(),
-      day.toLocaleString('en-GB'),
-      bookingData,
-    );
-    if (!bookingId) return alert('This date is fully booked. Please pick another date.');
-
-    router.push('new/thank-you?id=' + bookingId);
+    if (error !== undefined) setIsBooking(false);
+    if (error) toast.error(error);
   };
 
   const handleAvailability = (date: Date) => {
@@ -127,9 +101,6 @@ export function BookingClient({
   };
 
   const nextDay = new Date(currentDay);
-  const handleModalClose = () => {
-    setIsShowModal(false);
-  };
 
   const handleTimeSelection = (selectedTime: string) => {
     const [hours, minutes] = selectedTime.split(':');
@@ -145,20 +116,7 @@ export function BookingClient({
 
   return (
     <div>
-      {isShowModal && (
-        <Modal
-          modalCta={[
-            { ctaText: 'Home', ctaUrl: '/' },
-            { ctaText: 'Saved tours', ctaUrl: '/user/profile/' + user?.uid },
-          ]}
-          id="success"
-          onClose={handleModalClose}
-          withCTA={true}
-          modalTitle={'Success'}
-          modalDescription={`This tour has been saved on your profile. <br> Click on <em>"Saved tours"</em> to view all your saved items, or <em>"Home"</em> to go back to the home page.`}
-        />
-      )}
-      <div onClick={() => setIsShowModal(false)}>
+      <div>
         <div className={styles.container}>
           <h2> {title} </h2>
           <div>
@@ -238,6 +196,7 @@ export function BookingClient({
             {/* TODO: add "By booking you agree to the Terms" with a link to /terms */}
             <Button
               isDisabled={!selectedDateTime && !isDayTrip}
+              isLoading={isBooking}
               variant="primary"
               onClick={() => {
                 setIsPrivate(false);
@@ -249,14 +208,6 @@ export function BookingClient({
             <Button onClick={handleSaveLater} variant="secondary">
               Save for later
             </Button>
-            {!isSuccess && warning && (
-              <Toast
-                withCLoseButton={false}
-                onClose={() => setWarning(false)}
-                message="Already saved in your profile"
-                isInfo
-              />
-            )}
           </div>
 
           <div>

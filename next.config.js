@@ -2,6 +2,9 @@
 const nextConfig = {
   reactStrictMode: true,
   reactCompiler: true,
+  experimental: {
+    viewTransition: true,
+  },
   images: {
     remotePatterns: [
       {
