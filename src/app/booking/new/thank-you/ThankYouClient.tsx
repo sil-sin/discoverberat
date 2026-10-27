@@ -6,6 +6,7 @@ import styles from './thank-you.module.css';
 import Button from '@/components/simple/Button';
 import Loader from '@/components/simple/Loader';
 import { useAuthContext } from '@/utils/auth/auth-provider';
+import PaypalCheckoutButton from '@/utils/payment/paypal';
 
 type Props = {
   getBooking: (idToken: string, id: string) => Promise<Record<string, any> | null>;
@@ -71,6 +72,30 @@ export function ThankYouClient({ getBooking }: Props) {
               Starting on <strong>{formattedDate}</strong>.<p>See you soon!</p>
             </div>
           </section>
+          {booking.isPaid ? (
+            <p>
+              <strong>Paid</strong>
+            </p>
+          ) : (
+            <>
+              <p>Pay now online, or pay on location.</p>
+              <p>
+                Refunds exclude PayPal fees. See our{' '}
+                <Button variant="link" href="/refund-policy">
+                  refund policy
+                </Button>
+                .
+              </p>
+              <PaypalCheckoutButton
+                bookingId={id}
+                onPaid={() => setBooking({ ...booking, isPaid: true })}
+                onError={(error) => {
+                  console.error('PayPal payment failed:', error);
+                  alert('Payment failed. Please try again or pay on location.');
+                }}
+              />
+            </>
+          )}
           <Button
             variant="primary"
             onClick={() =>
