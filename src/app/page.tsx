@@ -34,6 +34,7 @@ export const metadata: Metadata = {
 
 export const revalidate = 43200; // 12 hours
 
+// TODO: re-enable reviews once the Google Places call works again; it currently rejects and slows the page load.
 // async function getReviews() {
 //   try {
 //     const res = await fetch(

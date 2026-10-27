@@ -16,12 +16,8 @@ import { signOutUser } from './signOut';
 type AuthContextType = {
   user: User | null;
   loading: boolean;
-  // isAdmin: boolean
   loginWithGoogle: () => void;
   logout: () => void;
-  // login: (email: string, password: string) => Promise<void>
-  // signUp: (email: string, password: string) => Promise<void>
-  // resetPassword: (email: string) => Promise<void>
 };
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -42,7 +38,6 @@ type AuthProviderProps = {
 export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
-  // const [isAdmin, setIsAdmin] = useState<boolean>(false)
 
   useEffect(() => {
     const auth = getAuth(app);
@@ -53,15 +48,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
         const token = await user.getIdToken();
         nookies.set(null, 'token', token, { path: '/' });
         setUser(user);
-
-        // TODO: later implementation, edit mode on page , if user is admin
-        // if (user.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL) {
-        // setIsAdmin(true)
-        // }
       } else {
         setUser(null);
         nookies.set(null, 'token', '', { path: '/' });
-        // setIsAdmin(false)
       }
       setLoading(false);
     });
@@ -72,7 +61,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
       value={{
         user,
         loading,
-        // isAdmin,
         loginWithGoogle: googleProvider,
         logout: signOutUser,
       }}

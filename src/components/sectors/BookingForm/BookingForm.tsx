@@ -1,6 +1,5 @@
 import React, { FC, forwardRef, useImperativeHandle, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
-import { CustomError } from '@/utils/types'
 import { useAuthContext } from '@/utils/auth/auth-provider'
 import classnames from 'classnames'
 import styles from './BookingForm.module.css'
@@ -8,7 +7,6 @@ import Toast from '@/components/simple/Toast'
 interface BookingFormProps {
   className?: string
   onSubmit: (formData: any) => void
-  error: CustomError
   isLoading?: boolean
   booker?: string
   guestNumber: number

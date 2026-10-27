@@ -23,7 +23,7 @@ export const OurServices: FC = () => {
     {
       title: 'Accommodation Booking',
       icon: <MdOutlineLocalHotel size={50} />,
-      link: 'services/accommodation',
+      link: '/services/accommodation',
     },
   ]
 

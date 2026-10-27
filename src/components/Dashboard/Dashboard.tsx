@@ -11,10 +11,6 @@ export default function Dashboard({ bookings, savedItems, user }: any) {
     return null
   }
 
-  const itemLink = (item: any) => {
-    return item.title.replace(/&/g, 'and').split(' ').join('-').toLowerCase()
-  }
-
   return (
     <div data-testid='dashboard' className={styles.body}>
       <main className={styles.dataPage}>
@@ -145,7 +141,7 @@ export default function Dashboard({ bookings, savedItems, user }: any) {
                           variant='tertiary'
                           text=' More info'
                           onClick={() =>
-                            router.push(`/tours/${itemLink(savedItem)}`)
+                            router.push(`/tours/${savedItem.url}`)
                           }
                         />
                       </td>

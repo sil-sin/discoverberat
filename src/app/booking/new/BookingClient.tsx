@@ -47,11 +47,9 @@ export function BookingClient({
   const bookingFormRef = useRef<any>(null);
   const { user } = useAuthContext();
 
-  const tourUrl = '/authenticate?callbackUrl=/booking/new?tour=' + booking.url;
-
   const { handleSaveLater, isSuccess, isTouched } = useSaveLater(
     { ...booking },
-    tourUrl,
+    booking.url,
   );
   const currentDay = new Date().setDate(new Date().getDate() + 1);
 

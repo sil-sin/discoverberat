@@ -37,9 +37,6 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "pages/**/*",
-    "components/**/*",
-    "lib/**/*",
     "src/**/*",
     ".next/dev/types/**/*.ts"
   ],

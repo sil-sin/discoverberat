@@ -24,7 +24,6 @@ export const Transfers: FC<any> = (props: any) => {
                 hash: 'contact',
                 query: { transfer: transfer.fields.to },
               }}
-              // href={'#contact?transfer=' + transfer.fields.to}
               key={transfer.sys.id}
             >
               <TransfersCard

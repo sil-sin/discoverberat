@@ -18,7 +18,6 @@ jest.mock('@/components/simple/Toast', () => ({
 describe('BookingForm component', () => {
   const mockSubmit = jest.fn()
   const mockUser = { displayName: 'John Doe', email: 'john@example.com' }
-  const mockError = { message: 'An error occurred' }
 
   beforeEach(() => {
     ;(useAuthContext as jest.Mock).mockReturnValue({ user: mockUser })
@@ -32,7 +31,6 @@ describe('BookingForm component', () => {
     render(
       <BookingForm
         onSubmit={mockSubmit}
-        error={mockError}
         guestNumber={2}
         email={mockUser.email}
         booker={mockUser.displayName}
@@ -51,7 +49,6 @@ describe('BookingForm component', () => {
     render(
       <BookingForm
         onSubmit={mockSubmit}
-        error={mockError}
         guestNumber={2}
         email={mockUser.email}
       />
@@ -87,7 +84,6 @@ describe('BookingForm component', () => {
     render(
       <BookingForm
         onSubmit={mockSubmit}
-        error={mockError}
         guestNumber={2}
         email={mockUser.email}
       />
