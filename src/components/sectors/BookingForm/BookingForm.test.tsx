@@ -61,6 +61,9 @@ describe('BookingForm component', () => {
     fireEvent.change(screen.getByLabelText(/booker email/i), {
       target: { value: '' },
     })
+    fireEvent.change(screen.getByLabelText(/booker phone/i), {
+      target: { value: 'abc' },
+    })
     fireEvent.change(screen.getByLabelText(/pickup place/i), {
       target: { value: '' },
     })
@@ -75,6 +78,7 @@ describe('BookingForm component', () => {
       expect(
         screen.getByText('Booker email field is required')
       ).toBeInTheDocument()
+      expect(screen.getByText('Enter a valid phone number')).toBeInTheDocument()
       expect(screen.getByText('Pickup field is required')).toBeInTheDocument()
       expect(screen.getByText('Guests must be at least 2')).toBeInTheDocument()
     })
@@ -95,6 +99,9 @@ describe('BookingForm component', () => {
     fireEvent.change(screen.getByTestId('email'), {
       target: { value: 'jane@example.com' },
     })
+    fireEvent.change(screen.getByLabelText(/booker phone/i), {
+      target: { value: '+355 69 123 4567' },
+    })
     fireEvent.change(screen.getByLabelText(/pickup place/i), {
       target: { value: 'Hotel' },
     })
@@ -110,6 +117,7 @@ describe('BookingForm component', () => {
           isPrivate: false,
           pickup: 'Hotel',
           email: 'jane@example.com',
+          phone: '+355 69 123 4567',
         },
         expect.anything()
       )

@@ -97,6 +97,14 @@ export default function AdminDashboard({ bookings, user }: any) {
                       <td>{booking.email}</td>
                     </tr>
                     <tr>
+                      <th>Booker phone</th>
+                      <td>
+                        {booking.phone && (
+                          <a href={`tel:${booking.phone}`}>{booking.phone}</a>
+                        )}
+                      </td>
+                    </tr>
+                    <tr>
                       <th>Price</th>
                       <td>
                         {booking.currency}

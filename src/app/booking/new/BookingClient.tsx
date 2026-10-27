@@ -102,7 +102,7 @@ export function BookingClient({
       date: selectedDateTime,
     };
 
-    const isInvalid = !formData.booker || !(formData.guestNumber >= 2);
+    const isInvalid = !(await bookingFormRef.current.validate());
     if (!selectedDate) return alert('Please select a date');
     if (isInvalid) return alert('Please fill in all fields');
     if (isBookNow) return;
@@ -235,6 +235,7 @@ export function BookingClient({
               <p>Minimum booking requirement: 2 persons.</p>
             </div>
 
+            {/* TODO: add "By booking you agree to the Terms" with a link to /terms */}
             <Button
               isDisabled={!selectedDateTime && !isDayTrip}
               variant="primary"
