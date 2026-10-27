@@ -46,6 +46,10 @@ async function createBooking(
   if (!Number.isInteger(guestNumber) || guestNumber < 2) {
     throw new Error('Invalid guest number');
   }
+  const phone = String(input.phone ?? '').trim();
+  if (!/^\+?[\d\s()-]{7,20}$/.test(phone)) {
+    throw new Error('Invalid phone number');
+  }
   const entry: any = await getEntry(String(input.bookingId));
   const type = BOOKING_TYPES[entry.sys.contentType.sys.id];
   if (!type) throw new Error('Invalid booking item');
@@ -61,6 +65,7 @@ async function createBooking(
     bookingId: entry.sys.id,
     booker,
     email: String(input.email),
+    phone,
     pickup: String(input.pickup),
     isPrivate: Boolean(input.isPrivate),
     guestNumber,
@@ -102,7 +107,7 @@ async function createBooking(
     sendMail(
       process.env.NEXT_PUBLIC_ADMIN,
       `New booking from ${booker} on ${date}`,
-      `Hi,\n\nI'm ${booker} and I just reserved this tour: ${title} on ${date} for ${guestNumber} guests. I'll be in touch with you soon.`,
+      `Hi,\n\nI'm ${booker} and I just reserved this tour: ${title} on ${date} for ${guestNumber} guests. My phone number is ${phone}. I'll be in touch with you soon.`,
     ),
   ]);
   results.forEach((result) => {

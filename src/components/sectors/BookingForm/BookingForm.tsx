@@ -12,6 +12,7 @@ interface BookingFormProps {
   guestNumber: number
   pickup?: string
   email: string | null
+  phone?: string
   isPrivate?: boolean
 }
 
@@ -22,6 +23,7 @@ const BookingForm: FC<BookingFormProps> = forwardRef((props, ref) => {
   const {
     register,
     handleSubmit,
+    trigger,
     watch,
     setValue,
     formState: { errors },
@@ -31,16 +33,18 @@ const BookingForm: FC<BookingFormProps> = forwardRef((props, ref) => {
       booker: user?.displayName ?? '',
       guestNumber: 2,
       email: user?.email ?? '',
+      phone: '',
       isPrivate: isPrivate || false,
       pickup: 'Discover Berat office',
     },
   })
 
-  const [booker, guestNumber, pickup, email] = watch([
+  const [booker, guestNumber, pickup, email, phone] = watch([
     'booker',
     'guestNumber',
     'pickup',
     'email',
+    'phone',
   ])
 
   useEffect(() => {
@@ -56,10 +60,12 @@ const BookingForm: FC<BookingFormProps> = forwardRef((props, ref) => {
     isPrivate,
     pickup,
     email,
+    phone,
   })
 
   useImperativeHandle(ref, () => ({
     getFormData,
+    validate: trigger,
   }))
 
   return (
@@ -103,6 +109,29 @@ const BookingForm: FC<BookingFormProps> = forwardRef((props, ref) => {
               isTextOnly
               isError
               message={errors.email.message ?? 'Something went wrong!'}
+            />
+          )}
+        </div>
+        <label htmlFor='phone'>Booker phone:</label>
+        <div>
+          <input
+            placeholder='Enter a phone number, e.g. +355 69 123 4567'
+            type='tel'
+            autoComplete='tel'
+            id='phone'
+            {...register('phone', {
+              required: 'Booker phone field is required',
+              pattern: {
+                value: /^\+?[\d\s()-]{7,20}$/,
+                message: 'Enter a valid phone number',
+              },
+            })}
+          />
+          {errors.phone?.message && (
+            <Toast
+              isTextOnly
+              isError
+              message={errors.phone.message ?? 'Something went wrong!'}
             />
           )}
         </div>
