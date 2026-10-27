@@ -111,16 +111,15 @@ export default function PrivacyPolicyPage() {
       <h2>How Long We Keep Your Data</h2>
       <ul>
         <li>
-          Account and saved tours: until you ask us to delete your account.
-        </li>
-        <li>
-          Unpaid bookings: until you ask us to delete them, or until we delete
-          your account.
+          Account and saved tours: until you delete your account on your
+          profile page.
         </li>
         {/* TODO: replace with the exact retention period from the accountant */}
         <li>
-          Paid bookings and payment IDs: as long as tax and accounting law
-          requires.
+          Bookings and payment IDs: as long as tax and accounting law requires.
+          When you delete your account, we remove your name, email address,
+          phone number and pickup location from your past bookings. You can
+          delete your account only when you have no upcoming bookings.
         </li>
         <li>
           Contact messages: as long as we need them to answer your question.
@@ -132,7 +131,10 @@ export default function PrivacyPolicyPage() {
       <ul>
         <li>get a copy of your data</li>
         <li>correct wrong data</li>
-        <li>have your data deleted</li>
+        <li>
+          have your data deleted. You can delete your account yourself on your
+          profile page.
+        </li>
         <li>restrict or object to how we use your data</li>
         <li>receive your data in a machine-readable format</li>
       </ul>
