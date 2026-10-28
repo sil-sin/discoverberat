@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import styles from './thank-you.module.css';
 import Button from '@/components/simple/Button';
+import Loader from '@/components/simple/Loader';
 import { useAuthContext } from '@/utils/auth/auth-provider';
 import PaypalCheckoutButton from '@/utils/payment/paypal';
 
