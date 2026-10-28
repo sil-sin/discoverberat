@@ -193,7 +193,13 @@ export function BookingClient({
               <p>Minimum booking requirement: 2 persons.</p>
             </div>
 
-            {/* TODO: add "By booking you agree to the Terms" with a link to /terms */}
+            <p>
+              By booking, you accept our{' '}
+              <Button variant="link" href="/terms">
+                Terms and Conditions
+              </Button>
+              .
+            </p>
             <Button
               isDisabled={!selectedDateTime && !isDayTrip}
               isLoading={isBooking}

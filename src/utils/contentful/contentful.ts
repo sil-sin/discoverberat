@@ -30,6 +30,7 @@ export const getEntriesByType = cache(async (
 const getBlurDataURL = (url: string) =>
   fetch(`${url.startsWith('//') ? 'https:' : ''}${url}?w=16&q=50&fm=jpg`, {
     cache: 'force-cache',
+    signal: AbortSignal.timeout(3000),
   })
     .then(async (res) =>
       res.ok

@@ -31,7 +31,7 @@ export default function RefundPolicyPage() {
         Cancel a booking on your profile page with the &quot;Cancel
         booking&quot; button. Less than 24 hours before the tour, contact us via
         email at <strong>discoverberat@gmail.com</strong> with your booking ID.
-        You can find the booking ID in your payment receipt email.
+        You can find the booking ID in your booking confirmation email.
       </p>
     </div>
   );

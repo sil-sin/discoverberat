@@ -42,9 +42,11 @@ export const toast = {
   confirm: (message: string, label: string) =>
     new Promise<boolean>((resolve) => {
       answerPendingConfirm()
+      const opener = document.activeElement as HTMLElement | null
       const id = ++nextId
       const onAnswer = (confirmed: boolean) => {
         dismiss(id)
+        if (opener?.isConnected) opener.focus()
         resolve(confirmed)
       }
       setToasts([...toasts, { id, tone: 'info', message, confirm: { label, onAnswer } }])

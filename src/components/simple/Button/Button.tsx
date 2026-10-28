@@ -40,24 +40,31 @@ export const Button: FC<Props> = ({
       {text || children}
     </Link>
   ) : (
-    <button
-      type={type}
-      name={buttonName}
-      title={buttonName}
-      aria-label={buttonName}
-      onClick={onClick}
-      popoverTarget={popoverTarget}
-      className={classnames(
-        className,
-        styles.button,
-        styles[`${variant}`],
-        isDisabled && styles.disabled,
-        isLoading && styles.loading
+    <>
+      <button
+        type={type}
+        name={buttonName}
+        title={buttonName}
+        aria-label={buttonName}
+        onClick={onClick}
+        popoverTarget={popoverTarget}
+        className={classnames(
+          className,
+          styles.button,
+          styles[`${variant}`],
+          isDisabled && styles.disabled,
+          isLoading && styles.loading
+        )}
+        disabled={isDisabled || isLoading}
+        aria-busy={isLoading}
+      >
+        {text || children}
+      </button>
+      {isLoading && (
+        <span role='status' className={styles.srOnly}>
+          Processing…
+        </span>
       )}
-      disabled={isDisabled || isLoading}
-      aria-busy={isLoading}
-    >
-      {text || children}
-    </button>
+    </>
   )
 }

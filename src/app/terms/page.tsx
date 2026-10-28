@@ -26,7 +26,8 @@ export default function TermsPage() {
           contact you and to pick you up.
         </li>
         <li>
-          Your booking is confirmed when you receive our confirmation email.
+          Your booking is confirmed when you complete it on this website. We
+          then send you a confirmation email.
         </li>
       </ul>
 

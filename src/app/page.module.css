@@ -70,6 +70,10 @@
   background: var(--brand-soft);
 }
 
+.cta a:focus-visible {
+  outline-color: #fff !important;
+}
+
 .cta a svg {
   font-size: 1.375rem;
 }

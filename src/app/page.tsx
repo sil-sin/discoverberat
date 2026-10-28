@@ -59,7 +59,7 @@ const REASONS = [
   {
     Icon: FiCalendar,
     title: 'Free cancellation',
-    text: 'Up to 24 hours before the tour.',
+    text: 'Up to 24 hours before the tour. PayPal refunds exclude the PayPal fee.',
   },
   {
     Icon: FiCreditCard,

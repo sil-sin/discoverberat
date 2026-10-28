@@ -9,7 +9,7 @@ const PAYPAL_API =
     ? 'https://api-m.paypal.com'
     : 'https://api-m.sandbox.paypal.com';
 
-export async function paypalFetch(path: string, body?: object) {
+export async function paypalFetch(path: string, body?: object | string) {
   const credentials = Buffer.from(
     `${process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID}:${process.env.PAYPAL_CLIENT_SECRET}`,
   ).toString('base64');
@@ -30,7 +30,7 @@ export async function paypalFetch(path: string, body?: object) {
       Authorization: `Bearer ${access_token}`,
       'Content-Type': 'application/json',
     },
-    body: body && JSON.stringify(body),
+    body: typeof body === 'string' ? body : body && JSON.stringify(body),
   });
   const data = await res.json();
   if (!res.ok) {

@@ -47,7 +47,7 @@ async function createBooking(
     throw new Error('Invalid guest number');
   }
   const phone = String(input.phone ?? '').trim();
-  if (!/^\+?[\d\s()-]{7,20}$/.test(phone)) {
+  if (!/^(?=(?:\D*\d){7})\+?[\d\s()-]{7,20}$/.test(phone)) {
     throw new Error('Invalid phone number');
   }
   const entry: any = await getEntry(String(input.bookingId));
@@ -103,7 +103,7 @@ async function createBooking(
     sendMail(
       email,
       `Booking confirmation:  ${title} on ${date} for ${guestNumber} guests`,
-      `Dear ${booker},\n\nThank you for your reservation of ${title} on ${date} for ${guestNumber} guests.\n\nSee you soon !`,
+      `Dear ${booker},\n\nThank you for your reservation of ${title} on ${date} for ${guestNumber} guests.\n\nBooking ID: ${bookingId}\n\nSee you soon !`,
     ),
     sendMail(
       process.env.NEXT_PUBLIC_ADMIN,

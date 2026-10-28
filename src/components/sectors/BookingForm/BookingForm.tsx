@@ -122,7 +122,7 @@ const BookingForm: FC<BookingFormProps> = forwardRef((props, ref) => {
             {...register('phone', {
               required: 'Booker phone field is required',
               pattern: {
-                value: /^\+?[\d\s()-]{7,20}$/,
+                value: /^(?=(?:\D*\d){7})\+?[\d\s()-]{7,20}$/,
                 message: 'Enter a valid phone number',
               },
             })}
