@@ -130,6 +130,17 @@ async function createBooking(
     ['Booking ID', bookingId],
   ];
 
+  const when = formatTourDate(date);
+  const total = `${currency}${price * guestNumber}`;
+  const details: [string, string][] = [
+    ['Tour', title],
+    ['Date', when],
+    ['Guests', String(guestNumber)],
+    ['Pickup', booking.pickup],
+    ['Total', `${total} (${currency}${price} per person)`],
+    ['Booking ID', bookingId],
+  ];
+
   // The booking is already saved, so a failed email must not fail the request.
   const results = await Promise.allSettled([
     sendMail(
