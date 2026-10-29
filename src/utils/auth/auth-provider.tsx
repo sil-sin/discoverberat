@@ -45,10 +45,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
     // Queued so a slow earlier call can't overwrite the cookie set by a later event, such as a sign-out.
     let queue = Promise.resolve();
+    let hadUser = false;
     return onIdTokenChanged(auth, (user) => {
+      const shouldSync = Boolean(user) || hadUser;
+      hadUser = Boolean(user);
       queue = queue.then(async () => {
         try {
-          await setSessionToken(user && (await user.getIdToken()));
+          if (shouldSync) await setSessionToken(user && (await user.getIdToken()));
         } catch (error) {
           console.error('Session cookie update failed:', error);
         }
