@@ -90,7 +90,7 @@ export function ThankYouClient({ getBooking }: Props) {
     <div className={styles.container}>
       {booking && (
         <div className={styles.detailsContainer}>
-          <h3 className={styles.title}>Thank you for your booking! </h3>
+          <h3 className={styles.title}>Your booking is confirmed</h3>
           <section>
             You have booked{' '}
             <strong>
@@ -113,13 +113,14 @@ export function ThankYouClient({ getBooking }: Props) {
               <strong>Paid</strong>
             </p>
           ) : (
-            <>
-              <p>Pay now online, or pay on location.</p>
+            <section aria-labelledby="payment-title">
+              <h4 id="payment-title">Payment (optional)</h4>
+              <p>Pay now with PayPal, or pay on the day of the tour.</p>
               <PaypalCheckoutButton
                 bookingId={id}
                 onPaid={() => setBooking({ ...booking, isPaid: true })}
               />
-            </>
+            </section>
           )}
           <Button
             variant="primary"
