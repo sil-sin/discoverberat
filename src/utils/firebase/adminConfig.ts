@@ -1,4 +1,6 @@
-import * as admin from 'firebase-admin'
+import { cert, getApps, initializeApp } from 'firebase-admin/app'
+import { getAuth } from 'firebase-admin/auth'
+import { getFirestore } from 'firebase-admin/firestore'
 
 export const initializeAdmin = () => {
   const cleanObject = (obj: Record<string, string | undefined>) => {
@@ -27,12 +29,10 @@ export const initializeAdmin = () => {
     universe_domain: 'googleapis.com',
   })
 
-  if (!admin.apps.length) {
-    admin.initializeApp({
-      credential: admin.credential.cert(serviceAccount),
-    })
+  if (!getApps().length) {
+    initializeApp({ credential: cert(serviceAccount) })
   }
 }
 initializeAdmin()
 
-export const adminSDK = admin
+export const adminSDK = { auth: getAuth, firestore: getFirestore }
