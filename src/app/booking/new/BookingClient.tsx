@@ -199,13 +199,17 @@ export function BookingClient({
 
           <div className={styles.bookOption}>
             <div>
-              <h2>Book now, pay on location.</h2>
+              <h2>Reserve now, pay online or on the day.</h2>
               <hr />
               <h3>
                 {currency}
                 {price}/PERSON
               </h3>
               <p>Minimum booking requirement: 2 persons.</p>
+              <p>
+                After you reserve, you can pay online with PayPal, or pay on
+                the day of the tour.
+              </p>
             </div>
 
             <p>
