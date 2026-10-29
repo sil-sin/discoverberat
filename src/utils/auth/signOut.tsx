@@ -1,14 +1,16 @@
 import { getAuth, signOut } from 'firebase/auth'
-import nookies from 'nookies'
+import { setSessionToken } from './session'
+import { toast } from '@/components/simple/Toast/Toast'
 
 const auth = getAuth()
 export const signOutUser = () =>
-  
+
   signOut(auth)
+    .then(() => setSessionToken(null))
     .then(() => {
       window.location.href = '/authenticate'
-      nookies.destroy(null, 'token')
     })
     .catch((error) => {
       console.error(error)
+      toast.error('Sign-out failed. Please try again.')
     })

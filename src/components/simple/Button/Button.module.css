@@ -1,12 +1,22 @@
 .button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 44px;
     cursor: pointer;
     border: transparent solid 1px;
     -webkit-border-radius: 6px;
     -moz-border-radius: 6px;
     border-radius: 6px;
+    corner-shape: squircle;
     padding: 15px 20px;
     margin: 10px;
-    outline: 2px solid transparent;
+    transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, translate 0.1s ease;
+}
+
+.button:active:not(:disabled) {
+    translate: 0 1px;
 }
 
 .primary {
@@ -18,44 +28,33 @@
 
 .primary:hover {
     background-color: var(--button-primary-hover-bg);
-    outline: 1px solid var(--button-outline-hover-border);
-    transition: background-color 0.2s ease;
 }
 
-.primary:focus,
 .primary:active {
     background-color: var(--button-primary-active-bg);
-    color: black;
-    transition: background-color 0.2s ease;
 }
 
 .secondary {
     font: var(--secondary-button-font);
     background-color: var(--button-secondary-bg);
     color: var(--button-secondary-typo);
-    border: var(--button-secondary-outline-border) 3px solid;
-    outline: var(--button-secondary-outline-border) 1px transparent;
+    border: var(--button-secondary-outline-border) 2px solid;
 }
 
 .secondary:hover {
     background-color: var(--button-secondary-hover-bg);
-    border: var(--button-outline-hover-border) 3px solid;
-    transition: background-color 0.2s ease-in-out;
-    outline: var(--button-secondary-outline-border) 1px solid;
+    border-color: var(--button-outline-hover-border);
 }
 
 .tertiary {
     font: var(--tertiary-button-font);
     background-color: var(--button-tertiary-bg);
     color: var(--button-tertiary-typo);
-    border: var(--button-tertiary-outline-border) 3px solid;
-    outline: var(--button-tertiary-outline-border) 1px transparent;
+    border: var(--button-tertiary-outline-border) 2px solid;
 }
 
 .tertiary:hover {
     background-color: var(--button-tertiary-hover-bg);
-    transition: background-color 0.2s ease-in-out;
-    outline: var(--button-tertiary-outline-border) 1px solid;
 }
 
 .link {
@@ -83,7 +82,8 @@
     transition: width 0.3s ease;
 }
 
-.link:hover::before {
+.link:hover::before,
+.link:focus-visible::before {
     width: 100%;
 }
 
@@ -106,4 +106,44 @@
     color: var(--button-disabled-typo);
     border: none;
     outline: none;
+}
+
+.loading {
+    cursor: progress;
+}
+
+.loading::after {
+    content: '';
+    width: 1em;
+    height: 1em;
+    border: 2px solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        rotate: 360deg;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .button,
+    .link::before {
+        transition: none;
+    }
+
+    .loading::after {
+        animation-duration: 2s;
+    }
+}
+
+.srOnly {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
 }

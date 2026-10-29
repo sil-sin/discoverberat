@@ -1,29 +1,31 @@
 import React, { FC, forwardRef, useImperativeHandle, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
-import { CustomError } from '@/utils/types'
 import { useAuthContext } from '@/utils/auth/auth-provider'
 import classnames from 'classnames'
 import styles from './BookingForm.module.css'
 import Toast from '@/components/simple/Toast'
+import { REQUIRED } from '@/helpers/forms'
 interface BookingFormProps {
   className?: string
   onSubmit: (formData: any) => void
-  error: CustomError
+  onGuestsChange?: (guests: number) => void
   isLoading?: boolean
   booker?: string
   guestNumber: number
   pickup?: string
   email: string | null
+  phone?: string
   isPrivate?: boolean
 }
 
 const BookingForm: FC<BookingFormProps> = forwardRef((props, ref) => {
-  const { className, onSubmit, isPrivate } = props
+  const { className, onSubmit, onGuestsChange, isPrivate } = props
   const { user } = useAuthContext()
 
   const {
     register,
     handleSubmit,
+    trigger,
     watch,
     setValue,
     formState: { errors },
@@ -33,16 +35,18 @@ const BookingForm: FC<BookingFormProps> = forwardRef((props, ref) => {
       booker: user?.displayName ?? '',
       guestNumber: 2,
       email: user?.email ?? '',
+      phone: '',
       isPrivate: isPrivate || false,
       pickup: 'Discover Berat office',
     },
   })
 
-  const [booker, guestNumber, pickup, email] = watch([
+  const [booker, guestNumber, pickup, email, phone] = watch([
     'booker',
     'guestNumber',
     'pickup',
     'email',
+    'phone',
   ])
 
   useEffect(() => {
@@ -58,25 +62,28 @@ const BookingForm: FC<BookingFormProps> = forwardRef((props, ref) => {
     isPrivate,
     pickup,
     email,
+    phone,
   })
 
   useImperativeHandle(ref, () => ({
     getFormData,
+    validate: () => trigger(undefined, { shouldFocus: true }),
   }))
 
   return (
     <div className={classnames(styles.bookingFormContainer, className)}>
-      <h2>Booking information</h2>
       <form data-testid='booking-form' onSubmit={handleSubmit(onSubmit)}>
-        <label htmlFor='booker'>Booker name:</label>
+        <label htmlFor='booker' className='required'>Full name</label>
         <div>
           <input
             data-testid='booker'
-            placeholder='Enter a name for the booking'
+            placeholder='Name for the booking'
             type='text'
             id='booker'
+            aria-required
+            aria-invalid={!!errors.booker}
             {...register('booker', {
-              required: 'Booker name field is required',
+              required: REQUIRED,
             })}
           />
           {errors.booker?.message && (
@@ -88,15 +95,17 @@ const BookingForm: FC<BookingFormProps> = forwardRef((props, ref) => {
             />
           )}
         </div>
-        <label htmlFor='email'>Booker email:</label>
+        <label htmlFor='email' className='required'>Email</label>
         <div>
           <input
             data-testid='email'
-            placeholder='Enter an email for the booking'
+            placeholder='you@example.com'
             type='email'
             id='email'
+            aria-required
+            aria-invalid={!!errors.email}
             {...register('email', {
-              required: 'Booker email field is required',
+              required: REQUIRED,
             })}
           />
           {errors.email?.message && (
@@ -108,13 +117,40 @@ const BookingForm: FC<BookingFormProps> = forwardRef((props, ref) => {
             />
           )}
         </div>
-        <label htmlFor='pickup'>Pickup place:</label>
+        <label htmlFor='phone' className='required'>Phone</label>
         <div>
           <input
-            placeholder='Enter a pickup place'
+            placeholder='+355 69 123 4567'
+            type='tel'
+            autoComplete='tel'
+            id='phone'
+            aria-required
+            aria-invalid={!!errors.phone}
+            {...register('phone', {
+              required: REQUIRED,
+              pattern: {
+                value: /^(?=(?:\D*\d){7})\+?[\d\s()-]{7,20}$/,
+                message: 'Enter a valid phone number',
+              },
+            })}
+          />
+          {errors.phone?.message && (
+            <Toast
+              isTextOnly
+              isError
+              message={errors.phone.message ?? 'Something went wrong!'}
+            />
+          )}
+        </div>
+        <label htmlFor='pickup' className='required'>Pickup place</label>
+        <div>
+          <input
+            placeholder='Hotel or address in Berat'
             type='text'
             id='pickup'
-            {...register('pickup', { required: 'Pickup field is required' })}
+            aria-required
+            aria-invalid={!!errors.pickup}
+            {...register('pickup', { required: REQUIRED })}
           />
           {errors.pickup?.message && (
             <Toast
@@ -124,17 +160,23 @@ const BookingForm: FC<BookingFormProps> = forwardRef((props, ref) => {
             />
           )}
         </div>
-        <label htmlFor='guestNumber'> Guests:</label>
+        <label htmlFor='guestNumber' className='required'>Guests</label>
         <div>
           <input
-            placeholder='Enter number of guests'
+            placeholder='2'
             min={2}
             type='number'
             list='guestNumbers'
+            aria-required
+            aria-invalid={!!errors.guestNumber}
             {...register('guestNumber', {
               valueAsNumber: true,
-              required: 'Guests must be at least 2',
+              required: REQUIRED,
               min: { value: 2, message: 'Guests must be at least 2' },
+              onChange: (event) => {
+                const guests = event.target.valueAsNumber
+                if (guests >= 2) onGuestsChange?.(guests)
+              },
             })}
             id='guestNumber'
           />

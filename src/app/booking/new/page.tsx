@@ -4,6 +4,8 @@ import { adminSDK } from '@/utils/firebase/adminConfig';
 
 import type { Metadata } from 'next';
 import { sendMail } from '@/utils/mail';
+import { formatTourDate, renderEmail } from '@/utils/emailTemplate';
+import { SITE_URL } from '@/utils/site';
 import { BookingClient } from './BookingClient';
 
 export const metadata: Metadata = {
@@ -46,6 +48,10 @@ async function createBooking(
   if (!Number.isInteger(guestNumber) || guestNumber < 2) {
     throw new Error('Invalid guest number');
   }
+  const phone = String(input.phone ?? '').trim();
+  if (!/^(?=(?:\D*\d){7})\+?[\d\s()-]{7,20}$/.test(phone)) {
+    throw new Error('Invalid phone number');
+  }
   const entry: any = await getEntry(String(input.bookingId));
   const type = BOOKING_TYPES[entry.sys.contentType.sys.id];
   if (!type) throw new Error('Invalid booking item');
@@ -61,10 +67,12 @@ async function createBooking(
     bookingId: entry.sys.id,
     booker,
     email: String(input.email),
+    phone,
     pickup: String(input.pickup),
     isPrivate: Boolean(input.isPrivate),
     guestNumber,
     date,
+    dateKey,
     uid,
   };
   const db = getFirestoreAdmin();
@@ -92,17 +100,59 @@ async function createBooking(
   });
   if (!bookingId) return null;
 
+  const when = formatTourDate(date);
+  const total = `${currency}${price * guestNumber}`;
+  const details: [string, string][] = [
+    ['Tour', title],
+    ['Date', when],
+    ['Guests', String(guestNumber)],
+    ['Pickup', booking.pickup],
+    ['Total', `${total} (${currency}${price} per person)`],
+    ['Booking ID', bookingId],
+  ];
+
   // The booking is already saved, so a failed email must not fail the request.
   const results = await Promise.allSettled([
     sendMail(
       email,
-      `Booking confirmation:  ${title} on ${date} for ${guestNumber} guests`,
-      `Dear ${booker},\n\nThank you for your reservation of ${title} on ${date} for ${guestNumber} guests.\n\nSee you soon !`,
+      `Booking confirmed: ${title}, ${when}`,
+      renderEmail({
+        heading: 'Your booking is confirmed',
+        intro: `Hi ${booker}, thank you for booking with Discover Berat. Here are your booking details.`,
+        details,
+        sections: [
+          {
+            title: 'Payment',
+            text: `Pay ${total} online with PayPal from your booking page, or pay on the day of the tour.`,
+          },
+          {
+            title: 'Cancellation',
+            text: 'You can cancel for free up to 24 hours before the tour on your profile page. PayPal refunds exclude the PayPal fee.',
+          },
+          {
+            title: 'Questions?',
+            text: 'Reply to this email or message us on WhatsApp. See you in Berat!',
+          },
+        ],
+        cta: {
+          label: 'View your booking',
+          href: `${SITE_URL}/booking/new/thank-you?id=${bookingId}`,
+        },
+      }),
     ),
     sendMail(
       process.env.NEXT_PUBLIC_ADMIN,
-      `New booking from ${booker} on ${date}`,
-      `Hi,\n\nI'm ${booker} and I just reserved this tour: ${title} on ${date} for ${guestNumber} guests. I'll be in touch with you soon.`,
+      `New booking: ${title}, ${when}, ${guestNumber} guests`,
+      renderEmail({
+        heading: 'New booking',
+        intro: `${booker} booked ${title}. The booking is not paid yet.`,
+        details: [
+          ...details,
+          ['Name', booker],
+          ['Email', booking.email],
+          ['Phone', phone],
+        ],
+      }),
     ),
   ]);
   results.forEach((result) => {

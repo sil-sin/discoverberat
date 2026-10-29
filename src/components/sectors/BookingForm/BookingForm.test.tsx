@@ -18,7 +18,6 @@ jest.mock('@/components/simple/Toast', () => ({
 describe('BookingForm component', () => {
   const mockSubmit = jest.fn()
   const mockUser = { displayName: 'John Doe', email: 'john@example.com' }
-  const mockError = { message: 'An error occurred' }
 
   beforeEach(() => {
     ;(useAuthContext as jest.Mock).mockReturnValue({ user: mockUser })
@@ -32,7 +31,6 @@ describe('BookingForm component', () => {
     render(
       <BookingForm
         onSubmit={mockSubmit}
-        error={mockError}
         guestNumber={2}
         email={mockUser.email}
         booker={mockUser.displayName}
@@ -51,18 +49,20 @@ describe('BookingForm component', () => {
     render(
       <BookingForm
         onSubmit={mockSubmit}
-        error={mockError}
         guestNumber={2}
         email={mockUser.email}
       />
     )
 
     // Clear required fields to trigger validation errors
-    fireEvent.change(screen.getByLabelText(/booker name/i), {
+    fireEvent.change(screen.getByLabelText(/full name/i), {
       target: { value: '' },
     })
-    fireEvent.change(screen.getByLabelText(/booker email/i), {
+    fireEvent.change(screen.getByLabelText(/^email/i), {
       target: { value: '' },
+    })
+    fireEvent.change(screen.getByLabelText(/^phone/i), {
+      target: { value: 'abc' },
     })
     fireEvent.change(screen.getByLabelText(/pickup place/i), {
       target: { value: '' },
@@ -72,13 +72,8 @@ describe('BookingForm component', () => {
     fireEvent.submit(screen.getByTestId('booking-form'))
 
     await waitFor(() => {
-      expect(
-        screen.getByText('Booker name field is required')
-      ).toBeInTheDocument()
-      expect(
-        screen.getByText('Booker email field is required')
-      ).toBeInTheDocument()
-      expect(screen.getByText('Pickup field is required')).toBeInTheDocument()
+      expect(screen.getAllByText('This field is mandatory.')).toHaveLength(3)
+      expect(screen.getByText('Enter a valid phone number')).toBeInTheDocument()
       expect(screen.getByText('Guests must be at least 2')).toBeInTheDocument()
     })
   })
@@ -87,7 +82,6 @@ describe('BookingForm component', () => {
     render(
       <BookingForm
         onSubmit={mockSubmit}
-        error={mockError}
         guestNumber={2}
         email={mockUser.email}
       />
@@ -98,6 +92,9 @@ describe('BookingForm component', () => {
     })
     fireEvent.change(screen.getByTestId('email'), {
       target: { value: 'jane@example.com' },
+    })
+    fireEvent.change(screen.getByLabelText(/^phone/i), {
+      target: { value: '+355 69 123 4567' },
     })
     fireEvent.change(screen.getByLabelText(/pickup place/i), {
       target: { value: 'Hotel' },
@@ -114,6 +111,7 @@ describe('BookingForm component', () => {
           isPrivate: false,
           pickup: 'Hotel',
           email: 'jane@example.com',
+          phone: '+355 69 123 4567',
         },
         expect.anything()
       )

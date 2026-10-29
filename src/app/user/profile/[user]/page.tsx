@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation';
 import { adminSDK } from '@/utils/firebase/adminConfig';
 import { getFirestore } from 'firebase-admin/firestore';
 import { UserProfileClient } from './UserProfileClient';
+import { CANCEL_DEADLINE_MS } from '@/utils/payment/paypalServer';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -60,7 +61,7 @@ async function getUserData(userId: string) {
     if (!timestamp || new Date(timestamp._seconds * 1000) < new Date()) {
       return;
     }
-    data.push(bookingData);
+    data.push({ ...bookingData, id: documentSnapshot.id });
   });
 
   data.sort((a: any, b: any) => {
@@ -69,12 +70,18 @@ async function getUserData(userId: string) {
 
   data.forEach((item: any) => {
     const date = new Date(item.date.seconds * 1000);
-    item.date = date.toLocaleString('en-US', {
-      year: 'numeric',
-      month: 'long',
+    item.startsAt = date.toISOString();
+    item.canCancel =
+      !item.cancellationRequested &&
+      date.getTime() - Date.now() >= CANCEL_DEADLINE_MS;
+    item.date = date.toLocaleString('en-GB', {
+      timeZone: 'Europe/Tirane',
+      weekday: 'short',
       day: 'numeric',
-      hour: 'numeric',
-      minute: 'numeric',
+      month: 'long',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
     });
   });
 

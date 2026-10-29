@@ -8,7 +8,12 @@ export const UserMenuDropDown: FC<any> = () => {
   const { user } = useAuthContext()
 
   return (
-    <div className={styles.userMenuContainer}>
+    <div
+      id='user-menu'
+      popover='auto'
+      className={styles.userMenuContainer}
+      onClick={(event) => event.currentTarget.hidePopover()}
+    >
       <Button variant='link' href={'/user/profile/' + user?.uid}>
         Profile
       </Button>

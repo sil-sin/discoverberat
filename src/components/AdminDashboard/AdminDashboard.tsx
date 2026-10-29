@@ -1,6 +1,9 @@
 import React from 'react'
 import styles from './AdminDashboard.module.css'
 
+const paymentLabel = (booking: any, unpaid: string) =>
+  booking.cancellationRequested ? 'Refund pending' : booking.isPaid ? 'Paid' : unpaid
+
 export default function AdminDashboard({ bookings, user }: any) {
   if (!user) {
     return null
@@ -51,7 +54,7 @@ export default function AdminDashboard({ bookings, user }: any) {
                   <td>{bookings[0].pickup}</td>
                   <td>{bookings[0].email}</td>
                   <td>{bookings[0].date}</td>
-                  <td>{bookings[0].isPaid ? 'Paid' : 'Not paid'}</td>
+                  <td>{paymentLabel(bookings[0], 'Not paid')}</td>
                 </tr>
               </tbody>
             </table>
@@ -75,7 +78,7 @@ export default function AdminDashboard({ bookings, user }: any) {
                 className={styles.tableSegmentTitle}
               >
                 <span> {booking.title}</span> <span>{booking.date}</span>
-                <span>{booking.isPaid ? 'Paid' : 'Not paid'}</span>
+                <span>{paymentLabel(booking, 'Not paid')}</span>
               </label>
               <div className={styles.tableWrapper}>
                 <table>
@@ -97,6 +100,14 @@ export default function AdminDashboard({ bookings, user }: any) {
                       <td>{booking.email}</td>
                     </tr>
                     <tr>
+                      <th>Booker phone</th>
+                      <td>
+                        {booking.phone && (
+                          <a href={`tel:${booking.phone}`}>{booking.phone}</a>
+                        )}
+                      </td>
+                    </tr>
+                    <tr>
                       <th>Price</th>
                       <td>
                         {booking.currency}
@@ -105,7 +116,7 @@ export default function AdminDashboard({ bookings, user }: any) {
                     </tr>
                     <tr>
                       <th>Payment</th>
-                      <td>{booking.isPaid ? 'Paid' : 'Pay on location'}</td>
+                      <td>{paymentLabel(booking, 'Pay on location')}</td>
                     </tr>
                     <tr>
                       <th>Guest number</th>

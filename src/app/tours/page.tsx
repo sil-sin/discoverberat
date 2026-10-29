@@ -14,8 +14,15 @@ export default async function ToursPage() {
   const tours = await getEntriesByType('tourPage');
 
   return (
-    <div className={styles.container}>
-      {tours ? <Tours tours={tours} pageTitle={'Our tours'} /> : <>No tours</>}
-    </div>
+    <>
+      <header className={styles.header}>
+        <h1>Tours from Berat</h1>
+        <p>
+          Walks through the old town, trips to canyons and lagoons, and wine
+          tastings at local wineries. All led by local guides.
+        </p>
+      </header>
+      <Tours tours={tours} withFilters />
+    </>
   );
 }

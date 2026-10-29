@@ -9,25 +9,31 @@ import { AiOutlineClose, AiOutlineMenu } from 'react-icons/ai';
 import classNames from 'classnames';
 import Link from 'next/link';
 import { useAuthContext } from '@/utils/auth/auth-provider';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { UserMenuDropDown } from './components/UserMenuDropDown';
-import useResponsiveState from './utils/useResetState';
+import { signOutUser } from '@/utils/auth/signOut';
 
 export const Navigation: FC<{ className?: string }> = ({ className }) => {
   const [isMenuShow, setIsMenuShow] = useState(false);
-  const [isShowUserMenu, setIsShowUserMenu] = useState(false);
   const { user, loading } = useAuthContext();
   const router = useRouter();
-  const [isLargeScreen] = useResponsiveState();
+  const pathname = usePathname();
 
-  const [prevIsLargeScreen, setPrevIsLargeScreen] = useState(isLargeScreen);
-  if (prevIsLargeScreen !== isLargeScreen) {
-    setPrevIsLargeScreen(isLargeScreen);
-    setIsShowUserMenu(false);
+  const [prevPathname, setPrevPathname] = useState(pathname);
+  if (prevPathname !== pathname) {
+    setPrevPathname(pathname);
+    setIsMenuShow(false);
   }
 
   return (
     <nav className={classNames(className, styles.navbarContainer)}>
+      {isMenuShow && (
+        <div
+          aria-hidden
+          className={styles.backdrop}
+          onClick={() => setIsMenuShow(false)}
+        />
+      )}
       <div className={styles.imageIcon}>
         <Link className={styles.logo} href={'/'}>
           <Image
@@ -78,14 +84,16 @@ export const Navigation: FC<{ className?: string }> = ({ className }) => {
             />
           </li>
         ))}
-        <li>
+        <li className={classNames(user?.uid && styles.desktopOnly)}>
           <Button
             variant="secondary"
-            onClick={() => {
+            className={styles.userButton}
+            popoverTarget={user?.uid ? 'user-menu' : undefined}
+            onClick={
               user?.uid
-                ? setIsShowUserMenu(!isShowUserMenu)
-                : (router.push('/authenticate'), setIsMenuShow(false));
-            }}
+                ? undefined
+                : () => (router.push('/authenticate'), setIsMenuShow(false))
+            }
             text={
               loading
                 ? '...'
@@ -94,8 +102,28 @@ export const Navigation: FC<{ className?: string }> = ({ className }) => {
                   : 'Sign in'
             }
           />
-          {isShowUserMenu && <UserMenuDropDown />}
+          {user?.uid && <UserMenuDropDown />}
         </li>
+        {user?.uid && (
+          <>
+            <li className={styles.mobileOnly}>
+              <Button
+                variant="link"
+                href={'/user/profile/' + user.uid}
+                text="Profile"
+              />
+            </li>
+            <li className={styles.mobileOnly}>
+              <button
+                type="button"
+                className={styles.logout}
+                onClick={signOutUser}
+              >
+                Log out
+              </button>
+            </li>
+          </>
+        )}
       </ul>
     </nav>
   );

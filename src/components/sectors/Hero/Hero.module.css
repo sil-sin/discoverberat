@@ -1,38 +1,56 @@
-@font-face {
-  font-family: 'QuartzoBold';
-  /* Provide a unique name for your font */
-  src: url('/fonts/QuartzoBold.ttf') format('truetype');
-  font-weight: 900;
-  font-style: bold;
+.heroContainer {
+  display: grid;
+  justify-items: center;
+  width: min(100% - 32px, 1120px);
+  margin: 0 auto;
+  padding: 8px 0 32px;
+  text-align: center;
 }
 
-.heroContainer {
-  background-size: 100%;
-  background-position: top;
-  background-repeat: no-repeat;
-  width: 100vw;
-  object-fit: contain;
-  padding: 10px;
-  display: flex;
-  flex-direction: column;
+.title {
+  margin: 0;
+  line-height: 0;
 }
 
 .heroImage {
-  padding: 10px;
-  width: 100%;
-  max-height: 400px;
-  height: 100%;
-  object-fit: contain;
+  width: min(100%, 640px);
+  height: auto;
 }
 
-@media (min-width: 580px) {
-  .heroContainer {
-    align-items: center;
-    background-position: center;
-  }
+.lead {
+  margin: 4px 0 20px;
+  font-size: clamp(1.0625rem, 2.5vw, 1.25rem);
+  line-height: 1.5;
+  color: var(--muted);
+}
 
-  .bookTourButton {
-    width: 250px;
-    transition: width ease-in-out 0.2s ease-in-out;
-  }
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 12px 24px;
+}
+
+.actions .primary {
+  margin: 0;
+  padding: 14px 32px;
+}
+
+.whatsapp {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  font-weight: 600;
+  color: var(--brand);
+}
+
+.whatsapp svg {
+  font-size: 1.375rem;
+}
+
+.whatsapp:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
 }

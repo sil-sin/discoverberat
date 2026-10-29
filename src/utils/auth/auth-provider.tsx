@@ -9,19 +9,15 @@ import {
 } from 'react';
 import { User, getAuth, onIdTokenChanged } from 'firebase/auth';
 import app from '../firebase/firebaseConfig';
-import nookies from 'nookies';
+import { setSessionToken } from './session';
 import { googleProvider } from './googleProvider';
 import { signOutUser } from './signOut';
 
 type AuthContextType = {
   user: User | null;
   loading: boolean;
-  // isAdmin: boolean
   loginWithGoogle: () => void;
   logout: () => void;
-  // login: (email: string, password: string) => Promise<void>
-  // signUp: (email: string, password: string) => Promise<void>
-  // resetPassword: (email: string) => Promise<void>
 };
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -42,28 +38,26 @@ type AuthProviderProps = {
 export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
-  // const [isAdmin, setIsAdmin] = useState<boolean>(false)
 
   useEffect(() => {
     const auth = getAuth(app);
     if (!auth) return;
 
-    return onIdTokenChanged(auth, async (user) => {
-      if (user) {
-        const token = await user.getIdToken();
-        nookies.set(null, 'token', token, { path: '/' });
+    // Queued so a slow earlier call can't overwrite the cookie set by a later event, such as a sign-out.
+    let queue = Promise.resolve();
+    let hadUser = false;
+    return onIdTokenChanged(auth, (user) => {
+      const shouldSync = Boolean(user) || hadUser;
+      hadUser = Boolean(user);
+      queue = queue.then(async () => {
+        try {
+          if (shouldSync) await setSessionToken(user && (await user.getIdToken()));
+        } catch (error) {
+          console.error('Session cookie update failed:', error);
+        }
         setUser(user);
-
-        // TODO: later implementation, edit mode on page , if user is admin
-        // if (user.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL) {
-        // setIsAdmin(true)
-        // }
-      } else {
-        setUser(null);
-        nookies.set(null, 'token', '', { path: '/' });
-        // setIsAdmin(false)
-      }
-      setLoading(false);
+        setLoading(false);
+      });
     });
   }, []);
 
@@ -72,7 +66,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
       value={{
         user,
         loading,
-        // isAdmin,
         loginWithGoogle: googleProvider,
         logout: signOutUser,
       }}

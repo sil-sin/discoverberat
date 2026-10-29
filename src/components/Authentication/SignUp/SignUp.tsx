@@ -1,3 +1,4 @@
+import { REQUIRED } from '@/helpers/forms'
 import { signUpWithEmail } from '@/utils/auth/emailSignUp'
 import classnames from 'classnames'
 import { FC, useRef, useState } from 'react'
@@ -28,23 +29,23 @@ export const SignUp: FC<SignUpProps> = ({ className }) => {
 
   const inputRefs: Record<keyof Inputs, any> = {
     firstName: {
-      ref: register('firstName', { required: 'First Name is required' }),
+      ref: register('firstName', { required: REQUIRED }),
       placeholder: 'First name',
       label: 'First Name',
     },
     lastName: {
-      ref: register('lastName', { required: 'Last Name is required' }),
+      ref: register('lastName', { required: REQUIRED }),
       placeholder: 'Last name',
       label: 'Last Name',
     },
     email: {
-      ref: register('email', { required: 'Email is required' }),
+      ref: register('email', { required: REQUIRED }),
       placeholder: 'Email',
       label: 'Email',
     },
     password: {
       ref: register('password', {
-        required: 'Password is required',
+        required: REQUIRED,
         minLength: {
           value: 8,
           message: 'Password must be at least 8 characters long',
@@ -64,8 +65,7 @@ export const SignUp: FC<SignUpProps> = ({ className }) => {
       if (!data[fieldName]) {
         setError(fieldName as keyof Inputs, {
           type: 'manual',
-          message: `${fieldName.charAt(0).toUpperCase() + fieldName.slice(1)
-            } is required`,
+          message: REQUIRED,
         })
 
         if (inputRefs[fieldName as keyof Inputs].current) {
@@ -94,11 +94,12 @@ export const SignUp: FC<SignUpProps> = ({ className }) => {
       >
         {Object.keys(inputRefs).map((fieldName) => (
           <div key={fieldName} className={styles.inputWrapper}>
-            <label htmlFor={fieldName}>
+            <label htmlFor={fieldName} className='required'>
               {inputRefs[fieldName as keyof Inputs].label}
             </label>
             <div className={fieldName === 'password' ? styles.passwordWrapper : undefined}>
               <input
+                aria-required
                 className={errors[fieldName as keyof Inputs] && styles.errorInput}
                 type={
                   fieldName === 'password'

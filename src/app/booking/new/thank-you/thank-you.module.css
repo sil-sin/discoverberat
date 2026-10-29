@@ -1,40 +1,205 @@
-.container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-    min-height: 70vh;
-    height: 100%;
-    padding: 10px;
+.page {
+  display: grid;
+  gap: 24px;
+  width: min(100% - 32px, 880px);
+  margin: 0 auto;
+  padding: 40px 0 64px;
+  color: var(--ink);
 }
 
-.detailsContainer {
-    gap: 10px;
-    padding: 16px;
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    box-shadow: 0px 0px 10px 2px var(--shadow), 0px -10px 20px 2px var(--shadow);
-    margin: 20px auto;
-    border-radius: 6px;
-    background-color: var(--background-default);
+.hero {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  text-align: center;
 }
 
-.detailsContainer strong {
-    color: var(--button-secondary-typo);
+.heroIcon {
+  width: 56px;
+  height: 56px;
+  padding: 12px;
+  border-radius: 50%;
+  background: var(--brand-soft);
+  color: var(--brand);
 }
 
 .title {
-    font-weight: bold;
-    padding-right: .5em;
-    text-align: center;
-    color: var(--button-secondary-typo);
+  margin: 8px 0 0;
+  font-size: clamp(1.75rem, 4.5vw, 2.5rem);
+  line-height: 1.15;
+  letter-spacing: -0.01em;
 }
 
-@media screen and (min-width: 512px) {
-    .detailsContainer {
-        max-width: 512px;
-        width: 100%;
-    }
+.lead {
+  margin: 0;
+  color: var(--muted);
+  font-size: 1.0625rem;
+}
 
+.lead strong {
+  color: var(--ink);
+}
+
+.layout {
+  display: grid;
+  gap: 24px;
+}
+
+.card {
+  display: grid;
+  gap: 16px;
+  align-content: start;
+  padding: 24px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--background-default);
+}
+
+.cardTitle {
+  margin: 0;
+  font-size: 1.25rem;
+  line-height: 1.3;
+}
+
+.details {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+}
+
+.details div {
+  display: grid;
+  grid-template-columns: 110px 1fr;
+  gap: 16px;
+}
+
+.details dt {
+  color: var(--muted);
+}
+
+.details dd {
+  margin: 0;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.bookingId {
+  font-family: ui-monospace, monospace;
+  font-weight: 500 !important;
+  word-break: break-all;
+}
+
+.muted {
+  margin: 0;
+  color: var(--muted);
+  font-weight: 400;
+}
+
+.paymentHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.badgePaid,
+.badgeDue {
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.badgePaid {
+  background: var(--brand);
+  color: var(--text-inverse);
+}
+
+.badgeDue {
+  background: var(--brand-soft);
+  color: var(--brand-strong);
+}
+
+.next {
+  display: grid;
+  gap: 16px;
+  padding: 24px;
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.facts {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.facts li {
+  display: flex;
+  gap: 8px;
+}
+
+.facts svg {
+  flex: none;
+  margin-top: 4px;
+  color: var(--brand);
+}
+
+.facts a {
+  color: var(--brand);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.facts a svg {
+  margin: 0;
+  vertical-align: -2px;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.primaryLink,
+.secondaryLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 46px;
+  padding: 0 20px;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+}
+
+.primaryLink {
+  background: var(--brand);
+  color: var(--text-inverse);
+}
+
+.primaryLink:hover {
+  background: var(--brand-strong);
+}
+
+.secondaryLink {
+  border: 1px solid var(--brand);
+  color: var(--brand);
+}
+
+.secondaryLink:hover {
+  background: var(--brand-soft);
+}
+
+.card > .primaryLink {
+  justify-self: start;
+}
+
+@media (min-width: 800px) {
+  .layout {
+    grid-template-columns: 1.4fr 1fr;
+  }
 }

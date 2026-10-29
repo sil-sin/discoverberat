@@ -1,3 +1,4 @@
+import { REQUIRED } from '@/helpers/forms'
 import classnames from 'classnames'
 import { FC, useState } from 'react'
 import styles from '../Auth.module.css'
@@ -29,9 +30,9 @@ export const SignIn: FC<SignUpProps> = ({ className }) => {
     'auth/invalid-login-credentials': 'password', // Map the Firebase error to the corresponding field
   }
   const inputRefs: any = {
-    email: register('email', { required: 'Email is required' }),
+    email: register('email', { required: REQUIRED }),
     password: register('password', {
-      required: 'Password is required',
+      required: REQUIRED,
     }),
   }
   const onSubmit: SubmitHandler<Inputs> = async (data: any) => {
@@ -39,8 +40,7 @@ export const SignIn: FC<SignUpProps> = ({ className }) => {
       if (!data[fieldName]) {
         setError(fieldName as keyof Inputs, {
           type: 'manual',
-          message: `${fieldName.charAt(0).toUpperCase() + fieldName.slice(1)
-            } is required`,
+          message: REQUIRED,
         })
 
         // Focus on the current input field
@@ -83,11 +83,12 @@ export const SignIn: FC<SignUpProps> = ({ className }) => {
       >
         {Object.keys(inputRefs).map((fieldName) => (
           <div key={fieldName} className={styles.inputWrapper}>
-            <label htmlFor={fieldName}>
+            <label htmlFor={fieldName} className='required'>
               {fieldName.charAt(0).toUpperCase() + fieldName.slice(1)}
             </label>
             <div className={fieldName === 'password' ? styles.passwordWrapper : undefined}>
               <input
+                aria-required
                 autoComplete={
                   fieldName === 'password' ? 'current-password' : 'current-email'
                 }
