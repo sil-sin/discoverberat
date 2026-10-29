@@ -210,3 +210,12 @@ a {
     animation: none !important;
   }
 }
+
+[aria-invalid='true'] {
+  border: 1px solid var(--alert-error-border) !important;
+}
+
+label.required::after {
+  content: ' *';
+  color: #b3261e;
+}

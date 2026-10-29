@@ -4,6 +4,7 @@ import { useAuthContext } from '@/utils/auth/auth-provider'
 import classnames from 'classnames'
 import styles from './BookingForm.module.css'
 import Toast from '@/components/simple/Toast'
+import { REQUIRED } from '@/helpers/forms'
 interface BookingFormProps {
   className?: string
   onSubmit: (formData: any) => void
@@ -65,22 +66,24 @@ const BookingForm: FC<BookingFormProps> = forwardRef((props, ref) => {
 
   useImperativeHandle(ref, () => ({
     getFormData,
-    validate: trigger,
+    validate: () => trigger(undefined, { shouldFocus: true }),
   }))
 
   return (
     <div className={classnames(styles.bookingFormContainer, className)}>
       <h2>Booking information</h2>
       <form data-testid='booking-form' onSubmit={handleSubmit(onSubmit)}>
-        <label htmlFor='booker'>Booker name:</label>
+        <label htmlFor='booker' className='required'>Booker name:</label>
         <div>
           <input
             data-testid='booker'
             placeholder='Enter a name for the booking'
             type='text'
             id='booker'
+            aria-required
+            aria-invalid={!!errors.booker}
             {...register('booker', {
-              required: 'Booker name field is required',
+              required: REQUIRED,
             })}
           />
           {errors.booker?.message && (
@@ -92,15 +95,17 @@ const BookingForm: FC<BookingFormProps> = forwardRef((props, ref) => {
             />
           )}
         </div>
-        <label htmlFor='email'>Booker email:</label>
+        <label htmlFor='email' className='required'>Booker email:</label>
         <div>
           <input
             data-testid='email'
             placeholder='Enter an email for the booking'
             type='email'
             id='email'
+            aria-required
+            aria-invalid={!!errors.email}
             {...register('email', {
-              required: 'Booker email field is required',
+              required: REQUIRED,
             })}
           />
           {errors.email?.message && (
@@ -112,15 +117,17 @@ const BookingForm: FC<BookingFormProps> = forwardRef((props, ref) => {
             />
           )}
         </div>
-        <label htmlFor='phone'>Booker phone:</label>
+        <label htmlFor='phone' className='required'>Booker phone:</label>
         <div>
           <input
             placeholder='Enter a phone number, e.g. +355 69 123 4567'
             type='tel'
             autoComplete='tel'
             id='phone'
+            aria-required
+            aria-invalid={!!errors.phone}
             {...register('phone', {
-              required: 'Booker phone field is required',
+              required: REQUIRED,
               pattern: {
                 value: /^(?=(?:\D*\d){7})\+?[\d\s()-]{7,20}$/,
                 message: 'Enter a valid phone number',
@@ -135,13 +142,15 @@ const BookingForm: FC<BookingFormProps> = forwardRef((props, ref) => {
             />
           )}
         </div>
-        <label htmlFor='pickup'>Pickup place:</label>
+        <label htmlFor='pickup' className='required'>Pickup place:</label>
         <div>
           <input
             placeholder='Enter a pickup place'
             type='text'
             id='pickup'
-            {...register('pickup', { required: 'Pickup field is required' })}
+            aria-required
+            aria-invalid={!!errors.pickup}
+            {...register('pickup', { required: REQUIRED })}
           />
           {errors.pickup?.message && (
             <Toast
@@ -151,16 +160,18 @@ const BookingForm: FC<BookingFormProps> = forwardRef((props, ref) => {
             />
           )}
         </div>
-        <label htmlFor='guestNumber'> Guests:</label>
+        <label htmlFor='guestNumber' className='required'>Guests:</label>
         <div>
           <input
             placeholder='Enter number of guests'
             min={2}
             type='number'
             list='guestNumbers'
+            aria-required
+            aria-invalid={!!errors.guestNumber}
             {...register('guestNumber', {
               valueAsNumber: true,
-              required: 'Guests must be at least 2',
+              required: REQUIRED,
               min: { value: 2, message: 'Guests must be at least 2' },
             })}
             id='guestNumber'

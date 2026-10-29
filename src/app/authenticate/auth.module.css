@@ -19,8 +19,9 @@
     margin-bottom: 20px
 }
 
-.formContainer h3 {
+.formContainer h1 {
     margin: 0;
+    font-size: 1.17em;
 }
 
 .orSeparator div {
@@ -71,12 +72,4 @@
     justify-content: space-evenly;
     align-items: center;
     width: 100%;
-}
-.notice {
-  margin: 0 0 16px;
-  padding: 12px 16px;
-  border-left: 4px solid #3b6fb6;
-  border-radius: 8px;
-  background: #eef3fa;
-  color: var(--text-default);
 }

@@ -1,6 +1,6 @@
 'use client'
 
-import { FC, useEffect, useSyncExternalStore } from 'react'
+import { FC, ReactNode, useEffect, useSyncExternalStore } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import styles from './Toast.module.css'
@@ -8,6 +8,7 @@ import classNames from 'classnames'
 import Button from '../Button'
 import { GiCancel } from 'react-icons/gi'
 import { FiAlertCircle, FiCheckCircle, FiInfo, FiX } from 'react-icons/fi'
+import type { IconType } from 'react-icons'
 
 type Tone = 'success' | 'error' | 'info'
 type ToastItem = {
@@ -16,6 +17,7 @@ type ToastItem = {
   message: string
   link?: { label: string; href: string }
   confirm?: { label: string; onAnswer: (confirmed: boolean) => void }
+  isBanner?: boolean
 }
 
 let toasts: ToastItem[] = []
@@ -34,11 +36,18 @@ const show =
   }
 const answerPendingConfirm = () =>
   toasts.find((item) => item.confirm)?.confirm?.onAnswer(false)
+const dismissBanner = () => setToasts(toasts.filter((item) => !item.isBanner))
 
 export const toast = {
   success: show('success'),
   error: show('error'),
   info: show('info'),
+  // Page-level messages: one at a time, shown under the navigation until dismissed or the route changes.
+  banner: (tone: Tone, message: string, link?: ToastItem['link']) =>
+    setToasts([
+      ...toasts.filter((item) => !item.isBanner),
+      { id: ++nextId, tone, message, link, isBanner: true },
+    ]),
   confirm: (message: string, label: string) =>
     new Promise<boolean>((resolve) => {
       answerPendingConfirm()
@@ -68,14 +77,21 @@ const toneClasses = {
 export const Toaster: FC = () => {
   const items = useSyncExternalStore(subscribe, () => toasts, () => noToasts)
   const pathname = usePathname()
-  useEffect(() => answerPendingConfirm(), [pathname])
+  useEffect(() => {
+    answerPendingConfirm()
+    dismissBanner()
+  }, [pathname])
 
   return (
     <section aria-live='polite' aria-label='Notifications' className={styles.toaster}>
-      {items.map(({ id, tone, message, link, confirm }) => {
+      {items.filter((item) => !item.isBanner).map(({ id, tone, message, link, confirm }) => {
         const Icon = icons[tone]
         return (
-          <div key={id} className={classNames(styles.toast, toneClasses[tone])}>
+          <div
+            key={id}
+            role={tone === 'error' ? 'alert' : undefined}
+            className={classNames(styles.toast, toneClasses[tone])}
+          >
             <Icon aria-hidden className={styles.icon} />
             <p className={styles.message}>
               {message}
@@ -119,6 +135,67 @@ export const Toaster: FC = () => {
         )
       })}
     </section>
+  )
+}
+
+type BannerViewProps = {
+  tone: Tone
+  Icon?: IconType
+  title?: string
+  children: ReactNode
+  onDismiss?: () => void
+}
+
+export const BannerView: FC<BannerViewProps> = ({
+  tone,
+  Icon = icons[tone],
+  title,
+  children,
+  onDismiss,
+}) => (
+  <div
+    ref={(element) => {
+      element?.focus()
+    }}
+    tabIndex={-1}
+    role={tone === 'error' ? 'alert' : 'status'}
+    className={classNames(styles.banner, tone === 'error' && styles.bannerError)}
+  >
+    <Icon aria-hidden className={styles.bannerIcon} />
+    <p className={styles.bannerText}>
+      {title && <strong>{title}</strong>}
+      <span>{children}</span>
+    </p>
+    {onDismiss && (
+      <button
+        type='button'
+        aria-label='Dismiss'
+        className={styles.dismiss}
+        onClick={onDismiss}
+      >
+        <FiX aria-hidden />
+      </button>
+    )}
+  </div>
+)
+
+export const Banner: FC = () => {
+  const items = useSyncExternalStore(subscribe, () => toasts, () => noToasts)
+  const banner = items.find((item) => item.isBanner)
+  if (!banner) return null
+  const { id, tone, message, link } = banner
+  return (
+    <BannerView key={id} tone={tone} onDismiss={() => dismiss(id)}>
+      {message}
+      {link && (
+        <>
+          {' '}
+          <Link href={link.href} className={styles.link}>
+            {link.label}
+          </Link>
+        </>
+      )}
+    </BannerView>
   )
 }
 

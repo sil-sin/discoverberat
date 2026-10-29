@@ -72,14 +72,8 @@ describe('BookingForm component', () => {
     fireEvent.submit(screen.getByTestId('booking-form'))
 
     await waitFor(() => {
-      expect(
-        screen.getByText('Booker name field is required')
-      ).toBeInTheDocument()
-      expect(
-        screen.getByText('Booker email field is required')
-      ).toBeInTheDocument()
+      expect(screen.getAllByText('This field is mandatory.')).toHaveLength(3)
       expect(screen.getByText('Enter a valid phone number')).toBeInTheDocument()
-      expect(screen.getByText('Pickup field is required')).toBeInTheDocument()
       expect(screen.getByText('Guests must be at least 2')).toBeInTheDocument()
     })
   })

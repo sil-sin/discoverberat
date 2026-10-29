@@ -41,7 +41,7 @@ const PaypalCheckoutButton = ({ bookingId, onPaid }: Props) => {
           }}
           onError={(error) => {
             console.error('PayPal payment failed:', error);
-            toast.error('Payment failed. Please try again or pay on location.');
+            toast.banner('error', 'Payment failed. Please try again or pay on location.');
           }}
         />
       </PayPalScriptProvider>

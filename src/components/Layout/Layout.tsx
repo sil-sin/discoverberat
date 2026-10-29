@@ -7,7 +7,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import CookieBanner from '../CookieBanner/CookieBanner'
 import { WHATSAPP_URL } from '../sectors/Navigation/utils'
-import { Toaster } from '../simple/Toast'
+import { Banner, Toaster } from '../simple/Toast'
 
 type Props = {
   children: ReactNode
@@ -19,7 +19,10 @@ export const Layout: FC<Props> = ({ children }) => {
       style={{ display: 'flex', flexDirection: 'column', minHeight: '100dvh' }}
     >
       <Navigation className='navigationBar' />
-      <div style={{ marginTop: '80px', flex: 1 }}>{children}</div>
+      <div style={{ marginTop: '80px', flex: 1 }}>
+        <Banner />
+        {children}
+      </div>
       <Link
         href={WHATSAPP_URL}
         aria-label='Chat with us on WhatsApp'
