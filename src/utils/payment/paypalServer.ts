@@ -85,7 +85,7 @@ export async function releaseBooking(ref: DocumentReference) {
     tx.delete(ref);
     if (booking.slotId) {
       tx.update(db.collection('bookingSlots').doc(booking.slotId), {
-        guests: FieldValue.increment(-booking.guestNumber),
+        guests: FieldValue.increment(-Number(booking.guestNumber)),
       });
     }
     if (legacyDayLock) tx.delete(legacyDayLock.ref);
