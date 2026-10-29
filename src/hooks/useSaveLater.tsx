@@ -25,7 +25,9 @@ const useSaveLater = ({ id, title, price, currency = '€', url }: SavedTour) =>
   const handleSaveLater = async () => {
     if (!user) {
       const here = window.location.pathname + window.location.search
-      return router.push('/authenticate?callbackUrl=' + encodeURIComponent(here))
+      return router.push(
+        '/authenticate?reason=save&callbackUrl=' + encodeURIComponent(here)
+      )
     }
 
     const db = getFirestore()

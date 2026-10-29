@@ -75,8 +75,9 @@ export function BookingClient({
 
   const handleBookNow = async (isBookNow: boolean) => {
     if (!user) {
-      return router.replace(
-        '/authenticate?callbackUrl=/booking/new?tour=' + url,
+      return router.push(
+        '/authenticate?reason=book&callbackUrl=' +
+          encodeURIComponent('/booking/new?tour=' + url),
       );
     }
 
@@ -97,7 +98,10 @@ export function BookingClient({
       );
       if (!bookingId) return 'This date is fully booked. Pick another date.';
       router.push('new/thank-you?id=' + bookingId);
-    })().catch(() => 'Your booking could not be saved. Please try again.');
+    })().catch(() => {
+      toast.banner('error', 'Your booking could not be saved. Please try again.');
+      return null;
+    });
 
     if (error !== undefined) setIsBooking(false);
     if (error) toast.error(error);

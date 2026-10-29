@@ -4,6 +4,7 @@ import React, { FC } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import styles from './ContactForm.module.css';
 import Button from '../simple/Button';
+import { REQUIRED } from '@/helpers/forms';
 import { sendContactMessage } from './actions';
 import Toast, { toast } from '../simple/Toast';
 interface FormData {
@@ -40,13 +41,15 @@ const ContactForm: FC = () => {
       className={styles.form}
       onSubmit={handleSubmit(onSubmit)}
     >
-      <label htmlFor="name">Name</label>
+      <label htmlFor="name" className="required">Name</label>
       <input
         placeholder="eg. John Doe"
         type="text"
         id="name"
         autoComplete="name"
-        {...register('name', { required: 'Name is required' })}
+        aria-required
+        aria-invalid={!!errors.name}
+        {...register('name', { required: REQUIRED })}
       />
       {errors.name && (
         <Toast
@@ -55,14 +58,16 @@ const ContactForm: FC = () => {
           message={errors.name.message ?? 'Something went wrong!'}
         />
       )}
-      <label htmlFor="email">Email</label>
+      <label htmlFor="email" className="required">Email</label>
       <input
         placeholder="eg. johndoe@example.com"
         type="email"
         id="email"
         autoComplete="email"
+        aria-required
+        aria-invalid={!!errors.email}
         {...register('email', {
-          required: 'Email is required',
+          required: REQUIRED,
           pattern: { value: /^\S+@\S+$/i, message: 'Enter a valid email' },
         })}
       />
@@ -73,12 +78,14 @@ const ContactForm: FC = () => {
           message={errors.email.message ?? 'Something went wrong!'}
         />
       )}
-      <label htmlFor="message">Message</label>
+      <label htmlFor="message" className="required">Message</label>
       <textarea
         placeholder="Tour, date, group size, questions…"
         rows={5}
         id="message"
-        {...register('message', { required: 'Message is required' })}
+        aria-required
+        aria-invalid={!!errors.message}
+        {...register('message', { required: REQUIRED })}
       ></textarea>
       {errors.message && (
         <Toast

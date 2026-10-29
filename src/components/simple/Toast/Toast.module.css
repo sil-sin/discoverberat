@@ -50,11 +50,11 @@
   position: fixed;
   z-index: 20;
   left: 50%;
-  bottom: max(16px, env(safe-area-inset-bottom));
+  top: calc(84px + env(safe-area-inset-top));
   translate: -50% 0;
   display: grid;
   gap: 8px;
-  width: min(100% - 32px, 420px);
+  width: min(100% - 32px, 480px);
   pointer-events: none;
 }
 
@@ -66,20 +66,86 @@
   align-items: flex-start;
   gap: 4px 12px;
   padding: 14px 14px 14px 16px;
-  border: 1px solid var(--line);
-  border-left: 4px solid var(--accent);
+  border: 1px solid var(--accent);
+  border-left-width: 6px;
   border-radius: 12px;
   corner-shape: squircle;
-  background: var(--background-default);
+  background: color-mix(in srgb, var(--accent) 12%, var(--background-default));
   color: var(--text-default);
-  box-shadow: 0 10px 30px rgba(45, 49, 55, 0.16);
+  font-weight: 500;
+  box-shadow: 0 16px 40px rgba(45, 49, 55, 0.28);
   pointer-events: auto;
   transition: opacity 0.2s ease, translate 0.2s ease;
 
   @starting-style {
     opacity: 0;
-    translate: 0 12px;
+    translate: 0 -12px;
   }
+}
+
+.banner {
+  --accent: var(--brand);
+
+  position: sticky;
+  top: 80px;
+  z-index: 15;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px max(16px, calc((100% - 1120px) / 2));
+  border-bottom: 1px solid var(--line-strong);
+  background: var(--brand-soft);
+  color: var(--ink);
+  box-shadow: var(--shadow-soft);
+  scroll-margin-top: 80px;
+}
+
+.banner:focus-visible {
+  outline: none !important;
+}
+
+.bannerError {
+  --accent: #b3261e;
+
+  border-bottom-color: #f1c7c3;
+  background: #fdf1f0;
+}
+
+.bannerIcon {
+  flex: none;
+  box-sizing: content-box;
+  padding: 9px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--text-inverse);
+  font-size: 1.2rem;
+}
+
+.bannerText {
+  display: grid;
+  gap: 2px;
+  flex: 1;
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.bannerText strong,
+.bannerError .bannerText {
+  color: var(--ink);
+  font-size: 1.05rem;
+}
+
+.banner .link {
+  color: var(--brand-strong);
+}
+
+.banner .dismiss {
+  margin: 0;
+}
+
+.banner .dismiss:hover {
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
 }
 
 .toastError {
@@ -87,13 +153,13 @@
 }
 
 .toastInfo {
-  --accent: #3b6fb6;
+  --accent: var(--brand);
 }
 
 .icon {
   flex: none;
   margin-top: 2px;
-  font-size: 1.25rem;
+  font-size: 1.5rem;
   color: var(--accent);
 }
 
