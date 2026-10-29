@@ -5,6 +5,9 @@ import { getFirestore } from 'firebase-admin/firestore';
 import { UserProfileClient } from './UserProfileClient';
 import { CANCEL_DEADLINE_MS } from '@/utils/payment/paypalServer';
 import type { Metadata } from 'next';
+import { DATE_KEY_PATTERN, parseDateKey, tiraneMonth } from '@/helpers/booking';
+
+const DAY_MS = 24 * 60 * 60 * 1000;
 
 export const metadata: Metadata = {
   title: 'Profile - Discover Berat',
@@ -31,14 +34,14 @@ async function setDateBlocked(dateKey: string, isBlocked: boolean) {
   const token = (await cookies()).get('token')?.value;
   const { uid } = await adminSDK.auth().verifyIdToken(token ?? '');
   if (uid !== process.env.ADMIN_ID) throw new Error('Not allowed');
-  if (!/^\d{2}\/\d{2}\/\d{4}, 00:00:00$/.test(dateKey)) {
+  if (!DATE_KEY_PATTERN.test(dateKey)) {
     throw new Error('Invalid date');
   }
   const ref = getFirestore()
     .collection('blockedDates')
     .doc(encodeURIComponent(dateKey));
   if (!isBlocked) return void (await ref.delete());
-  const [day, month, year] = dateKey.slice(0, 10).split('/').map(Number);
+  const { day, month, year } = parseDateKey(dateKey);
   await ref.set({ dateKey, day: new Date(Date.UTC(year, month - 1, day)) });
 }
 
@@ -77,7 +80,8 @@ async function getUserData(userId: string) {
     bookingQuery.get(),
     savedItemsQuery.get(),
     isAdmin
-      ? db.collection('blockedDates').where('day', '>=', new Date()).get()
+      // Blocks are stored at UTC midnight, so a day's window keeps today's block listed.
+      ? db.collection('blockedDates').where('day', '>=', new Date(Date.now() - DAY_MS)).get()
       : null,
   ]);
 
@@ -87,10 +91,7 @@ async function getUserData(userId: string) {
   bookingsSnapshot.forEach((documentSnapshot) => {
     const bookingData = documentSnapshot.data();
     if (isAdmin && bookingData.date && !bookingData.cancellationRequested) {
-      const month = bookingData.date
-        .toDate()
-        .toLocaleDateString('en-CA', { timeZone: 'Europe/Tirane' })
-        .slice(0, 7);
+      const month = tiraneMonth(bookingData.date.toDate());
       const key = `${bookingData.bookingId}_${month}`;
       const row = history.get(key) ?? {
         tourId: bookingData.bookingId,

@@ -5,6 +5,7 @@ import classnames from 'classnames'
 import styles from './BookingForm.module.css'
 import Toast from '@/components/simple/Toast'
 import { REQUIRED } from '@/helpers/forms'
+import { MIN_GUESTS } from '@/helpers/booking'
 interface BookingFormProps {
   className?: string
   onSubmit: (formData: any) => void
@@ -165,7 +166,7 @@ const BookingForm: FC<BookingFormProps> = forwardRef((props, ref) => {
         <div>
           <input
             placeholder='2'
-            min={2}
+            min={MIN_GUESTS}
             max={maxGuests}
             type='number'
             list='guestNumbers'
@@ -174,13 +175,13 @@ const BookingForm: FC<BookingFormProps> = forwardRef((props, ref) => {
             {...register('guestNumber', {
               valueAsNumber: true,
               required: REQUIRED,
-              min: { value: 2, message: 'Guests must be at least 2' },
+              min: { value: MIN_GUESTS, message: `Guests must be at least ${MIN_GUESTS}` },
               ...(maxGuests && {
                 max: { value: maxGuests, message: `Only ${maxGuests} places are left at this time` },
               }),
               onChange: (event) => {
                 const guests = event.target.valueAsNumber
-                if (guests >= 2) onGuestsChange?.(guests)
+                if (guests >= MIN_GUESTS) onGuestsChange?.(guests)
               },
             })}
             id='guestNumber'

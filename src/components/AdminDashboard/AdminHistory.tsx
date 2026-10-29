@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import classNames from 'classnames'
 import type { BookingHistory } from '@/app/user/profile/[user]/page'
 import styles from './AdminHistory.module.css'
+import { tiraneMonth } from '@/helpers/booking'
 
 const metrics = {
   bookings: { label: 'Bookings', format: (value: number) => String(value) },
@@ -38,7 +39,7 @@ const sum = (rows: BookingHistory[], metric: Metric) =>
 export default function AdminHistory({ history }: { history: BookingHistory[] }) {
   const [metric, setMetric] = useState<Metric>('bookings')
   const [tourId, setTourId] = useState('all')
-  const [currentMonth] = useState(() => new Date().toLocaleDateString('en-CA').slice(0, 7))
+  const [currentMonth] = useState(() => tiraneMonth(new Date()))
 
   if (history.length === 0) {
     return <p className={styles.empty}>No bookings yet</p>

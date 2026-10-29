@@ -1,6 +1,12 @@
 import { getEntriesByType, getEntry } from '@/utils/contentful/contentful';
 import { FieldValue, getFirestore as getFirestoreAdmin } from 'firebase-admin/firestore';
-import { getStartTimes } from '@/helpers/getTimes';
+import {
+  DATE_KEY_PATTERN,
+  MAX_GUESTS_PER_SLOT,
+  MIN_GUESTS,
+  getStartTimes,
+  tiraneDateTime,
+} from '@/helpers/booking';
 import { adminSDK } from '@/utils/firebase/adminConfig';
 
 import type { Metadata } from 'next';
@@ -20,7 +26,6 @@ type Props = {
   searchParams: Promise<{ tour?: string; service?: string }>;
 };
 
-const MAX_GUESTS_PER_SLOT = 20;
 const HOUR = 60 * 60 * 1000;
 const BOOKING_TYPES: Record<string, string> = {
   tourPage: 'tour',
@@ -34,19 +39,11 @@ async function createBooking(
 ) {
   'use server';
   const { uid, email } = await adminSDK.auth().verifyIdToken(idToken);
-  if (!/^\d{2}\/\d{2}\/\d{4}, 00:00:00$/.test(dateKey)) {
-    throw new Error('Invalid booking date');
-  }
-  const [day, month, year] = dateKey.slice(0, 10).split('/').map(Number);
-  const date = new Date(input.date);
-  const dayStart = Date.UTC(year, month - 1, day);
-  const offset = date.getTime() - dayStart;
-  // dateKey is the booker's local day, so allow every UTC offset (-12h to +14h) around it.
-  if (!(date > new Date()) || offset < -14 * HOUR || offset >= 36 * HOUR) {
+  if (!DATE_KEY_PATTERN.test(dateKey)) {
     throw new Error('Invalid booking date');
   }
   const guestNumber = Number(input.guestNumber);
-  if (!Number.isInteger(guestNumber) || guestNumber < 2) {
+  if (!Number.isInteger(guestNumber) || guestNumber < MIN_GUESTS) {
     throw new Error('Invalid guest number');
   }
   const phone = String(input.phone ?? '').trim();
@@ -61,6 +58,9 @@ async function createBooking(
   if (!getStartTimes(entry.fields).includes(time)) {
     throw new Error('Invalid start time');
   }
+  // The start is built here from the picked day and time, so it always matches the slot it is counted in.
+  const date = tiraneDateTime(dateKey, time);
+  if (!(date > new Date())) throw new Error('Invalid booking date');
   const slotId = encodeURIComponent(`${entry.sys.id}_${dateKey}_${time}`);
 
   const { title, price, currency = '€' } = entry.fields;
@@ -99,7 +99,7 @@ async function createBooking(
     if (guestNumber > seatsLeft) {
       return {
         error:
-          seatsLeft < 2
+          seatsLeft < MIN_GUESTS
             ? 'This time is fully booked. Pick another time or date.'
             : `Only ${seatsLeft} places are left at this time.`,
       };
@@ -111,24 +111,13 @@ async function createBooking(
       tourId: entry.sys.id,
       dateKey,
       time,
-      day: new Date(dayStart),
+      day: date,
       guests: FieldValue.increment(guestNumber),
     }, { merge: true });
     return { bookingId: bookingRef.id };
   });
   if (!result.bookingId) return result;
   const { bookingId } = result;
-
-  const when = formatTourDate(date);
-  const total = `${currency}${price * guestNumber}`;
-  const details: [string, string][] = [
-    ['Tour', title],
-    ['Date', when],
-    ['Guests', String(guestNumber)],
-    ['Pickup', booking.pickup],
-    ['Total', `${total} (${currency}${price} per person)`],
-    ['Booking ID', bookingId],
-  ];
 
   const when = formatTourDate(date);
   const total = `${currency}${price * guestNumber}`;

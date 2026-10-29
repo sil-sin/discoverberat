@@ -5,22 +5,12 @@ import 'react-calendar/dist/Calendar.css'
 import { toast } from '@/components/simple/Toast'
 import styles from './AdminDashboard.module.css'
 import AdminHistory from './AdminHistory'
+import { fromDateKey, tiraneMonth, toDateKey } from '@/helpers/booking'
 
 const tabs = ['Overview', 'Bookings', 'History', 'Availability', 'Account'] as const
 type Tab = (typeof tabs)[number]
 
 const WEEK_MS = 7 * 24 * 60 * 60 * 1000
-
-const toDateKey = (date: Date) => {
-  const day = new Date(date)
-  day.setHours(0, 0, 0, 0)
-  return day.toLocaleString('en-GB')
-}
-
-const fromDateKey = (dateKey: string) => {
-  const [day, month, year] = dateKey.slice(0, 10).split('/').map(Number)
-  return new Date(year, month - 1, day)
-}
 
 const formatDay = (date: Date) =>
   date.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' })
@@ -116,7 +106,7 @@ export default function AdminDashboard({ bookings, user, blockedDates = [], hist
     },
   ]
 
-  const thisMonth = new Date(now).toLocaleDateString('en-CA', { timeZone: 'Europe/Tirane' }).slice(0, 7)
+  const thisMonth = tiraneMonth(new Date(now))
   const monthRows = history.filter((row: any) => row.month === thisMonth)
   const monthTotal = (key: string) => monthRows.reduce((sum: number, row: any) => sum + row[key], 0)
 
