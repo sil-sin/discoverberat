@@ -16,10 +16,11 @@ interface BookingFormProps {
   email: string | null
   phone?: string
   isPrivate?: boolean
+  maxGuests?: number
 }
 
 const BookingForm: FC<BookingFormProps> = forwardRef((props, ref) => {
-  const { className, onSubmit, onGuestsChange, isPrivate } = props
+  const { className, onSubmit, onGuestsChange, isPrivate, maxGuests } = props
   const { user } = useAuthContext()
 
   const {
@@ -165,6 +166,7 @@ const BookingForm: FC<BookingFormProps> = forwardRef((props, ref) => {
           <input
             placeholder='2'
             min={2}
+            max={maxGuests}
             type='number'
             list='guestNumbers'
             aria-required
@@ -173,6 +175,9 @@ const BookingForm: FC<BookingFormProps> = forwardRef((props, ref) => {
               valueAsNumber: true,
               required: REQUIRED,
               min: { value: 2, message: 'Guests must be at least 2' },
+              ...(maxGuests && {
+                max: { value: maxGuests, message: `Only ${maxGuests} places are left at this time` },
+              }),
               onChange: (event) => {
                 const guests = event.target.valueAsNumber
                 if (guests >= 2) onGuestsChange?.(guests)

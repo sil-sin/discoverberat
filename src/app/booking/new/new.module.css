@@ -156,6 +156,12 @@
   font-variant-numeric: tabular-nums;
 }
 
+.seatsLeft {
+  margin-left: 6px;
+  font-size: 0.8em;
+  opacity: 0.75;
+}
+
 .timeButton:hover {
   border-color: var(--brand) !important;
 }

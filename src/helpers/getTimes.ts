@@ -30,3 +30,6 @@ export const getTimes = (selectedDate: Date | null) => {
 
   return times
 }
+
+export const getStartTimes = ({ tourTime, isDayTrip }: { tourTime?: string[]; isDayTrip?: boolean }) =>
+  tourTime ?? (isDayTrip ? ['09:00'] : getTimes(new Date())!)

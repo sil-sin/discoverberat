@@ -13,9 +13,34 @@ export const metadata: Metadata = {
 
 export const dynamic = 'force-dynamic';
 
+export type BookingHistory = {
+  tourId: string;
+  title: string;
+  month: string;
+  bookings: number;
+  guests: number;
+  revenue: number;
+};
+
 type Props = {
   params: Promise<{ user: string }>;
 };
+
+async function setDateBlocked(dateKey: string, isBlocked: boolean) {
+  'use server';
+  const token = (await cookies()).get('token')?.value;
+  const { uid } = await adminSDK.auth().verifyIdToken(token ?? '');
+  if (uid !== process.env.ADMIN_ID) throw new Error('Not allowed');
+  if (!/^\d{2}\/\d{2}\/\d{4}, 00:00:00$/.test(dateKey)) {
+    throw new Error('Invalid date');
+  }
+  const ref = getFirestore()
+    .collection('blockedDates')
+    .doc(encodeURIComponent(dateKey));
+  if (!isBlocked) return void (await ref.delete());
+  const [day, month, year] = dateKey.slice(0, 10).split('/').map(Number);
+  await ref.set({ dateKey, day: new Date(Date.UTC(year, month - 1, day)) });
+}
 
 async function getUserData(userId: string) {
   const cookieStore = await cookies();
@@ -39,24 +64,47 @@ async function getUserData(userId: string) {
   }
 
   const db = getFirestore();
-  const bookingQuery =
-    authenticatedUser.uid === process.env.ADMIN_ID
-      ? db.collection('bookings').where('date', '>=', new Date())
-      : db.collection('bookings').where('uid', '==', authenticatedUser.uid);
+  const isAdmin = authenticatedUser.uid === process.env.ADMIN_ID;
+  const bookingQuery = isAdmin
+    ? db.collection('bookings')
+    : db.collection('bookings').where('uid', '==', authenticatedUser.uid);
   const savedItemsQuery = db
     .collection('savedBooking')
     .where('uid', '==', authenticatedUser.uid);
 
-  const [user, bookingsSnapshot, savedItemsSnapshot] = await Promise.all([
+  const [user, bookingsSnapshot, savedItemsSnapshot, blockedSnapshot] = await Promise.all([
     adminSDK.auth().getUser(authenticatedUser.uid),
     bookingQuery.get(),
     savedItemsQuery.get(),
+    isAdmin
+      ? db.collection('blockedDates').where('day', '>=', new Date()).get()
+      : null,
   ]);
 
   let data: FirebaseFirestore.DocumentData[] = [];
+  const history = new Map<string, BookingHistory>();
 
   bookingsSnapshot.forEach((documentSnapshot) => {
     const bookingData = documentSnapshot.data();
+    if (isAdmin && bookingData.date && !bookingData.cancellationRequested) {
+      const month = bookingData.date
+        .toDate()
+        .toLocaleDateString('en-CA', { timeZone: 'Europe/Tirane' })
+        .slice(0, 7);
+      const key = `${bookingData.bookingId}_${month}`;
+      const row = history.get(key) ?? {
+        tourId: bookingData.bookingId,
+        title: bookingData.title,
+        month,
+        bookings: 0,
+        guests: 0,
+        revenue: 0,
+      };
+      row.bookings += 1;
+      row.guests += bookingData.guestNumber;
+      row.revenue += bookingData.price * bookingData.guestNumber;
+      history.set(key, row);
+    }
     const timestamp = bookingData.date;
     if (!timestamp || new Date(timestamp._seconds * 1000) < new Date()) {
       return;
@@ -87,7 +135,6 @@ async function getUserData(userId: string) {
 
   const savedItems = savedItemsSnapshot.docs.map((doc) => doc.data());
 
-  const isAdmin = user.uid === process.env.ADMIN_ID;
   return {
     user: {
       ...authenticatedUser,
@@ -97,6 +144,8 @@ async function getUserData(userId: string) {
     },
     upcomingBookings: data,
     savedItems: isAdmin ? [] : savedItems,
+    history: [...history.values()],
+    blockedDates: blockedSnapshot?.docs.map((doc) => doc.data().dateKey as string) ?? [],
   };
 }
 
@@ -117,6 +166,9 @@ export default async function UserProfilePage({ params }: Props) {
       user={result.user}
       savedItems={result.savedItems || []}
       upcomingBookings={result.upcomingBookings || []}
+      blockedDates={result.blockedDates || []}
+      history={result.history || []}
+      setDateBlocked={setDateBlocked}
     />
   );
 }
