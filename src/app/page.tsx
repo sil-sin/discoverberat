@@ -9,6 +9,7 @@ import styles from './page.module.css';
 // import { TestimonialContainer } from '@/components/sectors/Testimonials/TestimonialsContainer';
 import type { Metadata } from 'next';
 import { HomeClient } from './HomeClient';
+import { SITE_URL } from '@/utils/site';
 
 
 export const metadata: Metadata = {
@@ -69,6 +70,20 @@ const REASONS = [
   { Icon: FiMapPin, title: 'Pickup', text: 'Choose where we meet you.' },
 ];
 
+const ORGANIZATION_LD = {
+  '@context': 'https://schema.org',
+  '@type': 'TravelAgency',
+  name: 'Discover Berat',
+  url: SITE_URL,
+  email: 'discoverberat@gmail.com',
+  telephone: '+355692921203',
+  address: { '@type': 'PostalAddress', addressLocality: 'Berat', addressCountry: 'AL' },
+  sameAs: [
+    'https://www.facebook.com/people/Discover-Berat/61556334115156/',
+    'https://www.instagram.com/real.discoverberat',
+  ],
+};
+
 export default async function Home() {
   const [tours, transfers] = await Promise.all([
     getEntriesByType('tourPage'),
@@ -84,6 +99,10 @@ export default async function Home() {
 
   return (
     <div className="main">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(ORGANIZATION_LD) }}
+      />
       <Hero />
       <ul className={styles.reasons} aria-label="Why book with us">
         {REASONS.map(({ Icon, title, text }) => (

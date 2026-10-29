@@ -3,6 +3,7 @@ import { AuthProvider } from '@/utils/auth/auth-provider';
 import Layout from '@/components/Layout';
 import type { Metadata } from 'next';
 import { Bricolage_Grotesque, Figtree } from 'next/font/google';
+import { SITE_URL, isProduction } from '@/utils/site';
 
 const display = Bricolage_Grotesque({
   subsets: ['latin', 'latin-ext'],
@@ -11,6 +12,8 @@ const display = Bricolage_Grotesque({
 const body = Figtree({ subsets: ['latin', 'latin-ext'], variable: '--font-body' });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
+  robots: isProduction ? undefined : { index: false, follow: false },
   title: 'Discover Berat - Tour Operator',
   description: 'Discover Berat - Guided tours, activities, and excursions.',
 };

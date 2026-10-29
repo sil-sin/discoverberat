@@ -115,6 +115,7 @@
   align-items: center;
   border-radius: 6px;
   width: 100%;
+  margin: 0;
   padding: 20px;
   gap: 10px;
 }
@@ -131,6 +132,12 @@
 .timeButton {
   width: 70px;
   padding: 10px;
+}
+
+.timeButton[aria-pressed='true'] {
+  background-color: var(--button-primary-active-bg) !important;
+  color: var(--button-primary-typo) !important;
+  border: 1px solid var(--button-primary-active-border) !important;
 }
 
 @media screen and (min-width: 780px) {
