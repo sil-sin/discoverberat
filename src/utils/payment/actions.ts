@@ -49,7 +49,7 @@ export async function cancelBooking(idToken: string, bookingId: string) {
   if (booking.isPaid) {
     await ref.update({ cancellationRequested: true });
   } else {
-    await releaseBooking(ref, booking);
+    await releaseBooking(ref);
   }
 
   // The cancellation is already saved, so a failed email must not fail the request.

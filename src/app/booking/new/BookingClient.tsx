@@ -1,12 +1,17 @@
 'use client';
 
 import Button from '@/components/simple/Button';
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import styles from './new.module.css';
 import { useAuthContext } from '@/utils/auth/auth-provider';
 import ReactCalendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
-import { getTimes } from '@/helpers/getTimes';
+import {
+  MAX_GUESTS_PER_SLOT,
+  MIN_GUESTS,
+  getStartTimes,
+  toDateKey,
+} from '@/helpers/booking';
 import BookingForm from '@/components/sectors/BookingForm/BookingForm';
 import { useRouter } from 'next/navigation';
 import useSaveLater from '@/hooks/useSaveLater';
@@ -15,32 +20,28 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { FiCheck } from 'react-icons/fi';
 
-const withTime = (date: Date, time: string) => {
-  const [hours, minutes] = time.split(':');
-  const dateTime = new Date(date);
-  dateTime.setHours(+hours, +minutes, 0, 0);
-  return dateTime;
-};
-
 const getTomorrow = () => {
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
+  tomorrow.setHours(0, 0, 0, 0);
   return tomorrow;
 };
 
 type BookingClientProps = {
   booking: any;
-  unavailableDates: string[];
+  blockedDates: string[];
+  seatsLeft: Record<string, number>;
   createBooking: (
     idToken: string,
     dateKey: string,
     booking: Record<string, any>,
-  ) => Promise<string | null>;
+  ) => Promise<{ bookingId?: string; error?: string }>;
 };
 
 export function BookingClient({
   booking,
-  unavailableDates,
+  blockedDates,
+  seatsLeft,
   createBooking,
 }: BookingClientProps) {
   const {
@@ -52,13 +53,27 @@ export function BookingClient({
     isDayTrip,
     tourTime,
   } = booking;
-  const defaultTime: string = tourTime?.[0] ?? '09:00';
+  const startTimes = getStartTimes(booking);
 
-  const [selectedDate, setSelectedDate] = useState<Date>(() =>
-    withTime(getTomorrow(), defaultTime),
-  );
-  const [selectedDateTime, setSelectedDateTime] = useState<Date | null>(
-    selectedDate,
+  const seatsAt = (date: Date, time?: string) =>
+    seatsLeft[`${toDateKey(date)} ${time}`];
+  const isFull = (date: Date, time?: string) =>
+    (seatsAt(date, time) ?? MAX_GUESTS_PER_SLOT) < MIN_GUESTS;
+  const isUnavailable = (date: Date) =>
+    blockedDates.includes(toDateKey(date)) ||
+    startTimes.every((time) => isFull(date, time));
+  const firstFreeTime = (date: Date) =>
+    startTimes.find((time) => !isFull(date, time)) ?? startTimes[0];
+
+  const [selectedDate, setSelectedDate] = useState<Date>(() => {
+    const day = getTomorrow();
+    for (let i = 0; i < 365 && isUnavailable(day); i++) {
+      day.setDate(day.getDate() + 1);
+    }
+    return day;
+  });
+  const [selectedTime, setSelectedTime] = useState(() =>
+    firstFreeTime(selectedDate),
   );
   const [isPrivate, setIsPrivate] = useState<boolean>(false);
   const [isBooking, setIsBooking] = useState(false);
@@ -71,10 +86,7 @@ export function BookingClient({
   const { handleSaveLater } = useSaveLater(booking);
   const currentDay = new Date().setDate(new Date().getDate() + 1);
 
-  const availableTimes = useMemo(
-    () => tourTime ?? (!isDayTrip ? getTimes(selectedDate) : []),
-    [tourTime, isDayTrip, selectedDate],
-  );
+  const availableTimes = isDayTrip && !tourTime ? [] : startTimes;
 
   const handleBookNow = async (isBookNow: boolean) => {
     if (!user) {
@@ -92,15 +104,13 @@ export function BookingClient({
       if (isInvalid) return 'Check the highlighted booking fields.';
       if (isBookNow) return null;
 
-      const day = new Date(selectedDate);
-      day.setHours(0, 0, 0, 0);
-      const bookingId = await createBooking(
+      const result = await createBooking(
         await user.getIdToken(),
-        day.toLocaleString('en-GB'),
-        { bookingId: id, ...formData, date: selectedDateTime },
+        toDateKey(selectedDate),
+        { bookingId: id, ...formData, time: selectedTime },
       );
-      if (!bookingId) return 'This date is fully booked. Pick another date.';
-      router.push('new/thank-you?id=' + bookingId);
+      if (result.error) return result.error;
+      router.push('new/thank-you?id=' + result.bookingId);
     })().catch(() => {
       toast.banner('error', 'Your booking could not be saved. Please try again.');
       return null;
@@ -112,22 +122,14 @@ export function BookingClient({
 
   const handleAvailability = (date: Date) => {
     setSelectedDate(date);
-    setSelectedDateTime(withTime(date, defaultTime));
+    setSelectedTime(firstFreeTime(date));
   };
 
   const nextDay = new Date(currentDay);
 
-  const handleTimeSelection = (selectedTime: string) =>
-    setSelectedDateTime(withTime(selectedDate, selectedTime));
-
-  const selectedTime = selectedDateTime?.toLocaleTimeString('en-GB', {
-    hour: '2-digit',
-    minute: '2-digit',
-  });
-
   const imageUrl = booking.image?.fields?.file?.url;
   const total = price * guests;
-  const formattedDate = selectedDateTime?.toLocaleDateString('en-GB', {
+  const formattedDate = selectedDate.toLocaleDateString('en-GB', {
     weekday: 'short',
     day: 'numeric',
     month: 'long',
@@ -152,13 +154,9 @@ export function BookingClient({
             </h2>
             <div className={styles.calendar}>
               <ReactCalendar
-                tileDisabled={({ date }) =>
-                  unavailableDates.includes(date.toLocaleString('en-GB'))
-                }
+                tileDisabled={({ date }) => isUnavailable(date)}
                 tileClassName={({ date }) =>
-                  unavailableDates.includes(date.toLocaleString('en-GB'))
-                    ? styles.fullyBooked
-                    : null
+                  isUnavailable(date) ? styles.fullyBooked : null
                 }
                 value={selectedDate}
                 minDate={nextDay}
@@ -181,9 +179,17 @@ export function BookingClient({
                         className={styles.timeButton}
                         variant="tertiary"
                         isPressed={time === selectedTime}
-                        onClick={() => handleTimeSelection(time)}
+                        isDisabled={isFull(selectedDate, time)}
+                        onClick={() => setSelectedTime(time)}
                       >
                         {time}
+                        {seatsAt(selectedDate, time) !== undefined && (
+                          <span className={styles.seatsLeft}>
+                            {isFull(selectedDate, time)
+                              ? 'Full'
+                              : `${seatsAt(selectedDate, time)} left`}
+                          </span>
+                        )}
                       </Button>
                     </li>
                   ))}
@@ -202,6 +208,7 @@ export function BookingClient({
               booker={user?.displayName ?? ''}
               onSubmit={handleBookNow}
               onGuestsChange={setGuests}
+              maxGuests={seatsAt(selectedDate, selectedTime) ?? MAX_GUESTS_PER_SLOT}
               guestNumber={0}
               isValid={false}
               isPrivate={isPrivate}
@@ -260,7 +267,7 @@ export function BookingClient({
           </ul>
           <Button
             className={styles.summaryButton}
-            isDisabled={!selectedDateTime && !isDayTrip}
+            isDisabled={isFull(selectedDate, selectedTime)}
             isLoading={isBooking}
             variant="primary"
             onClick={() => {

@@ -9,17 +9,24 @@ import AdminDashboard from '@/components/AdminDashboard/AdminDashboard';
 import Button from '@/components/simple/Button';
 import { deleteAccount } from '@/utils/auth/session';
 import { signOutUser } from '@/utils/auth/signOut';
+import type { BookingHistory } from './page';
 
 type Props = {
   user: any;
   savedItems: any[];
   upcomingBookings: any[];
+  blockedDates: string[];
+  history: BookingHistory[];
+  setDateBlocked: (dateKey: string, isBlocked: boolean) => Promise<void>;
 };
 
 export function UserProfileClient({
   user,
   savedItems,
   upcomingBookings,
+  blockedDates,
+  history,
+  setDateBlocked,
 }: Props) {
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -63,7 +70,13 @@ export function UserProfileClient({
           </div>
         </header>
         {user.isAdmin ? (
-          <AdminDashboard bookings={upcomingBookings} user={user} />
+          <AdminDashboard
+            bookings={upcomingBookings}
+            user={user}
+            blockedDates={blockedDates}
+            history={history}
+            setDateBlocked={setDateBlocked}
+          />
         ) : (
           <Dashboard
             bookings={upcomingBookings}

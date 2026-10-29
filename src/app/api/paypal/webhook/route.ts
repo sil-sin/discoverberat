@@ -53,7 +53,7 @@ export async function POST(request: Request) {
     // Refunds exclude the PayPal fee, so they are always partial; any refund means a cancellation.
     const ref = bookingsCollection().doc(bookingId);
     const booking = (await ref.get()).data();
-    if (booking?.cancellationRequested) await releaseBooking(ref, booking);
+    if (booking?.cancellationRequested) await releaseBooking(ref);
     else if (booking) await ref.update({ isPaid: false });
   }
 

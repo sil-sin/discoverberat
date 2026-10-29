@@ -1,4 +1,4 @@
-import type { DocumentData, DocumentReference } from 'firebase-admin/firestore';
+import { FieldValue, type DocumentData, type DocumentReference } from 'firebase-admin/firestore';
 import { adminSDK } from '@/utils/firebase/adminConfig';
 import { sendMail } from '@/utils/mail';
 import { formatTourDate, renderEmail } from '@/utils/emailTemplate';
@@ -64,11 +64,14 @@ export const formatBookingDate = (booking: DocumentData) =>
     timeStyle: 'short',
   });
 
-// Deletes the booking and frees its day slot; bookings made before dateKey was stored keep their slot.
-export async function releaseBooking(ref: DocumentReference, booking: DocumentData) {
+// Deletes the booking and frees its seats; bookings made before dateKey was stored keep their slot.
+export async function releaseBooking(ref: DocumentReference) {
   const db = adminSDK.firestore();
   await db.runTransaction(async (tx) => {
-    const dayLock = booking.dateKey
+    // Re-read inside the transaction so a retried webhook or a racing cancel can't free the seats twice.
+    const booking = (await tx.get(ref)).data();
+    if (!booking) return;
+    const legacyDayLock = !booking.slotId && booking.dateKey
       ? (
           await tx.get(
             db
@@ -80,7 +83,12 @@ export async function releaseBooking(ref: DocumentReference, booking: DocumentDa
         ).docs[0]
       : undefined;
     tx.delete(ref);
-    if (dayLock) tx.delete(dayLock.ref);
+    if (booking.slotId) {
+      tx.update(db.collection('bookingSlots').doc(booking.slotId), {
+        guests: FieldValue.increment(-booking.guestNumber),
+      });
+    }
+    if (legacyDayLock) tx.delete(legacyDayLock.ref);
   });
 }
 

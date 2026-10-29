@@ -1,5 +1,12 @@
 import { getEntriesByType, getEntry } from '@/utils/contentful/contentful';
-import { getFirestore as getFirestoreAdmin } from 'firebase-admin/firestore';
+import { FieldValue, getFirestore as getFirestoreAdmin } from 'firebase-admin/firestore';
+import {
+  DATE_KEY_PATTERN,
+  MAX_GUESTS_PER_SLOT,
+  MIN_GUESTS,
+  getStartTimes,
+  tiraneDateTime,
+} from '@/helpers/booking';
 import { adminSDK } from '@/utils/firebase/adminConfig';
 
 import type { Metadata } from 'next';
@@ -19,7 +26,6 @@ type Props = {
   searchParams: Promise<{ tour?: string; service?: string }>;
 };
 
-const MAX_BOOKINGS_PER_DAY = 3;
 const HOUR = 60 * 60 * 1000;
 const BOOKING_TYPES: Record<string, string> = {
   tourPage: 'tour',
@@ -33,19 +39,11 @@ async function createBooking(
 ) {
   'use server';
   const { uid, email } = await adminSDK.auth().verifyIdToken(idToken);
-  if (!/^\d{2}\/\d{2}\/\d{4}, 00:00:00$/.test(dateKey)) {
-    throw new Error('Invalid booking date');
-  }
-  const [day, month, year] = dateKey.slice(0, 10).split('/').map(Number);
-  const date = new Date(input.date);
-  const dayStart = Date.UTC(year, month - 1, day);
-  const offset = date.getTime() - dayStart;
-  // dateKey is the booker's local day, so allow every UTC offset (-12h to +14h) around it.
-  if (!(date > new Date()) || offset < -14 * HOUR || offset >= 36 * HOUR) {
+  if (!DATE_KEY_PATTERN.test(dateKey)) {
     throw new Error('Invalid booking date');
   }
   const guestNumber = Number(input.guestNumber);
-  if (!Number.isInteger(guestNumber) || guestNumber < 2) {
+  if (!Number.isInteger(guestNumber) || guestNumber < MIN_GUESTS) {
     throw new Error('Invalid guest number');
   }
   const phone = String(input.phone ?? '').trim();
@@ -55,6 +53,15 @@ async function createBooking(
   const entry: any = await getEntry(String(input.bookingId));
   const type = BOOKING_TYPES[entry.sys.contentType.sys.id];
   if (!type) throw new Error('Invalid booking item');
+
+  const time = String(input.time);
+  if (!getStartTimes(entry.fields).includes(time)) {
+    throw new Error('Invalid start time');
+  }
+  // The start is built here from the picked day and time, so it always matches the slot it is counted in.
+  const date = tiraneDateTime(dateKey, time);
+  if (!(date > new Date())) throw new Error('Invalid booking date');
+  const slotId = encodeURIComponent(`${entry.sys.id}_${dateKey}_${time}`);
 
   const { title, price, currency = '€' } = entry.fields;
   const booker = String(input.booker);
@@ -73,32 +80,44 @@ async function createBooking(
     guestNumber,
     date,
     dateKey,
+    slotId,
     uid,
   };
   const db = getFirestoreAdmin();
 
-  const bookingId = await db.runTransaction(async (tx) => {
-    // Every booking for a day writes this doc, so concurrent bookings conflict and retry instead of overbooking.
-    const dayLock = db
-      .collection('bookingDayLocks')
-      .doc(encodeURIComponent(dateKey));
-    await tx.get(dayLock);
-    const taken = await tx.get(
-      db.collection('unavailableDates').where('date', '==', dateKey),
-    );
-    if (taken.size >= MAX_BOOKINGS_PER_DAY) return null;
+  const result = await db.runTransaction(async (tx) => {
+    // Every booking for a slot writes its counter doc, so concurrent bookings conflict and retry instead of overbooking.
+    const slotRef = db.collection('bookingSlots').doc(slotId);
+    const [blocked, slot] = await Promise.all([
+      tx.get(db.collection('blockedDates').doc(encodeURIComponent(dateKey))),
+      tx.get(slotRef),
+    ]);
+    if (blocked.exists) {
+      return { error: 'This date is not available. Pick another date.' };
+    }
+    const seatsLeft = MAX_GUESTS_PER_SLOT - (slot.data()?.guests ?? 0);
+    if (guestNumber > seatsLeft) {
+      return {
+        error:
+          seatsLeft < MIN_GUESTS
+            ? 'This time is fully booked. Pick another time or date.'
+            : `Only ${seatsLeft} places are left at this time.`,
+      };
+    }
 
     const bookingRef = db.collection('bookings').doc();
-    tx.set(dayLock, { updatedAt: new Date() });
     tx.create(bookingRef, booking);
-    tx.create(db.collection('unavailableDates').doc(), {
-      uid,
-      date: dateKey,
-      day: new Date(dayStart),
-    });
-    return bookingRef.id;
+    tx.set(slotRef, {
+      tourId: entry.sys.id,
+      dateKey,
+      time,
+      day: date,
+      guests: FieldValue.increment(guestNumber),
+    }, { merge: true });
+    return { bookingId: bookingRef.id };
   });
-  if (!bookingId) return null;
+  if (!result.bookingId) return result;
+  const { bookingId } = result;
 
   const when = formatTourDate(date);
   const total = `${currency}${price * guestNumber}`;
@@ -160,7 +179,7 @@ async function createBooking(
       console.error(`Booking ${bookingId} email failed:`, result.reason);
     }
   });
-  return bookingId;
+  return { bookingId };
 }
 
 async function getBookingData(tourSlug?: string, serviceSlug?: string) {
@@ -177,50 +196,37 @@ async function getBookingData(tourSlug?: string, serviceSlug?: string) {
       )[0]
     : null;
 
-  const db = getFirestoreAdmin();
-  const unavailableDates = await db
-    .collection('unavailableDates')
-    .where('day', '>=', new Date(Date.now() - 48 * HOUR))
-    .get();
+  const entry = serviceData ?? tourData;
+  if (!entry) return { booking: null, blockedDates: [], seatsLeft: {} };
 
-  const dateCountMap = new Map();
-  unavailableDates.docs.forEach((doc) => {
-    const date = doc.data().date;
-    if (dateCountMap.has(date)) {
-      dateCountMap.set(date, dateCountMap.get(date) + 1);
-    } else {
-      dateCountMap.set(date, 1);
+  const db = getFirestoreAdmin();
+  const since = new Date(Date.now() - 48 * HOUR);
+  const [blocked, slots] = await Promise.all([
+    db.collection('blockedDates').where('day', '>=', since).get(),
+    db.collection('bookingSlots').where('tourId', '==', entry.sys.id).get(),
+  ]);
+  const seatsLeft: Record<string, number> = {};
+  slots.docs.forEach((doc) => {
+    const { dateKey, time, day, guests } = doc.data();
+    if (day.toDate() >= since) {
+      seatsLeft[`${dateKey} ${time}`] = MAX_GUESTS_PER_SLOT - guests;
     }
   });
 
-  const datesWithMoreThanTwoOccurrences = Array.from(dateCountMap.entries())
-    .filter(([, count]) => count >= MAX_BOOKINGS_PER_DAY)
-    .map(([date]) => date);
-
-  if (serviceData) {
-    return {
-      booking: {
-        ...serviceData.fields,
-        id: serviceData.sys.id,
-        type: 'service',
-      },
-      unavailableDates: datesWithMoreThanTwoOccurrences,
-    };
-  }
-
-  if (tourData) {
-    return {
-      booking: { ...tourData.fields, id: tourData.sys.id, type: 'tour' },
-      unavailableDates: datesWithMoreThanTwoOccurrences,
-    };
-  }
-
-  return { booking: null, unavailableDates: [] };
+  return {
+    booking: {
+      ...entry.fields,
+      id: entry.sys.id,
+      type: serviceData ? 'service' : 'tour',
+    },
+    blockedDates: blocked.docs.map((doc) => doc.data().dateKey as string),
+    seatsLeft,
+  };
 }
 
 export default async function BookingNewPage({ searchParams }: Props) {
   const { tour, service } = await searchParams;
-  const { booking, unavailableDates } = await getBookingData(tour, service);
+  const { booking, blockedDates, seatsLeft } = await getBookingData(tour, service);
 
   if (!booking) {
     return (
@@ -234,7 +240,8 @@ export default async function BookingNewPage({ searchParams }: Props) {
   return (
     <BookingClient
       booking={booking}
-      unavailableDates={unavailableDates}
+      blockedDates={blockedDates}
+      seatsLeft={seatsLeft}
       createBooking={createBooking}
     />
   );
