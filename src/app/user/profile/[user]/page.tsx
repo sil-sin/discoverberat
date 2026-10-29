@@ -89,7 +89,9 @@ async function getUserData(userId: string) {
   const history = new Map<string, BookingHistory>();
 
   bookingsSnapshot.forEach((documentSnapshot) => {
-    const bookingData = documentSnapshot.data();
+    // Older bookings stored guestNumber as a string, which breaks sums.
+    const stored = documentSnapshot.data();
+    const bookingData: FirebaseFirestore.DocumentData = { ...stored, guestNumber: Number(stored.guestNumber) };
     if (isAdmin && bookingData.date && !bookingData.cancellationRequested) {
       const month = tiraneMonth(bookingData.date.toDate());
       const key = `${bookingData.bookingId}_${month}`;
