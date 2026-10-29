@@ -3,6 +3,7 @@ import Tour from '@/components/Tour';
 import Tours from '@/components/sectors/Tours';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import { SITE_URL, summarize } from '@/utils/site';
 
 export const revalidate = 43200; // 12 hours
 
@@ -20,11 +21,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const entries = await getEntriesByType('tourPage');
   const tour: any = entries?.find((e: any) => e?.fields?.url === tourSlug);
 
+  if (!tour) return { title: 'Tour - Discover Berat' };
+
+  const title = `${tour.fields.title} - Discover Berat`;
+  const description = summarize(tour.fields.description);
+  const image = `https:${tour.fields.image.fields.file.url}`;
   return {
-    title: tour?.fields?.title
-      ? `${tour.fields.title} - Discover Berat`
-      : 'Tour - Discover Berat',
-    description: tour?.fields?.description || 'Discover Berat tour details.',
+    title,
+    description,
+    alternates: { canonical: `/tours/${tourSlug}` },
+    openGraph: { type: 'website', title, description, images: [image] },
+    twitter: { card: 'summary_large_image', title, description, images: [image] },
   };
 }
 
@@ -38,8 +45,32 @@ export default async function TourPage({ params }: Props) {
     notFound();
   }
 
+  const { title, description, price, image } = tour.fields;
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'TouristTrip',
+    name: title,
+    description: summarize(description, 500),
+    image: `https:${image.fields.file.url}`,
+    url: `${SITE_URL}/tours/${tourSlug}`,
+    provider: { '@type': 'TravelAgency', name: 'Discover Berat', url: SITE_URL },
+    offers: {
+      '@type': 'Offer',
+      price,
+      priceCurrency: 'EUR',
+      availability: 'https://schema.org/InStock',
+      url: `${SITE_URL}/tours/${tourSlug}`,
+    },
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c'),
+        }}
+      />
       <Tour
         tour={{
           ...tour.fields,

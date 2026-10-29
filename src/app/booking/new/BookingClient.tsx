@@ -12,11 +12,17 @@ import { useRouter } from 'next/navigation';
 import useSaveLater from '@/hooks/useSaveLater';
 import { toast } from '@/components/simple/Toast';
 
-const getStartDate = () => {
-  const startDate = new Date();
-  startDate.setDate(startDate.getDate() + 1);
-  startDate.setHours(9, 0, 0, 0);
-  return startDate;
+const withTime = (date: Date, time: string) => {
+  const [hours, minutes] = time.split(':');
+  const dateTime = new Date(date);
+  dateTime.setHours(+hours, +minutes, 0, 0);
+  return dateTime;
+};
+
+const getTomorrow = () => {
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  return tomorrow;
 };
 
 type BookingClientProps = {
@@ -34,7 +40,21 @@ export function BookingClient({
   unavailableDates,
   createBooking,
 }: BookingClientProps) {
-  const [selectedDate, setSelectedDate] = useState<Date>(getStartDate);
+  const {
+    id,
+    title,
+    price,
+    currency = '€',
+    description,
+    url,
+    isDayTrip,
+    tourTime,
+  } = booking;
+  const defaultTime: string = tourTime?.[0] ?? '09:00';
+
+  const [selectedDate, setSelectedDate] = useState<Date>(() =>
+    withTime(getTomorrow(), defaultTime),
+  );
   const [selectedDateTime, setSelectedDateTime] = useState<Date | null>(
     selectedDate,
   );
@@ -48,19 +68,9 @@ export function BookingClient({
   const { handleSaveLater } = useSaveLater(booking);
   const currentDay = new Date().setDate(new Date().getDate() + 1);
 
-  const {
-    id,
-    title,
-    price,
-    currency = '€',
-    description,
-    url,
-    isDayTrip,
-  } = booking;
-
   const availableTimes = useMemo(
-    () => (!isDayTrip ? getTimes(selectedDate) : []),
-    [isDayTrip, selectedDate],
+    () => tourTime ?? (!isDayTrip ? getTimes(selectedDate) : []),
+    [tourTime, isDayTrip, selectedDate],
   );
 
   const handleBookNow = async (isBookNow: boolean) => {
@@ -95,24 +105,18 @@ export function BookingClient({
 
   const handleAvailability = (date: Date) => {
     setSelectedDate(date);
-    const defaultTime = new Date(date);
-    defaultTime.setHours(9, 0, 0);
-    setSelectedDateTime(defaultTime);
+    setSelectedDateTime(withTime(date, defaultTime));
   };
 
   const nextDay = new Date(currentDay);
 
-  const handleTimeSelection = (selectedTime: string) => {
-    const [hours, minutes] = selectedTime.split(':');
-    const newDateTime = selectedDate && new Date(selectedDate.getTime());
+  const handleTimeSelection = (selectedTime: string) =>
+    setSelectedDateTime(withTime(selectedDate, selectedTime));
 
-    if (newDateTime) {
-      newDateTime.setHours(+hours);
-      newDateTime.setMinutes(+minutes);
-    }
-
-    setSelectedDateTime(newDateTime);
-  };
+  const selectedTime = selectedDateTime?.toLocaleTimeString('en-GB', {
+    hour: '2-digit',
+    minute: '2-digit',
+  });
 
   return (
     <div>
@@ -147,26 +151,33 @@ export function BookingClient({
                 onClickDay={handleAvailability}
               />
               <>
-                {selectedDate &&
-                availableTimes &&
-                availableTimes.length &&
-                !isDayTrip ? (
-                  <ul className={styles.timesContainer}>
-                    <p>Select starting time</p>
-                    <div className={styles.times}>
-                      {availableTimes.map((time: any) => (
+                {availableTimes?.length === 1 ? (
+                  <div className={styles.timesContainer}>
+                    <p>
+                      Starting time: <strong>{availableTimes[0]}</strong>
+                    </p>
+                  </div>
+                ) : availableTimes?.length ? (
+                  <div className={styles.timesContainer}>
+                    <p id="start-time-label">Select starting time</p>
+                    <ul
+                      className={styles.times}
+                      aria-labelledby="start-time-label"
+                    >
+                      {availableTimes.map((time: string) => (
                         <li key={time}>
                           <Button
                             className={styles.timeButton}
                             variant="tertiary"
+                            isPressed={time === selectedTime}
                             onClick={() => handleTimeSelection(time)}
                           >
                             {time}
                           </Button>
                         </li>
                       ))}
-                    </div>
-                  </ul>
+                    </ul>
+                  </div>
                 ) : null}
               </>
             </div>

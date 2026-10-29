@@ -14,6 +14,7 @@ type Props = {
   className?: string
   isDisabled?: boolean
   isLoading?: boolean
+  isPressed?: boolean
   type?: 'submit' | 'reset' | 'button'
   buttonName?: string
   popoverTarget?: string
@@ -27,6 +28,7 @@ export const Button: FC<Props> = ({
   className,
   isDisabled,
   isLoading,
+  isPressed,
   type = 'button',
   buttonName,
   popoverTarget,
@@ -57,6 +59,7 @@ export const Button: FC<Props> = ({
         )}
         disabled={isDisabled || isLoading}
         aria-busy={isLoading}
+        aria-pressed={isPressed}
       >
         {text || children}
       </button>
