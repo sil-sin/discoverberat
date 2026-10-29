@@ -1,6 +1,7 @@
 import type { DocumentData, DocumentReference } from 'firebase-admin/firestore';
 import { adminSDK } from '@/utils/firebase/adminConfig';
 import { sendMail } from '@/utils/mail';
+import { formatTourDate, renderEmail } from '@/utils/emailTemplate';
 
 // Not a 'use server' file on purpose: exports here must never become client-callable actions.
 
@@ -87,6 +88,7 @@ type Capture = {
   id: string;
   status?: string;
   amount?: { currency_code?: string; value?: string };
+  seller_receivable_breakdown?: { net_amount?: { value?: string } };
 };
 
 // Called by both the capture action and the webhook; the transaction makes sure only one of them sends the receipt.
@@ -105,7 +107,11 @@ export async function markPaid(bookingId: string, capture: Capture | undefined) 
       console.error('PayPal capture not completed:', bookingId, capture?.id, capture?.status);
       throw new Error('Payment was not completed');
     }
-    tx.update(ref, { isPaid: true, paypalCaptureId: capture.id });
+    tx.update(ref, {
+      isPaid: true,
+      paypalCaptureId: capture.id,
+      paypalNetAmount: capture.seller_receivable_breakdown?.net_amount?.value ?? null,
+    });
     return data;
   });
   if (booking && capture) await sendReceipt(bookingId, booking, capture.id);
@@ -113,18 +119,39 @@ export async function markPaid(bookingId: string, capture: Capture | undefined) 
 
 async function sendReceipt(bookingId: string, booking: DocumentData, captureId: string) {
   const { unitAmount, amount, date } = bookingSummary(booking);
-  const details = `Tour: ${booking.title}\nDate: ${date}\nGuests: ${booking.guestNumber}\nPrice per person: €${unitAmount}\nTotal paid: €${amount}\nBooking ID: ${bookingId}\nPayPal transaction ID: ${captureId}`;
+  const details: [string, string][] = [
+    ['Tour', booking.title],
+    ['Date', formatTourDate(booking.date.toDate())],
+    ['Guests', String(booking.guestNumber)],
+    ['Total paid', `€${amount} (€${unitAmount} per person)`],
+    ['Booking ID', bookingId],
+    ['PayPal transaction', captureId],
+  ];
   // The payment is already captured, so a failed email must not fail the request.
   const results = await Promise.allSettled([
     sendMail(
       booking.email,
-      `Payment receipt: ${booking.title} on ${date}`,
-      `Dear ${booking.booker},\n\nWe received your payment. Here are your booking details:\n\n${details}\n\nSee you soon!\nDiscover Berat`,
+      `Payment received: ${booking.title}, ${date}`,
+      renderEmail({
+        heading: 'Thank you, your payment is received',
+        intro: `Hi ${booking.booker}, we received your PayPal payment. Keep this email as your receipt.`,
+        details,
+        sections: [
+          {
+            title: 'Cancellation',
+            text: 'You can cancel for free up to 24 hours before the tour on your profile page. PayPal refunds exclude the PayPal fee.',
+          },
+        ],
+      }),
     ),
     sendMail(
       process.env.NEXT_PUBLIC_ADMIN,
       `Payment received: €${amount} from ${booking.booker}`,
-      details,
+      renderEmail({
+        heading: 'Payment received',
+        intro: `${booking.booker} paid €${amount} with PayPal.`,
+        details,
+      }),
     ),
   ]);
   results.forEach((result) => {
