@@ -8,6 +8,7 @@ import { REQUIRED } from '@/helpers/forms'
 interface BookingFormProps {
   className?: string
   onSubmit: (formData: any) => void
+  onGuestsChange?: (guests: number) => void
   isLoading?: boolean
   booker?: string
   guestNumber: number
@@ -18,7 +19,7 @@ interface BookingFormProps {
 }
 
 const BookingForm: FC<BookingFormProps> = forwardRef((props, ref) => {
-  const { className, onSubmit, isPrivate } = props
+  const { className, onSubmit, onGuestsChange, isPrivate } = props
   const { user } = useAuthContext()
 
   const {
@@ -71,13 +72,12 @@ const BookingForm: FC<BookingFormProps> = forwardRef((props, ref) => {
 
   return (
     <div className={classnames(styles.bookingFormContainer, className)}>
-      <h2>Booking information</h2>
       <form data-testid='booking-form' onSubmit={handleSubmit(onSubmit)}>
-        <label htmlFor='booker' className='required'>Booker name:</label>
+        <label htmlFor='booker' className='required'>Full name</label>
         <div>
           <input
             data-testid='booker'
-            placeholder='Enter a name for the booking'
+            placeholder='Name for the booking'
             type='text'
             id='booker'
             aria-required
@@ -95,11 +95,11 @@ const BookingForm: FC<BookingFormProps> = forwardRef((props, ref) => {
             />
           )}
         </div>
-        <label htmlFor='email' className='required'>Booker email:</label>
+        <label htmlFor='email' className='required'>Email</label>
         <div>
           <input
             data-testid='email'
-            placeholder='Enter an email for the booking'
+            placeholder='you@example.com'
             type='email'
             id='email'
             aria-required
@@ -117,10 +117,10 @@ const BookingForm: FC<BookingFormProps> = forwardRef((props, ref) => {
             />
           )}
         </div>
-        <label htmlFor='phone' className='required'>Booker phone:</label>
+        <label htmlFor='phone' className='required'>Phone</label>
         <div>
           <input
-            placeholder='Enter a phone number, e.g. +355 69 123 4567'
+            placeholder='+355 69 123 4567'
             type='tel'
             autoComplete='tel'
             id='phone'
@@ -142,10 +142,10 @@ const BookingForm: FC<BookingFormProps> = forwardRef((props, ref) => {
             />
           )}
         </div>
-        <label htmlFor='pickup' className='required'>Pickup place:</label>
+        <label htmlFor='pickup' className='required'>Pickup place</label>
         <div>
           <input
-            placeholder='Enter a pickup place'
+            placeholder='Hotel or address in Berat'
             type='text'
             id='pickup'
             aria-required
@@ -160,10 +160,10 @@ const BookingForm: FC<BookingFormProps> = forwardRef((props, ref) => {
             />
           )}
         </div>
-        <label htmlFor='guestNumber' className='required'>Guests:</label>
+        <label htmlFor='guestNumber' className='required'>Guests</label>
         <div>
           <input
-            placeholder='Enter number of guests'
+            placeholder='2'
             min={2}
             type='number'
             list='guestNumbers'
@@ -173,6 +173,10 @@ const BookingForm: FC<BookingFormProps> = forwardRef((props, ref) => {
               valueAsNumber: true,
               required: REQUIRED,
               min: { value: 2, message: 'Guests must be at least 2' },
+              onChange: (event) => {
+                const guests = event.target.valueAsNumber
+                if (guests >= 2) onGuestsChange?.(guests)
+              },
             })}
             id='guestNumber'
           />

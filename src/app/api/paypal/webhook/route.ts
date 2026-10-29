@@ -1,5 +1,6 @@
 import { bookingsCollection, markPaid, paypalFetch, releaseBooking } from '@/utils/payment/paypalServer';
 import { sendMail } from '@/utils/mail';
+import { renderEmail } from '@/utils/emailTemplate';
 
 export async function POST(request: Request) {
   const rawEvent = await request.text();
@@ -33,7 +34,14 @@ export async function POST(request: Request) {
       await sendMail(
         process.env.NEXT_PUBLIC_ADMIN,
         `Check PayPal capture ${resource?.id}`,
-        `PayPal capture ${resource?.id} for booking ${bookingId} could not be marked as paid. Check it in PayPal and refund it if needed.`,
+        renderEmail({
+          heading: 'Payment needs a check',
+          intro: 'A PayPal payment came in, but it could not be matched to a booking. Check it in PayPal and refund it if needed.',
+          details: [
+            ['PayPal transaction', String(resource?.id)],
+            ['Booking ID', bookingId],
+          ],
+        }),
       ).catch(() => {});
     });
   }

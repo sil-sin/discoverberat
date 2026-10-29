@@ -1,19 +1,20 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
+import Link from 'next/link';
+import { FaWhatsapp } from 'react-icons/fa';
+import { FiCheck, FiCheckCircle } from 'react-icons/fi';
 import styles from './thank-you.module.css';
-import Button from '@/components/simple/Button';
-import Loader from '@/components/simple/Loader';
 import { useAuthContext } from '@/utils/auth/auth-provider';
 import PaypalCheckoutButton from '@/utils/payment/paypal';
+import { WHATSAPP_URL } from '@/components/sectors/Navigation/utils';
 
 type Props = {
   getBooking: (idToken: string, id: string) => Promise<Record<string, any> | null>;
 };
 
 export function ThankYouClient({ getBooking }: Props) {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const id = searchParams.get('id') || '';
   const [booking, setBooking] = useState<Record<string, any> | null>(null);
@@ -32,19 +33,17 @@ export function ThankYouClient({ getBooking }: Props) {
       });
   }, [getBooking, user, id]);
 
+  const profileHref = user ? '/user/profile/' + user.uid : '/authenticate';
+
   if (isMissing || !id) {
     return (
-      <div className={styles.container}>
-        <div className={styles.detailsContainer}>
-          <h3 className={styles.title}>We could not find this booking</h3>
-          <p>Your bookings are listed on your profile.</p>
-          <Button
-            variant="primary"
-            onClick={() =>
-              router.push(user ? '/user/profile/' + user.uid : '/authenticate')
-            }
-            text="See all bookings"
-          />
+      <div className={styles.page}>
+        <div className={styles.card}>
+          <h1 className={styles.title}>We could not find this booking</h1>
+          <p className={styles.lead}>Your bookings are listed on your profile.</p>
+          <Link className={styles.primaryLink} href={profileHref}>
+            See my bookings
+          </Link>
         </div>
       </div>
     );
@@ -52,90 +51,166 @@ export function ThankYouClient({ getBooking }: Props) {
 
   if (!booking) {
     return (
-      <div className={styles.container}>
-        <div
-          className={styles.detailsContainer}
-          aria-busy="true"
-          aria-label="Loading your booking"
-        >
-          <span className="skeleton" style={{ width: '60%', height: '1.5rem', margin: '0 auto' }} />
+      <div className={styles.page}>
+        <div className={styles.card} aria-busy="true" aria-label="Loading your booking">
+          <span className="skeleton" style={{ width: '60%', height: '2rem' }} />
           <span className="skeleton" />
           <span className="skeleton" style={{ width: '85%' }} />
-          <span className="skeleton" style={{ width: '40%' }} />
-          <span className="skeleton" style={{ height: '3rem' }} />
+          <span className="skeleton" style={{ height: '8rem' }} />
         </div>
       </div>
     );
   }
 
-  const formattedDate = new Date(booking.date).toLocaleString(
-    'en-GB',
-    {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: 'numeric',
-      minute: 'numeric',
-    },
+  return (
+    <BookingConfirmation
+      id={id}
+      booking={booking}
+      profileHref={profileHref}
+      onPaid={() => setBooking({ ...booking, isPaid: true })}
+    />
   );
-  const formatedBookingTitle = booking.title.includes(booking.type)
-    ? booking.title
-        .split(' ')
-        .filter((char: string) => char !== booking.type)
-        .join(' ')
-    : booking.title;
+}
+
+type ConfirmationProps = {
+  id: string;
+  booking: Record<string, any>;
+  profileHref: string;
+  onPaid: () => void;
+};
+
+export function BookingConfirmation({
+  id,
+  booking,
+  profileHref,
+  onPaid,
+}: ConfirmationProps) {
+  const date = new Date(booking.date);
+  const currency = booking.currency ?? '€';
+  const total = `${currency}${booking.price * booking.guestNumber}`;
 
   return (
-    <div className={styles.container}>
-      {booking && (
-        <div className={styles.detailsContainer}>
-          <h3 className={styles.title}>Your booking is confirmed</h3>
-          <section>
-            You have booked{' '}
-            <strong>
-              {formatedBookingTitle} {booking.type}
-            </strong>
-            , for a total price of{' '}
-            <strong>
-              {booking.currency}
-              {booking.price * booking.guestNumber}
-            </strong>{' '}
-            for {booking.guestNumber} guest
-            {booking.guestNumber === 1 ? '' : 's'} (
-            {booking.currency + booking.price} per person).
+    <div className={styles.page}>
+      <header className={styles.hero}>
+        <FiCheckCircle aria-hidden className={styles.heroIcon} />
+        <h1 className={styles.title}>Your booking is confirmed</h1>
+        <p className={styles.lead}>
+          We sent the details to <strong>{booking.email}</strong>.
+        </p>
+      </header>
+
+      <div className={styles.layout}>
+        <section className={styles.card} aria-labelledby="details-title">
+          <h2 id="details-title" className={styles.cardTitle}>
+            {booking.title}
+          </h2>
+          <dl className={styles.details}>
             <div>
-              Starting on <strong>{formattedDate}</strong>.<p>See you soon!</p>
+              <dt>Date</dt>
+              <dd>
+                {date.toLocaleDateString('en-GB', {
+                  weekday: 'long',
+                  day: 'numeric',
+                  month: 'long',
+                  year: 'numeric',
+                })}
+              </dd>
             </div>
-          </section>
+            <div>
+              <dt>Start time</dt>
+              <dd>
+                {date.toLocaleTimeString('en-GB', {
+                  hour: '2-digit',
+                  minute: '2-digit',
+                })}
+              </dd>
+            </div>
+            <div>
+              <dt>Guests</dt>
+              <dd>{booking.guestNumber}</dd>
+            </div>
+            {booking.pickup && (
+              <div>
+                <dt>Pickup</dt>
+                <dd>{booking.pickup}</dd>
+              </div>
+            )}
+            <div>
+              <dt>Total</dt>
+              <dd>
+                {total}{' '}
+                <span className={styles.muted}>
+                  ({currency}
+                  {booking.price} per person)
+                </span>
+              </dd>
+            </div>
+            <div>
+              <dt>Booking ID</dt>
+              <dd className={styles.bookingId}>{id}</dd>
+            </div>
+          </dl>
+        </section>
+
+        <section className={styles.card} aria-labelledby="payment-title">
+          <div className={styles.paymentHeader}>
+            <h2 id="payment-title" className={styles.cardTitle}>
+              Payment
+            </h2>
+            <span
+              className={booking.isPaid ? styles.badgePaid : styles.badgeDue}
+            >
+              {booking.isPaid ? 'Paid' : 'Not paid yet'}
+            </span>
+          </div>
           {booking.isPaid ? (
-            <p>
-              <strong>Paid</strong>
+            <p className={styles.muted}>
+              We received your payment of {total}. The receipt is in your inbox.
             </p>
           ) : (
-            <section aria-labelledby="payment-title">
-              <h4 id="payment-title">Payment (optional)</h4>
-              <p>Pay now with PayPal, or pay on the day of the tour.</p>
-              <PaypalCheckoutButton
-                bookingId={id}
-                onPaid={() => setBooking({ ...booking, isPaid: true })}
-              />
-            </section>
+            <>
+              <p className={styles.muted}>
+                Pay {total} now with PayPal, or pay on the day of the tour. Both
+                are fine.
+              </p>
+              <PaypalCheckoutButton bookingId={id} onPaid={onPaid} />
+            </>
           )}
-          <Button
-            variant="primary"
-            onClick={() =>
-              router.push(booking.type === 'tour' ? '/tours' : '/')
-            }
-            text="Book another"
-          />
-          <Button
-            variant="secondary"
-            onClick={() => router.push('/user/profile/' + user?.uid)}
-            text="See all bookings"
-          />
+        </section>
+      </div>
+
+      <section className={styles.next} aria-labelledby="next-title">
+        <h2 id="next-title" className={styles.cardTitle}>
+          Good to know
+        </h2>
+        <ul className={styles.facts}>
+          <li>
+            <FiCheck aria-hidden />
+            <span>
+              Free cancellation up to 24 hours before the tour, from{' '}
+              <Link href={profileHref}>your bookings</Link>.
+            </span>
+          </li>
+          <li>
+            <FiCheck aria-hidden />
+            <span>
+              Questions? Message us on{' '}
+              <a href={WHATSAPP_URL} target="_blank" rel="noreferrer noopener">
+                <FaWhatsapp aria-hidden /> WhatsApp
+              </a>{' '}
+              or reply to the confirmation email.
+            </span>
+          </li>
+        </ul>
+        <div className={styles.actions}>
+          <Link className={styles.primaryLink} href={profileHref}>
+            See my bookings
+          </Link>
+          <Link className={styles.secondaryLink} href="/tours">
+            Browse more tours
+          </Link>
         </div>
-      )}
+      </section>
     </div>
   );
 }

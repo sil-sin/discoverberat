@@ -55,13 +55,13 @@ describe('BookingForm component', () => {
     )
 
     // Clear required fields to trigger validation errors
-    fireEvent.change(screen.getByLabelText(/booker name/i), {
+    fireEvent.change(screen.getByLabelText(/full name/i), {
       target: { value: '' },
     })
-    fireEvent.change(screen.getByLabelText(/booker email/i), {
+    fireEvent.change(screen.getByLabelText(/^email/i), {
       target: { value: '' },
     })
-    fireEvent.change(screen.getByLabelText(/booker phone/i), {
+    fireEvent.change(screen.getByLabelText(/^phone/i), {
       target: { value: 'abc' },
     })
     fireEvent.change(screen.getByLabelText(/pickup place/i), {
@@ -93,7 +93,7 @@ describe('BookingForm component', () => {
     fireEvent.change(screen.getByTestId('email'), {
       target: { value: 'jane@example.com' },
     })
-    fireEvent.change(screen.getByLabelText(/booker phone/i), {
+    fireEvent.change(screen.getByLabelText(/^phone/i), {
       target: { value: '+355 69 123 4567' },
     })
     fireEvent.change(screen.getByLabelText(/pickup place/i), {

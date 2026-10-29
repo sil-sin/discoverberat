@@ -11,6 +11,9 @@ import BookingForm from '@/components/sectors/BookingForm/BookingForm';
 import { useRouter } from 'next/navigation';
 import useSaveLater from '@/hooks/useSaveLater';
 import { toast } from '@/components/simple/Toast';
+import Image from 'next/image';
+import Link from 'next/link';
+import { FiCheck } from 'react-icons/fi';
 
 const withTime = (date: Date, time: string) => {
   const [hours, minutes] = time.split(':');
@@ -45,7 +48,6 @@ export function BookingClient({
     title,
     price,
     currency = '€',
-    description,
     url,
     isDayTrip,
     tourTime,
@@ -60,6 +62,7 @@ export function BookingClient({
   );
   const [isPrivate, setIsPrivate] = useState<boolean>(false);
   const [isBooking, setIsBooking] = useState(false);
+  const [guests, setGuests] = useState(2);
   const router = useRouter();
 
   const bookingFormRef = useRef<any>(null);
@@ -122,124 +125,163 @@ export function BookingClient({
     minute: '2-digit',
   });
 
-  return (
-    <div>
-      <div>
-        <div className={styles.container}>
-          <h2> {title} </h2>
-          <div>
-            <div>
-              {description?.split('.')[0]}.
-              <Button
-                className={styles.link}
-                variant="link"
-                href={`/tours/${url}`}
-              >
-                Read more
-              </Button>
-            </div>
-          </div>
+  const imageUrl = booking.image?.fields?.file?.url;
+  const total = price * guests;
+  const formattedDate = selectedDateTime?.toLocaleDateString('en-GB', {
+    weekday: 'short',
+    day: 'numeric',
+    month: 'long',
+  });
 
-          <div className={styles.bookingForm}>
+  return (
+    <div className={styles.page}>
+      <nav aria-label="Breadcrumb" className={styles.breadcrumb}>
+        <Link href="/tours">Tours</Link>
+        <span aria-hidden>/</span>
+        <Link href={`/tours/${url}`}>{title}</Link>
+        <span aria-hidden>/</span>
+        <span aria-current="page">Book</span>
+      </nav>
+      <h1 className={styles.title}>Book {title}</h1>
+
+      <div className={styles.layout}>
+        <div className={styles.steps}>
+          <section className={styles.step} aria-labelledby="step-date">
+            <h2 id="step-date" className={styles.stepTitle}>
+              <span aria-hidden>1</span> Date and time
+            </h2>
             <div className={styles.calendar}>
               <ReactCalendar
-                tileDisabled={({ date }) => {
-                  return (
-                    unavailableDates.filter(
-                      (d: any) => d === date.toLocaleString('en-GB'),
-                    ).length > 0
-                  );
-                }}
+                tileDisabled={({ date }) =>
+                  unavailableDates.includes(date.toLocaleString('en-GB'))
+                }
+                tileClassName={({ date }) =>
+                  unavailableDates.includes(date.toLocaleString('en-GB'))
+                    ? styles.fullyBooked
+                    : null
+                }
                 value={selectedDate}
                 minDate={nextDay}
                 onClickDay={handleAvailability}
               />
-              <>
-                {availableTimes?.length === 1 ? (
-                  <div className={styles.timesContainer}>
-                    <p>
-                      Starting time: <strong>{availableTimes[0]}</strong>
-                    </p>
-                  </div>
-                ) : availableTimes?.length ? (
-                  <div className={styles.timesContainer}>
-                    <p id="start-time-label">Select starting time</p>
-                    <ul
-                      className={styles.times}
-                      aria-labelledby="start-time-label"
-                    >
-                      {availableTimes.map((time: string) => (
-                        <li key={time}>
-                          <Button
-                            className={styles.timeButton}
-                            variant="tertiary"
-                            isPressed={time === selectedTime}
-                            onClick={() => handleTimeSelection(time)}
-                          >
-                            {time}
-                          </Button>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                ) : null}
-              </>
             </div>
+            {availableTimes?.length === 1 ? (
+              <p className={styles.fixedTime}>
+                Starts at <strong>{availableTimes[0]}</strong>
+              </p>
+            ) : availableTimes?.length ? (
+              <div>
+                <p id="start-time-label" className={styles.timesLabel}>
+                  Choose a start time
+                </p>
+                <ul className={styles.times} aria-labelledby="start-time-label">
+                  {availableTimes.map((time: string) => (
+                    <li key={time}>
+                      <Button
+                        className={styles.timeButton}
+                        variant="tertiary"
+                        isPressed={time === selectedTime}
+                        onClick={() => handleTimeSelection(time)}
+                      >
+                        {time}
+                      </Button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
+          </section>
+
+          <section className={styles.step} aria-labelledby="step-details">
+            <h2 id="step-details" className={styles.stepTitle}>
+              <span aria-hidden>2</span> Your details
+            </h2>
             <BookingForm
               // @ts-ignore
               ref={bookingFormRef}
               booker={user?.displayName ?? ''}
               onSubmit={handleBookNow}
+              onGuestsChange={setGuests}
               guestNumber={0}
               isValid={false}
               isPrivate={isPrivate}
               email={user?.email ?? ''}
             />
-          </div>
-
-          <div className={styles.bookOption}>
-            <div>
-              <h2>Reserve now, pay online or on the day.</h2>
-              <hr />
-              <h3>
-                {currency}
-                {price}/PERSON
-              </h3>
-              <p>Minimum booking requirement: 2 persons.</p>
-              <p>
-                After you reserve, you can pay online with PayPal, or pay on
-                the day of the tour.
-              </p>
-            </div>
-
-            <p>
-              By booking, you accept our{' '}
-              <Button variant="link" href="/terms">
-                Terms and Conditions
-              </Button>
-              .
-            </p>
-            <Button
-              isDisabled={!selectedDateTime && !isDayTrip}
-              isLoading={isBooking}
-              variant="primary"
-              onClick={() => {
-                setIsPrivate(false);
-                handleBookNow(false);
-              }}
-            >
-              Reserve Now
-            </Button>
-            <Button onClick={handleSaveLater} variant="secondary">
-              Save for later
-            </Button>
-          </div>
-
-          <div>
-            <br />
-            <br />
-          </div>
+          </section>
         </div>
+
+        <aside className={styles.summary} aria-label="Booking summary">
+          {imageUrl && (
+            <Image
+              className={styles.summaryImage}
+              src={`https:${imageUrl}`}
+              alt=""
+              width={340}
+              height={190}
+            />
+          )}
+          <h2 className={styles.summaryTitle}>{title}</h2>
+          <dl className={styles.summaryList}>
+            <div>
+              <dt>Date</dt>
+              <dd>{formattedDate}</dd>
+            </div>
+            <div>
+              <dt>Start time</dt>
+              <dd>{selectedTime}</dd>
+            </div>
+            <div>
+              <dt>Guests</dt>
+              <dd>
+                {guests} × {currency}
+                {price}
+              </dd>
+            </div>
+            <div className={styles.total}>
+              <dt>Total</dt>
+              <dd>
+                {currency}
+                {total}
+              </dd>
+            </div>
+          </dl>
+          <ul className={styles.facts}>
+            <li>
+              <FiCheck aria-hidden /> Pay online with PayPal after you reserve,
+              or pay on the day
+            </li>
+            <li>
+              <FiCheck aria-hidden />
+              <span>
+                Free cancellation up to 24 hours before.{' '}
+                <Link href="/refund-policy">Refund policy</Link>
+              </span>
+            </li>
+          </ul>
+          <Button
+            className={styles.summaryButton}
+            isDisabled={!selectedDateTime && !isDayTrip}
+            isLoading={isBooking}
+            variant="primary"
+            onClick={() => {
+              setIsPrivate(false);
+              handleBookNow(false);
+            }}
+          >
+            Reserve now
+          </Button>
+          <Button
+            className={styles.summaryButton}
+            onClick={handleSaveLater}
+            variant="secondary"
+          >
+            Save for later
+          </Button>
+          <p className={styles.terms}>
+            By booking, you accept our{' '}
+            <Link href="/terms">Terms and Conditions</Link>.
+          </p>
+        </aside>
       </div>
     </div>
   );

@@ -2,6 +2,8 @@
 
 import { adminSDK } from '@/utils/firebase/adminConfig';
 import { sendMail } from '@/utils/mail';
+import { formatTourDate, renderEmail } from '@/utils/emailTemplate';
+import { SITE_URL } from '@/utils/site';
 import {
   bookingsCollection,
   CANCEL_DEADLINE_MS,
@@ -37,7 +39,12 @@ export async function cancelBooking(idToken: string, bookingId: string) {
   if (booking.cancellationRequested) return { error: null };
 
   const date = formatBookingDate(booking);
-  const tour = `${booking.title} on ${date} for ${booking.guestNumber} guests`;
+  const details: [string, string][] = [
+    ['Tour', booking.title],
+    ['Date', formatTourDate(booking.date.toDate())],
+    ['Guests', String(booking.guestNumber)],
+    ['Booking ID', ref.id],
+  ];
   // Paid bookings wait for a manual PayPal refund; the refund webhook then releases them.
   if (booking.isPaid) {
     await ref.update({ cancellationRequested: true });
@@ -49,17 +56,45 @@ export async function cancelBooking(idToken: string, bookingId: string) {
   const results = await Promise.allSettled([
     sendMail(
       booking.email,
-      `Booking cancelled: ${booking.title} on ${date}`,
-      booking.isPaid
-        ? `Dear ${booking.booker},\n\nWe received your cancellation of ${tour}. We will refund your payment minus the PayPal fee within a few business days.\n\nDiscover Berat`
-        : `Dear ${booking.booker},\n\nYour booking of ${tour} is cancelled.\n\nDiscover Berat`,
+      `Booking cancelled: ${booking.title}, ${date}`,
+      renderEmail({
+        heading: 'Your booking is cancelled',
+        intro: `Hi ${booking.booker}, we received your cancellation. Here is the booking you cancelled.`,
+        details,
+        sections: [
+          booking.isPaid
+            ? {
+                title: 'Your refund',
+                text: 'We refund your payment to your PayPal account or card within a few business days. PayPal keeps its processing fee, so the refund is the amount you paid minus that fee.',
+              }
+            : {
+                title: 'Nothing to pay',
+                text: 'You did not pay for this booking, so there is nothing to refund.',
+              },
+          {
+            title: 'Changed your mind?',
+            text: 'You are welcome to book again any time. Questions? Reply to this email or message us on WhatsApp.',
+          },
+        ],
+        cta: { label: 'Browse tours', href: `${SITE_URL}/tours` },
+      }),
     ),
     sendMail(
       process.env.NEXT_PUBLIC_ADMIN,
-      `${booking.isPaid ? 'Refund needed' : 'Booking cancelled'}: ${booking.booker} on ${date}`,
-      booking.isPaid
-        ? `${booking.booker} cancelled ${tour}. Refund PayPal transaction ${booking.paypalCaptureId} (booking ID ${ref.id}) in PayPal. The booking is removed when the refund goes through.`
-        : `${booking.booker} cancelled ${tour}. Booking ID: ${ref.id}. Phone: ${booking.phone ?? '-'}`,
+      `${booking.isPaid ? 'Refund needed' : 'Booking cancelled'}: ${booking.booker}, ${date}`,
+      renderEmail({
+        heading: booking.isPaid ? 'Refund needed' : 'Booking cancelled',
+        intro: booking.isPaid
+          ? `${booking.booker} cancelled a paid booking. Refund the PayPal transaction below in PayPal. The booking is removed when the refund goes through.`
+          : `${booking.booker} cancelled an unpaid booking. The date is free again.`,
+        details: [
+          ...details,
+          ['Phone', booking.phone ?? '-'],
+          ...(booking.isPaid
+            ? [['PayPal transaction', booking.paypalCaptureId] as [string, string]]
+            : []),
+        ],
+      }),
     ),
   ]);
   results.forEach((result) => {
