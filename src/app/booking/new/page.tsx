@@ -1,7 +1,8 @@
 import { getEntriesByType, getEntry } from '@/utils/contentful/contentful';
 import { FieldValue, getFirestore as getFirestoreAdmin } from 'firebase-admin/firestore';
 import {
-  DATE_KEY_PATTERN,
+  isValidDateKey,
+  MAX_TEXT_LENGTH,
   MAX_GUESTS_PER_SLOT,
   MIN_GUESTS,
   getStartTimes,
@@ -38,8 +39,11 @@ async function createBooking(
   input: Record<string, any>,
 ) {
   'use server';
-  const { uid, email } = await adminSDK.auth().verifyIdToken(idToken);
-  if (!DATE_KEY_PATTERN.test(dateKey)) {
+  const { uid, email, email_verified } = await adminSDK.auth().verifyIdToken(idToken);
+  if (!email || !email_verified) {
+    return { error: 'Verify your email address before you book.' };
+  }
+  if (!isValidDateKey(dateKey)) {
     throw new Error('Invalid booking date');
   }
   const guestNumber = Number(input.guestNumber);
@@ -64,7 +68,11 @@ async function createBooking(
   const slotId = encodeURIComponent(`${entry.sys.id}_${dateKey}_${time}`);
 
   const { title, price, currency = '€' } = entry.fields;
-  const booker = String(input.booker);
+  const booker = String(input.booker ?? '').trim();
+  const pickup = String(input.pickup ?? '').trim();
+  if (!booker || booker.length > MAX_TEXT_LENGTH || !pickup || pickup.length > MAX_TEXT_LENGTH) {
+    throw new Error('Invalid name or pickup');
+  }
   const booking = {
     type,
     title,
@@ -73,9 +81,9 @@ async function createBooking(
     isPaid: false,
     bookingId: entry.sys.id,
     booker,
-    email: String(input.email),
+    email,
     phone,
-    pickup: String(input.pickup),
+    pickup,
     isPrivate: Boolean(input.isPrivate),
     guestNumber,
     date,

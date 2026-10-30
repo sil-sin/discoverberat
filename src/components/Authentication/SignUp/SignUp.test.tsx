@@ -12,6 +12,10 @@ import { firebaseConfig } from "@/utils/firebase/firebaseConfig";
 initializeApp(firebaseConfig);
 
 // Mock the useRouter hook
+jest.mock('@/utils/auth/auth-provider', () => ({
+    useAuthContext: () => ({ closeAuth: jest.fn() }),
+}));
+
 jest.mock('next/router', () => ({
     useRouter: jest.fn(),
 }));

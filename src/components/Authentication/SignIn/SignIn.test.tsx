@@ -18,6 +18,10 @@ jest.mock('firebase/auth', () => ({
     getAuth: jest.fn(() => ({})),
 }));
 
+jest.mock('@/utils/auth/auth-provider', () => ({
+    useAuthContext: () => ({ closeAuth: jest.fn() }),
+}));
+
 jest.mock('next/navigation', () => ({
     useRouter: jest.fn(),
     useSearchParams: () => new URLSearchParams('callbackUrl=/some/callback/url'),

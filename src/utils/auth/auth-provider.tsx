@@ -10,14 +10,16 @@ import {
 import { User, getAuth, onIdTokenChanged } from 'firebase/auth';
 import app from '../firebase/firebaseConfig';
 import { setSessionToken } from './session';
-import { googleProvider } from './googleProvider';
-import { signOutUser } from './signOut';
+import { waitForProfile } from './emailSignUp';
+
+export type AuthReason = 'signIn' | 'save' | 'book';
 
 type AuthContextType = {
   user: User | null;
   loading: boolean;
-  loginWithGoogle: () => void;
-  logout: () => void;
+  authReason: AuthReason | null;
+  openAuth: (reason?: AuthReason) => void;
+  closeAuth: () => void;
 };
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -38,6 +40,7 @@ type AuthProviderProps = {
 export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const [authReason, setAuthReason] = useState<AuthReason | null>(null);
 
   useEffect(() => {
     const auth = getAuth(app);
@@ -45,18 +48,21 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
     // Queued so a slow earlier call can't overwrite the cookie set by a later event, such as a sign-out.
     let queue = Promise.resolve();
-    let hadUser = false;
+    let uid: string | undefined;
     return onIdTokenChanged(auth, (user) => {
-      const shouldSync = Boolean(user) || hadUser;
-      hadUser = Boolean(user);
+      const shouldSync = Boolean(user || uid);
+      if (user?.uid !== uid) setLoading(true);
+      uid = user?.uid;
       queue = queue.then(async () => {
         try {
           if (shouldSync) await setSessionToken(user && (await user.getIdToken()));
         } catch (error) {
           console.error('Session cookie update failed:', error);
         }
+        await waitForProfile();
         setUser(user);
         setLoading(false);
+        if (user) setAuthReason(null);
       });
     });
   }, []);
@@ -66,8 +72,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
       value={{
         user,
         loading,
-        loginWithGoogle: googleProvider,
-        logout: signOutUser,
+        authReason,
+        openAuth: (reason = 'signIn') => setAuthReason(reason),
+        closeAuth: () => setAuthReason(null),
       }}
     >
       {children}

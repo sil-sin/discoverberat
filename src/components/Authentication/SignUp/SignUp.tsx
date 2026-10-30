@@ -1,12 +1,14 @@
 import { REQUIRED } from '@/helpers/forms'
 import { signUpWithEmail } from '@/utils/auth/emailSignUp'
+import { authErrorMessage } from '@/utils/auth/errors'
 import classnames from 'classnames'
-import { FC, useRef, useState } from 'react'
+import { FC } from 'react'
+import Link from 'next/link'
 import styles from '../Auth.module.css'
-
-import { SubmitHandler, useForm } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import Button from '@/components/simple/Button'
-import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai'
+import { useAuthContext } from '@/utils/auth/auth-provider'
+import { PasswordInput } from '../PasswordInput'
 
 type SignUpProps = {
   className?: string
@@ -18,126 +20,111 @@ type Inputs = {
   email: string
   password: string
 }
+
+const NAME_FIELDS = [
+  { name: 'firstName', label: 'First name', autoComplete: 'given-name' },
+  { name: 'lastName', label: 'Last name', autoComplete: 'family-name' },
+] as const
+
 export const SignUp: FC<SignUpProps> = ({ className }) => {
-  const [showPassword, setShowPassword] = useState(false)
+  const { closeAuth } = useAuthContext()
   const {
     register,
     handleSubmit,
     setError,
-    formState: { errors, isValid },
+    formState: { errors, isSubmitting },
   } = useForm<Inputs>()
-
-  const inputRefs: Record<keyof Inputs, any> = {
-    firstName: {
-      ref: register('firstName', { required: REQUIRED }),
-      placeholder: 'First name',
-      label: 'First Name',
-    },
-    lastName: {
-      ref: register('lastName', { required: REQUIRED }),
-      placeholder: 'Last name',
-      label: 'Last Name',
-    },
-    email: {
-      ref: register('email', { required: REQUIRED }),
-      placeholder: 'Email',
-      label: 'Email',
-    },
-    password: {
-      ref: register('password', {
-        required: REQUIRED,
-        minLength: {
-          value: 8,
-          message: 'Password must be at least 8 characters long',
-        },
-        pattern: {
-          value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z\d]).{8,}$/,
-          message:
-            'Password must contain at least one uppercase letter, one lowercase letter, one number, and one symbol',
-        },
-      }),
-      placeholder: 'Password',
-      label: 'Password',
-    },
+  // Read per field: React Compiler caches the map below on `errors`, which react-hook-form mutates in place.
+  const nameErrors = {
+    firstName: errors.firstName?.message,
+    lastName: errors.lastName?.message,
   }
-  const onSubmit: SubmitHandler<Inputs> = async (data: any) => {
-    for (const fieldName in inputRefs) {
-      if (!data[fieldName]) {
-        setError(fieldName as keyof Inputs, {
-          type: 'manual',
-          message: REQUIRED,
-        })
 
-        if (inputRefs[fieldName as keyof Inputs].current) {
-          inputRefs[fieldName as keyof Inputs].current.focus()
-        }
-
-        return
-      }
-    }
-
-    signUpWithEmail(
-      data.email,
-      data.password,
-      data.firstName + ' ' + data.lastName
+  const onSubmit = ({ firstName, lastName, email, password }: Inputs) =>
+    signUpWithEmail(email, password, `${firstName.trim()} ${lastName.trim()}`).catch(
+      (error) => setError('root', { message: authErrorMessage(error) })
     )
-  }
 
   return (
-    <div className={classnames(styles.formContainer, className)}>
-      <form
-        data-testid='sign-up-form'
-        className={classnames(styles.formContainer, className)}
-        action=''
-        method='post'
-        onSubmit={handleSubmit(onSubmit)}
-      >
-        {Object.keys(inputRefs).map((fieldName) => (
-          <div key={fieldName} className={styles.inputWrapper}>
-            <label htmlFor={fieldName} className='required'>
-              {inputRefs[fieldName as keyof Inputs].label}
-            </label>
-            <div className={fieldName === 'password' ? styles.passwordWrapper : undefined}>
-              <input
-                aria-required
-                className={errors[fieldName as keyof Inputs] && styles.errorInput}
-                type={
-                  fieldName === 'password'
-                    ? (showPassword ? 'text' : 'password')
-                    : fieldName === 'email'
-                      ? 'email'
-                      : 'text'
-                }
-                id={fieldName}
-                placeholder={inputRefs[fieldName as keyof Inputs].placeholder}
-                {...inputRefs[fieldName as keyof Inputs].ref}
-              />
-              {fieldName === 'password' && (
-                <button
-                  type='button'
-                  className={styles.passwordToggle}
-                  onClick={() => setShowPassword(!showPassword)}
-                  aria-label={showPassword ? 'Hide password' : 'Show password'}
-                >
-                  {showPassword ? <AiOutlineEyeInvisible size={20} /> : <AiOutlineEye size={20} />}
-                </button>
-              )}
-            </div>
-            {errors[fieldName as keyof Inputs] && (
-              <p className={styles.errorText}>
-                {errors[fieldName as keyof Inputs]?.message}
-              </p>
-            )}
+    <form
+      data-testid='sign-up-form'
+      className={classnames(styles.form, className)}
+      noValidate
+      onSubmit={handleSubmit(onSubmit)}
+    >
+      <div className={styles.nameRow}>
+        {NAME_FIELDS.map(({ name, label, autoComplete }) => (
+          <div key={name} className={styles.field}>
+            <label htmlFor={`sign-up-${name}`}>{label}</label>
+            <input
+              id={`sign-up-${name}`}
+              autoComplete={autoComplete}
+              aria-invalid={Boolean(nameErrors[name])}
+              className={classnames(nameErrors[name] && styles.errorInput)}
+              {...register(name, { required: REQUIRED })}
+            />
+            {nameErrors[name] && <p className={styles.errorText}>{nameErrors[name]}</p>}
           </div>
         ))}
-
-        <Button
-          type='submit'
-          text={'Sign up'}
-          className={styles.formButton}
-          variant='primary'
+      </div>
+      <div className={styles.field}>
+        <label htmlFor='sign-up-email'>Email</label>
+        <input
+          id='sign-up-email'
+          type='email'
+          autoComplete='email'
+          aria-invalid={Boolean(errors.email)}
+          className={classnames(errors.email && styles.errorInput)}
+          {...register('email', { required: REQUIRED })}
         />
-      </form>
-    </div>
+        {errors.email && <p className={styles.errorText}>{errors.email.message}</p>}
+      </div>
+      <div className={styles.field}>
+        <label htmlFor='sign-up-password'>Password</label>
+        <PasswordInput
+          id='sign-up-password'
+          autoComplete='new-password'
+          aria-describedby='sign-up-password-hint'
+          hasError={Boolean(errors.password)}
+          {...register('password', {
+            required: REQUIRED,
+            pattern: {
+              value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z\d]).{8,}$/,
+              message: 'Your password does not follow these rules.',
+            },
+          })}
+        />
+        <p id='sign-up-password-hint' className={styles.hint}>
+          At least 8 characters, with an uppercase letter, a lowercase letter, a
+          number and a symbol.
+        </p>
+        {errors.password && (
+          <p className={styles.errorText}>{errors.password.message}</p>
+        )}
+      </div>
+      {errors.root && (
+        <p role='alert' className={styles.formError}>
+          {errors.root.message}
+        </p>
+      )}
+      <Button
+        type='submit'
+        text={isSubmitting ? '' : 'Create account'}
+        isLoading={isSubmitting}
+        className={styles.formButton}
+        variant='primary'
+      />
+      <p className={styles.legal}>
+        By creating an account you agree to our{' '}
+        <Link href='/terms' onClick={closeAuth}>
+          Terms
+        </Link>{' '}
+        and{' '}
+        <Link href='/privacy-policy' onClick={closeAuth}>
+          Privacy Policy
+        </Link>
+        .
+      </p>
+    </form>
   )
 }

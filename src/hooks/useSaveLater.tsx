@@ -1,4 +1,4 @@
-import { useRouter } from 'next/navigation'
+import { useState } from 'react'
 import { useAuthContext } from '@/utils/auth/auth-provider'
 import {
   getFirestore,
@@ -6,6 +6,7 @@ import {
   getDocs,
   query,
   where,
+  limit,
   addDoc,
 } from 'firebase/firestore'
 import { toast } from '@/components/simple/Toast'
@@ -19,25 +20,27 @@ type SavedTour = {
 }
 
 const useSaveLater = ({ id, title, price, currency = '€', url }: SavedTour) => {
-  const { user } = useAuthContext()
-  const router = useRouter()
+  const { user, openAuth } = useAuthContext()
+  const [isSaving, setIsSaving] = useState(false)
 
   const handleSaveLater = async () => {
-    if (!user) {
-      const here = window.location.pathname + window.location.search
-      return router.push(
-        '/authenticate?reason=save&callbackUrl=' + encodeURIComponent(here)
-      )
-    }
+    if (!user) return openAuth('save')
+    if (isSaving) return
 
     const db = getFirestore()
+    setIsSaving(true)
 
     try {
-      const querySnapshot = await getDocs(
-        query(collection(db, 'savedBooking'), where('uid', '==', user.uid))
+      const saved = await getDocs(
+        query(
+          collection(db, 'savedBooking'),
+          where('uid', '==', user.uid),
+          where('id', '==', id),
+          limit(1)
+        )
       )
       const link = { label: 'View saved tours', href: '/user/profile/' + user.uid }
-      if (querySnapshot.docs.some((doc) => doc.data().id === id)) {
+      if (!saved.empty) {
         return toast.info('This tour is already saved.', link)
       }
 
@@ -53,10 +56,12 @@ const useSaveLater = ({ id, title, price, currency = '€', url }: SavedTour) =>
     } catch (error) {
       console.error('Error saving booking:', error)
       toast.error('This tour could not be saved. Please try again.')
+    } finally {
+      setIsSaving(false)
     }
   }
 
-  return { handleSaveLater }
+  return { handleSaveLater, isSaving }
 }
 
 export default useSaveLater

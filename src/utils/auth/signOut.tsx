@@ -1,14 +1,13 @@
 import { getAuth, signOut } from 'firebase/auth'
+import app from '../firebase/firebaseConfig'
 import { setSessionToken } from './session'
 import { toast } from '@/components/simple/Toast/Toast'
 
-const auth = getAuth()
 export const signOutUser = () =>
-
-  signOut(auth)
+  signOut(getAuth(app))
     .then(() => setSessionToken(null))
     .then(() => {
-      window.location.href = '/authenticate'
+      window.location.href = '/'
     })
     .catch((error) => {
       console.error(error)
