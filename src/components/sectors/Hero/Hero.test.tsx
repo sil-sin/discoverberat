@@ -25,8 +25,8 @@ describe('Hero component', () => {
     const image = screen.getByAltText('Discover Berat')
     expect(image).toBeInTheDocument()
     expect(image).toHaveAttribute('src', '/map-track-green.png')
-    expect(image).toHaveAttribute('width', '500')
-    expect(image).toHaveAttribute('height', '500')
+    expect(image).toHaveAttribute('width', '1080')
+    expect(image).toHaveAttribute('height', '582')
 
     // Check if the button is rendered
     const button = screen.getByRole('button')

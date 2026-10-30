@@ -22,7 +22,7 @@ const services = [
     title: 'Accommodation',
     description: 'Help finding a place to stay in Berat.',
     Icon: MdOutlineLocalHotel,
-    link: '/services/accommodation',
+    link: '/contact',
   },
 ]
 

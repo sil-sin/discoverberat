@@ -46,22 +46,42 @@ export default async function TourPage({ params }: Props) {
   }
 
   const { title, description, price, image } = tour.fields;
-  const jsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'TouristTrip',
-    name: title,
-    description: summarize(description, 500),
-    image: `https:${image.fields.file.url}`,
-    url: `${SITE_URL}/tours/${tourSlug}`,
-    provider: { '@type': 'TravelAgency', name: 'Discover Berat', url: SITE_URL },
-    offers: {
-      '@type': 'Offer',
-      price,
-      priceCurrency: 'EUR',
-      availability: 'https://schema.org/InStock',
-      url: `${SITE_URL}/tours/${tourSlug}`,
+  const url = `${SITE_URL}/tours/${tourSlug}`;
+  const jsonLd = [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'TouristTrip',
+      name: title,
+      description: summarize(description, 500),
+      image: `https:${image.fields.file.url}`,
+      url,
+      provider: {
+        '@type': 'TravelAgency',
+        name: 'Discover Berat',
+        url: SITE_URL,
+      },
+      offers: {
+        '@type': 'Offer',
+        price,
+        priceCurrency: 'EUR',
+        availability: 'https://schema.org/InStock',
+        url,
+      },
     },
-  };
+    {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        {
+          '@type': 'ListItem',
+          position: 1,
+          name: 'Tours',
+          item: `${SITE_URL}/tours`,
+        },
+        { '@type': 'ListItem', position: 2, name: title, item: url },
+      ],
+    },
+  ];
 
   return (
     <>

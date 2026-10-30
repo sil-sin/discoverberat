@@ -4,8 +4,10 @@ import { getEntriesByType } from '@/utils/contentful/contentful';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Tours - Discover Berat',
-  description: 'Explore our guided tours and activities in Berat.',
+  title: 'Berat Tours: Old Town Walks, Osumi Canyon & Wine Tastings | Discover Berat',
+  description:
+    'All guided tours in and from Berat: the old town walking tour, Osumi Canyon and Bogova Waterfall, Apollonia, Karavasta Lagoon and winery tastings.',
+  alternates: { canonical: '/tours' },
 };
 
 export const revalidate = 43200; // 12 hours
@@ -22,7 +24,7 @@ export default async function ToursPage() {
           tastings at local wineries. All led by local guides.
         </p>
       </header>
-      <Tours tours={tours} withFilters />
+      <Tours tours={tours} withFilters preloadFirst />
     </>
   );
 }

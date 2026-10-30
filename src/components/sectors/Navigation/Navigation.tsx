@@ -38,7 +38,7 @@ export const Navigation: FC<{ className?: string }> = ({ className }) => {
         <Link className={styles.logo} href={'/'}>
           <Image
             priority
-            src="/main_logo.svg"
+            src="/main_logo.png"
             width={200}
             height={100}
             className={styles.logoImage}

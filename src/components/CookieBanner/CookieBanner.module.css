@@ -38,9 +38,36 @@
         right: 88px;
         bottom: max(12px, env(safe-area-inset-bottom));
         width: auto;
-        flex-direction: column;
-        gap: 4px;
+        gap: 12px;
+        padding: 6px 6px 6px 12px;
         border-radius: 12px;
-        font-size: 0.875rem;
+        font-size: 0.8125rem;
+        text-align: left;
+    }
+
+    .cookieText {
+        margin-bottom: 0;
+    }
+
+    .cookieLink {
+        padding: 0 0 0 4px;
+        font-size: inherit;
+        white-space: nowrap;
+    }
+
+    .hideButton {
+        flex: none;
+        margin-top: 0;
+        min-height: 32px;
+        padding: 4px 12px;
+        font: inherit;
+        font-weight: 600;
+        color: #8fd3a6;
+        background-color: transparent;
+        border: none;
+    }
+
+    .hideButton:hover {
+        background-color: #444;
     }
 }

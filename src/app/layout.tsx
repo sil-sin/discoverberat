@@ -16,6 +16,12 @@ export const metadata: Metadata = {
   robots: isProduction ? undefined : { index: false, follow: false },
   title: 'Discover Berat - Tour Operator',
   description: 'Discover Berat - Guided tours, activities, and excursions.',
+  openGraph: {
+    type: 'website',
+    siteName: 'Discover Berat',
+    images: ['/map-track-green.png'],
+  },
+  twitter: { card: 'summary_large_image', images: ['/map-track-green.png'] },
 };
 
 export default function RootLayout({

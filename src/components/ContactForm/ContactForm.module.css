@@ -26,6 +26,7 @@
 
 .form textarea {
   resize: vertical;
+  scroll-margin-top: 140px;
 }
 
 .submit {

@@ -17,8 +17,9 @@ export const Tours: FC<any> = (props: {
   tours: Tour[];
   pageTitle?: string;
   withFilters?: boolean;
+  preloadFirst?: boolean;
 }) => {
-  const { tours, withFilters } = props;
+  const { tours, withFilters, preloadFirst } = props;
   const [filter, setFilter] = useState<string | null>(null);
 
   if (!tours) {
@@ -29,7 +30,7 @@ export const Tours: FC<any> = (props: {
     );
   }
   const toursCards = (toursByCategory: Tour[]) =>
-    toursByCategory?.map((tour: Tour) => {
+    toursByCategory?.map((tour: Tour, index: number) => {
       const { title, price, currency, image, url } = tour.fields;
 
       const imgUrl = image?.fields?.file?.url as string;
@@ -40,6 +41,7 @@ export const Tours: FC<any> = (props: {
             title={title}
             imageSrc={imgUrl ? 'https:' + imgUrl : '/berat.svg'}
             blurDataURL={image?.fields?.file?.blurDataURL}
+            preload={preloadFirst && index < 2}
             price={price}
             currency={currency}
             learnMoreLink={`/tours/${url}`}

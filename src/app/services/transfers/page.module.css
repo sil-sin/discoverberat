@@ -1,0 +1,138 @@
+.page {
+  width: min(100% - 32px, 1040px);
+  margin: 0 auto;
+  padding: 48px 0 80px;
+  color: var(--text-default);
+}
+
+.header {
+  max-width: 60ch;
+  margin-bottom: 32px;
+}
+
+.header h1 {
+  margin: 0 0 8px;
+  font-size: clamp(2rem, 5vw, 2.75rem);
+  line-height: 1.1;
+}
+
+.header p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 1.125rem;
+  line-height: 1.5;
+}
+
+.header a {
+  color: var(--button-primary-bg);
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.routes {
+  display: grid;
+  gap: 8px;
+  margin: 0 0 48px;
+  padding: 0;
+  list-style: none;
+}
+
+.route {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-height: 72px;
+  padding: 12px 20px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  corner-shape: squircle;
+  background: var(--surface);
+  color: inherit;
+}
+
+.route:hover {
+  border-color: var(--button-primary-bg);
+}
+
+.place {
+  display: grid;
+  flex: 1;
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+
+.place strong {
+  color: var(--text-default);
+  font-size: 1.0625rem;
+}
+
+.price {
+  font-size: 1.375rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.arrow {
+  flex: none;
+  font-size: 1.25rem;
+  color: var(--button-primary-bg);
+}
+
+.other {
+  border-style: dashed;
+  background: transparent;
+}
+
+.cta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px 40px;
+  padding: 32px;
+  border-radius: 20px;
+  corner-shape: squircle;
+  background: var(--button-primary-bg);
+  color: #fff;
+}
+
+.cta h2 {
+  margin: 0 0 6px;
+  font-size: 1.5rem;
+}
+
+.cta p {
+  margin: 0;
+  opacity: 0.9;
+}
+
+.cta a {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 0 22px;
+  border-radius: 10px;
+  background: #fff;
+  color: var(--button-primary-bg);
+  font-weight: 700;
+}
+
+.cta a:hover {
+  background: var(--brand-soft);
+}
+
+.cta a:focus-visible {
+  outline-color: #fff !important;
+}
+
+.cta a svg {
+  font-size: 1.375rem;
+}
+
+@media (min-width: 720px) {
+  .routes {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+}

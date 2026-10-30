@@ -12,6 +12,7 @@ type Props = {
   title: string;
   imageSrc: string;
   blurDataURL?: string;
+  preload?: boolean;
   imageTransitionName?: string;
   price?: number;
   currency?: string;
@@ -23,6 +24,7 @@ export const Card: FC<Props> = ({
   title,
   imageSrc,
   blurDataURL,
+  preload,
   imageTransitionName,
   price,
   currency,
@@ -31,7 +33,7 @@ export const Card: FC<Props> = ({
 }) => {
   const image = (
     <Image
-      loading="lazy"
+      preload={preload}
       className={styles.image}
       src={imageSrc}
       placeholder={blurDataURL ? 'blur' : 'empty'}

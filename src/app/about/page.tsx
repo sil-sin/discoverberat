@@ -4,6 +4,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'About Us - Discover Berat',
   description: 'Learn about Discover Berat - Where Local Stories Come to Life!',
+  alternates: { canonical: '/about' },
 };
 
 export default function About() {
