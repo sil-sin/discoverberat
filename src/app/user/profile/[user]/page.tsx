@@ -1,11 +1,11 @@
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
-import { adminSDK } from '@/utils/firebase/adminConfig';
+import { adminSDK } from '@/lib/firebase/admin';
 import { getFirestore } from 'firebase-admin/firestore';
 import { UserProfileClient } from './UserProfileClient';
-import { CANCEL_DEADLINE_MS } from '@/utils/payment/paypalServer';
+import { CANCEL_DEADLINE_MS } from '@/lib/payment/paypal-server';
 import type { Metadata } from 'next';
-import { isValidDateKey, parseDateKey, tiraneMonth } from '@/helpers/booking';
+import { isValidDateKey, parseDateKey, tiraneMonth } from '@/lib/booking';
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 

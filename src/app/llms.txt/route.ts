@@ -1,5 +1,5 @@
-import { getEntriesByType } from '@/utils/contentful/contentful';
-import { SITE_URL, summarize } from '@/utils/site';
+import { getEntriesByType } from '@/lib/contentful';
+import { SITE_URL, summarize } from '@/lib/site';
 
 export const revalidate = 43200; // 12 hours
 

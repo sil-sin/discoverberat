@@ -1,5 +1,5 @@
 import { Suspense } from 'react';
-import Loader from '@/components/simple/Loader';
+import { Loader } from '@/components/ui/Loader';
 import { AuthClient } from './AuthClient';
 import type { Metadata } from 'next';
 
