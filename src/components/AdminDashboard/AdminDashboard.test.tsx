@@ -97,10 +97,15 @@ describe('AdminDashboard component', () => {
     render(<AdminDashboard bookings={[]} user={user} history={history} />)
     fireEvent.click(screen.getByRole('tab', { name: 'History' }))
 
-    expect(screen.getByRole('img', { name: 'Feb 2026: 0' })).toBeInTheDocument()
-    expect(screen.getByRole('img', { name: 'Mar 2026: 5' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Feb 2026: 0 bookings' })).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: 'Mar 2026: 5 bookings' }))
+    expect(screen.getByRole('heading', { name: 'Mar 2026' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Canyon Trip 4' })).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: 'City Tour 1' }))
+    expect(screen.getByRole('heading', { name: 'City Tour · Mar 2026' })).toBeInTheDocument()
+
     fireEvent.click(screen.getByRole('button', { name: 'Guests' }))
-    expect(screen.getByRole('row', { name: /City Tour/ })).toHaveTextContent('City Tour5–27')
+    expect(screen.getByRole('row', { name: /^City Tour/ })).toHaveTextContent('City Tour5–27')
     expect(screen.getByRole('row', { name: /All tours/ })).toHaveTextContent('All tours501116')
   })
 
