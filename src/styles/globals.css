@@ -175,20 +175,6 @@ a {
   padding: 8px 16px 64px;
 }
 
-.formContainer {
-  max-width: 512px;
-  margin: 40px auto;
-  width: 100%;
-}
-
-.formContainer label {
-  font-size: 1.4rem;
-  font-weight: 500;
-  margin: 30px 20px 20px 0;
-  display: block;
-  width: 100%;
-  color: var(--primary-font);
-}
 .skeleton {
   display: block;
   height: 1em;
@@ -213,13 +199,4 @@ a {
   ::view-transition-new(*) {
     animation: none !important;
   }
-}
-
-[aria-invalid='true'] {
-  border: 1px solid var(--alert-error-border) !important;
-}
-
-label.required::after {
-  content: ' *';
-  color: #b3261e;
 }

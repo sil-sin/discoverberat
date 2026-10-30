@@ -62,60 +62,21 @@
     gap: 16px;
 }
 
-.field {
-    display: grid;
-    gap: 6px;
-}
-
 .nameRow {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 12px;
 }
 
-.labelRow {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-}
-
-.form label {
-    font-weight: 600;
-}
-
-.form input {
-    width: 100%;
-    min-height: 46px;
-    padding: 0 14px;
-    border: 1px solid var(--line-strong);
-    border-radius: var(--radius-sm);
-    background: var(--background-default);
-    color: var(--ink);
-    font: inherit;
-}
-
-.form input:focus-visible {
-    border-color: var(--brand);
-}
-
-.form .errorInput {
-    border-color: var(--alert-error-border);
-}
-
-.errorText,
 .formError {
     margin: 0;
+    padding: 10px 12px;
+    border-radius: var(--radius-sm);
+    background: #fdf1f0;
     color: #b3261e;
     font-size: 0.875rem;
 }
 
-.formError {
-    padding: 10px 12px;
-    border-radius: var(--radius-sm);
-    background: #fdf1f0;
-}
-
-.hint,
 .legal {
     margin: 0;
     color: var(--muted);
@@ -128,7 +89,13 @@
     text-decoration: underline;
 }
 
+.passwordField {
+    display: grid;
+    gap: 6px;
+}
+
 .forgotPasswordLink {
+    justify-self: end;
     padding: 0;
     font-size: 0.875rem;
 }
@@ -157,35 +124,6 @@
 .googleButton {
     border-color: var(--line-strong);
     color: var(--ink);
-}
-
-.passwordWrapper {
-    position: relative;
-    display: flex;
-    align-items: center;
-}
-
-.passwordWrapper input {
-    padding-right: 46px;
-}
-
-.passwordToggle {
-    position: absolute;
-    right: 6px;
-    display: grid;
-    place-items: center;
-    width: 36px;
-    height: 36px;
-    padding: 0;
-    border: none;
-    border-radius: 8px;
-    background: none;
-    color: var(--muted);
-    cursor: pointer;
-}
-
-.passwordToggle:hover {
-    color: var(--brand);
 }
 
 .dialog {

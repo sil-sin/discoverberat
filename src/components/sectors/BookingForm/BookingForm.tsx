@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form'
 import { useAuthContext } from '@/utils/auth/auth-provider'
 import classnames from 'classnames'
 import styles from './BookingForm.module.css'
-import Toast from '@/components/simple/Toast'
+import { Input } from '@/components/simple/Input'
 import { REQUIRED } from '@/helpers/forms'
 import { MAX_TEXT_LENGTH, MIN_GUESTS } from '@/helpers/booking'
 interface BookingFormProps {
@@ -75,136 +75,83 @@ const BookingForm: FC<BookingFormProps> = forwardRef((props, ref) => {
   return (
     <div className={classnames(styles.bookingFormContainer, className)}>
       <form data-testid='booking-form' onSubmit={handleSubmit(onSubmit)}>
-        <label htmlFor='booker' className='required'>Full name</label>
-        <div>
-          <input
-            data-testid='booker'
-            placeholder='Name for the booking'
-            type='text'
-            id='booker'
-            maxLength={MAX_TEXT_LENGTH}
-            aria-required
-            aria-invalid={!!errors.booker}
-            {...register('booker', {
-              required: REQUIRED,
-            })}
-          />
-          {errors.booker?.message && (
-            <Toast
-              data-testid='booker-error'
-              isTextOnly
-              isError
-              message={errors.booker.message ?? 'Something went wrong!'}
-            />
-          )}
-        </div>
-        <label htmlFor='email' className='required'>Email</label>
-        <div>
-          <input
-            data-testid='email'
-            placeholder='you@example.com'
-            type='email'
-            id='email'
-            readOnly
-            aria-required
-            aria-invalid={!!errors.email}
-            {...register('email', {
-              required: REQUIRED,
-            })}
-          />
-          {errors.email?.message && (
-            <Toast
-              data-testid='email-error'
-              isTextOnly
-              isError
-              message={errors.email.message ?? 'Something went wrong!'}
-            />
-          )}
-        </div>
-        <label htmlFor='phone' className='required'>Phone</label>
-        <div>
-          <input
-            placeholder='+355 69 123 4567'
-            type='tel'
-            autoComplete='tel'
-            id='phone'
-            aria-required
-            aria-invalid={!!errors.phone}
-            {...register('phone', {
-              required: REQUIRED,
-              pattern: {
-                value: /^(?=(?:\D*\d){7})\+?[\d\s()-]{7,20}$/,
-                message: 'Enter a valid phone number',
-              },
-            })}
-          />
-          {errors.phone?.message && (
-            <Toast
-              isTextOnly
-              isError
-              message={errors.phone.message ?? 'Something went wrong!'}
-            />
-          )}
-        </div>
-        <label htmlFor='pickup' className='required'>Pickup place</label>
-        <div>
-          <input
-            placeholder='Hotel or address in Berat'
-            type='text'
-            id='pickup'
-            maxLength={MAX_TEXT_LENGTH}
-            aria-required
-            aria-invalid={!!errors.pickup}
-            {...register('pickup', { required: REQUIRED })}
-          />
-          {errors.pickup?.message && (
-            <Toast
-              isTextOnly
-              isError
-              message={errors.pickup.message ?? 'Something went wrong!'}
-            />
-          )}
-        </div>
-        <label htmlFor='guestNumber' className='required'>Guests</label>
-        <div>
-          <input
-            placeholder='2'
-            min={MIN_GUESTS}
-            max={maxGuests}
-            type='number'
-            list='guestNumbers'
-            aria-required
-            aria-invalid={!!errors.guestNumber}
-            {...register('guestNumber', {
-              valueAsNumber: true,
-              required: REQUIRED,
-              min: { value: MIN_GUESTS, message: `Guests must be at least ${MIN_GUESTS}` },
-              ...(maxGuests && {
-                max: { value: maxGuests, message: `Only ${maxGuests} places are left at this time` },
-              }),
-              onChange: (event) => {
-                const guests = event.target.valueAsNumber
-                if (guests >= MIN_GUESTS) onGuestsChange?.(guests)
-              },
-            })}
-            id='guestNumber'
-          />
-          <datalist id='guestNumbers'>
-            {!isPrivate && <option value={2} />}
-            {[...Array(isPrivate ? 9 : 8)].map((_, index) => (
-              <option key={index + 3} value={index + 3}>
-                {index + 3}
-              </option>
-            ))}
-          </datalist>
-          {errors.guestNumber?.message && (
-            <Toast
-              isTextOnly
-              isError
-              message={errors.guestNumber.message ?? 'Something went wrong!'}
-            />
-          )}
-        </div>
+        <Input
+          label='Full name'
+          data-testid='booker'
+          placeholder='Name for the booking'
+          id='booker'
+          autoComplete='name'
+          maxLength={MAX_TEXT_LENGTH}
+          isRequired
+          error={errors.booker?.message}
+          {...register('booker', { required: REQUIRED })}
+        />
+        <Input
+          label='Email'
+          data-testid='email'
+          type='email'
+          id='email'
+          readOnly
+          hint='From your account. We send your booking confirmation here.'
+          error={errors.email?.message}
+          {...register('email', { required: REQUIRED })}
+        />
+        <Input
+          label='Phone'
+          placeholder='+355 69 123 4567'
+          type='tel'
+          autoComplete='tel'
+          id='phone'
+          isRequired
+          error={errors.phone?.message}
+          {...register('phone', {
+            required: REQUIRED,
+            pattern: {
+              value: /^(?=(?:\D*\d){7})\+?[\d\s()-]{7,20}$/,
+              message: 'Enter a valid phone number',
+            },
+          })}
+        />
+        <Input
+          label='Pickup place'
+          placeholder='Hotel or address in Berat'
+          id='pickup'
+          maxLength={MAX_TEXT_LENGTH}
+          isRequired
+          error={errors.pickup?.message}
+          {...register('pickup', { required: REQUIRED })}
+        />
+        <Input
+          label='Guests'
+          placeholder='2'
+          min={MIN_GUESTS}
+          max={maxGuests}
+          type='number'
+          list='guestNumbers'
+          id='guestNumber'
+          isRequired
+          error={errors.guestNumber?.message}
+          {...register('guestNumber', {
+            valueAsNumber: true,
+            required: REQUIRED,
+            min: { value: MIN_GUESTS, message: `Guests must be at least ${MIN_GUESTS}` },
+            ...(maxGuests && {
+              max: { value: maxGuests, message: `Only ${maxGuests} places are left at this time` },
+            }),
+            onChange: (event) => {
+              const guests = event.target.valueAsNumber
+              if (guests >= MIN_GUESTS) onGuestsChange?.(guests)
+            },
+          })}
+        />
+        <datalist id='guestNumbers'>
+          {!isPrivate && <option value={2} />}
+          {[...Array(isPrivate ? 9 : 8)].map((_, index) => (
+            <option key={index + 3} value={index + 3}>
+              {index + 3}
+            </option>
+          ))}
+        </datalist>
       </form>
     </div>
   )

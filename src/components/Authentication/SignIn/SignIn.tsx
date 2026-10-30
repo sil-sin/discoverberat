@@ -8,7 +8,7 @@ import { getAuth, signInWithEmailAndPassword } from 'firebase/auth'
 import app from '@/utils/firebase/firebaseConfig'
 import { authErrorMessage } from '@/utils/auth/errors'
 import { useAuthContext } from '@/utils/auth/auth-provider'
-import { PasswordInput } from '../PasswordInput'
+import { Input } from '@/components/simple/Input'
 
 type SignInProps = {
   className?: string
@@ -40,38 +40,32 @@ export const SignIn: FC<SignInProps> = ({ className }) => {
       noValidate
       onSubmit={handleSubmit(onSubmit)}
     >
-      <div className={styles.field}>
-        <label htmlFor='sign-in-email'>Email</label>
-        <input
-          id='sign-in-email'
-          type='email'
-          autoComplete='email'
-          aria-invalid={Boolean(errors.email)}
-          className={classnames(errors.email && styles.errorInput)}
-          {...register('email', { required: REQUIRED })}
-        />
-        {errors.email && <p className={styles.errorText}>{errors.email.message}</p>}
-      </div>
-      <div className={styles.field}>
-        <div className={styles.labelRow}>
-          <label htmlFor='sign-in-password'>Password</label>
-          <Button
-            className={styles.forgotPasswordLink}
-            variant='link'
-            href='/authenticate/forgot-password'
-            text='Forgot password?'
-            onClick={closeAuth}
-          />
-        </div>
-        <PasswordInput
+      <Input
+        label='Email'
+        id='sign-in-email'
+        type='email'
+        autoComplete='email'
+        isRequired
+        error={errors.email?.message}
+        {...register('email', { required: REQUIRED })}
+      />
+      <div className={styles.passwordField}>
+        <Input
+          label='Password'
           id='sign-in-password'
+          type='password'
           autoComplete='current-password'
-          hasError={Boolean(errors.password)}
+          isRequired
+          error={errors.password?.message}
           {...register('password', { required: REQUIRED })}
         />
-        {errors.password && (
-          <p className={styles.errorText}>{errors.password.message}</p>
-        )}
+        <Button
+          className={styles.forgotPasswordLink}
+          variant='link'
+          href='/authenticate/forgot-password'
+          text='Forgot password?'
+          onClick={closeAuth}
+        />
       </div>
       {errors.root && (
         <p data-testid='sign-in-error' role='alert' className={styles.formError}>

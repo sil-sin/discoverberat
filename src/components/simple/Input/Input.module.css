@@ -1,0 +1,120 @@
+.field {
+    display: grid;
+    gap: 6px;
+}
+
+.label {
+    color: var(--ink);
+    font-weight: 600;
+}
+
+.required::after {
+    content: ' *';
+    color: #b3261e;
+}
+
+.control {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input {
+    width: 100%;
+    min-height: 46px;
+    padding: 0 14px;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-sm);
+    background: var(--background-default);
+    color: var(--ink);
+    font: inherit;
+    transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.input::placeholder {
+    color: var(--muted);
+    opacity: 0.7;
+}
+
+.input:hover:not(:disabled, [readonly]) {
+    border-color: var(--muted);
+}
+
+.input:focus-visible {
+    border-color: var(--brand);
+}
+
+.input[aria-invalid='true'] {
+    border-color: var(--alert-error-border);
+}
+
+.input[readonly] {
+    border-color: transparent;
+    background: var(--surface);
+    color: var(--muted);
+    cursor: default;
+}
+
+.input:disabled {
+    border-color: var(--line);
+    background: var(--surface);
+    color: var(--muted);
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.input[type='number']::-webkit-inner-spin-button,
+.input[type='number']::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    appearance: none;
+    margin: 0;
+}
+
+.textArea {
+    min-height: 120px;
+    padding: 12px 14px;
+    resize: vertical;
+    scroll-margin-top: 140px;
+}
+
+.withToggle {
+    padding-right: 46px;
+}
+
+.toggle {
+    position: absolute;
+    right: 6px;
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border: none;
+    border-radius: 8px;
+    background: none;
+    color: var(--muted);
+    cursor: pointer;
+}
+
+.toggle:hover:not(:disabled) {
+    color: var(--brand);
+}
+
+.toggle:disabled {
+    cursor: not-allowed;
+}
+
+.hint,
+.error {
+    margin: 0;
+    font-size: 0.875rem;
+    line-height: 1.45;
+}
+
+.hint {
+    color: var(--muted);
+}
+
+.error {
+    color: #b3261e;
+}

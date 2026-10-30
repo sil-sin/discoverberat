@@ -6,7 +6,8 @@ import styles from './ContactForm.module.css';
 import Button from '../simple/Button';
 import { REQUIRED } from '@/helpers/forms';
 import { sendContactMessage } from './actions';
-import Toast, { toast } from '../simple/Toast';
+import { toast } from '../simple/Toast';
+import { Input, TextArea } from '../simple/Input';
 interface FormData {
   name: string;
   email: string;
@@ -41,59 +42,36 @@ const ContactForm: FC<{ message?: string }> = ({ message }) => {
       className={styles.form}
       onSubmit={handleSubmit(onSubmit)}
     >
-      <label htmlFor="name" className="required">Name</label>
-      <input
+      <Input
+        label="Name"
         placeholder="eg. John Doe"
-        type="text"
         id="name"
         autoComplete="name"
-        aria-required
-        aria-invalid={!!errors.name}
+        isRequired
+        error={errors.name?.message}
         {...register('name', { required: REQUIRED })}
       />
-      {errors.name && (
-        <Toast
-          isTextOnly
-          isError
-          message={errors.name.message ?? 'Something went wrong!'}
-        />
-      )}
-      <label htmlFor="email" className="required">Email</label>
-      <input
+      <Input
+        label="Email"
         placeholder="eg. johndoe@example.com"
         type="email"
         id="email"
         autoComplete="email"
-        aria-required
-        aria-invalid={!!errors.email}
+        isRequired
+        error={errors.email?.message}
         {...register('email', {
           required: REQUIRED,
           pattern: { value: /^\S+@\S+$/i, message: 'Enter a valid email' },
         })}
       />
-      {errors.email && (
-        <Toast
-          isTextOnly
-          isError
-          message={errors.email.message ?? 'Something went wrong!'}
-        />
-      )}
-      <label htmlFor="message" className="required">Message</label>
-      <textarea
+      <TextArea
+        label="Message"
         placeholder="Tour, date, group size, questions…"
-        rows={5}
         id="message"
-        aria-required
-        aria-invalid={!!errors.message}
+        isRequired
+        error={errors.message?.message}
         {...register('message', { required: REQUIRED })}
-      ></textarea>
-      {errors.message && (
-        <Toast
-          isTextOnly
-          isError
-          message={errors.message.message ?? 'Something went wrong!'}
-        />
-      )}
+      />
 
       <Button
         variant="primary"
