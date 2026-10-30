@@ -26,7 +26,7 @@ export const Tour: FC<{ tour: any }> = ({ tour }) => {
     isDayTrip,
   } = tour;
   const router = useRouter();
-  const { handleSaveLater } = useSaveLater({ id, title, price, currency, url });
+  const { handleSaveLater, isSaving } = useSaveLater({ id, title, price, currency, url });
   const book = () => router.push(`/booking/new?tour=${url}`);
   const imageUrl = imgUrl.startsWith('https://') ? imgUrl : `https:${imgUrl}`;
   // The page title is the only h1, so headings inside the description start at h2.
@@ -95,6 +95,7 @@ export const Tour: FC<{ tour: any }> = ({ tour }) => {
           <Button
             className={styles.button}
             onClick={handleSaveLater}
+            isLoading={isSaving}
             variant="secondary"
           >
             Save for later

@@ -81,20 +81,15 @@ export function BookingClient({
   const router = useRouter();
 
   const bookingFormRef = useRef<any>(null);
-  const { user } = useAuthContext();
+  const { user, openAuth } = useAuthContext();
 
-  const { handleSaveLater } = useSaveLater(booking);
+  const { handleSaveLater, isSaving } = useSaveLater(booking);
   const currentDay = new Date().setDate(new Date().getDate() + 1);
 
   const availableTimes = isDayTrip && !tourTime ? [] : startTimes;
 
   const handleBookNow = async (isBookNow: boolean) => {
-    if (!user) {
-      return router.push(
-        '/authenticate?reason=book&callbackUrl=' +
-          encodeURIComponent('/booking/new?tour=' + url),
-      );
-    }
+    if (!user) return openAuth('book');
 
     setIsBooking(true);
     const error = await (async () => {
@@ -280,6 +275,7 @@ export function BookingClient({
           <Button
             className={styles.summaryButton}
             onClick={handleSaveLater}
+            isLoading={isSaving}
             variant="secondary"
           >
             Save for later
