@@ -1,6 +1,7 @@
 import React, { FC } from 'react'
 import styles from '../Auth.module.css'
 import Button from '@/components/simple/Button'
+import { Input } from '@/components/simple/Input'
 
 type Props = {
   onChange?: (value: any) => void
@@ -30,22 +31,17 @@ export const ResetPassword: FC<Props> = ({ onSubmit, onChange, isSent, isLoading
             onSubmit?.()
           }}
         >
-          <div className={styles.field}>
-            <label htmlFor='email'>Email</label>
-            <input
-              onChange={onChange}
-              placeholder='Email'
-              type='email'
-              name='email'
-              id='email'
-              autoComplete='email'
-            />
-          </div>
-          {error && (
-            <p role='alert' className={styles.formError}>
-              {error}
-            </p>
-          )}
+          <Input
+            label='Email'
+            onChange={onChange}
+            placeholder='Email'
+            type='email'
+            name='email'
+            id='email'
+            autoComplete='email'
+            isRequired
+            error={error ?? undefined}
+          />
           <Button
             data-testid='reset-password-button'
             type='submit'

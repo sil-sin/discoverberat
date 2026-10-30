@@ -1,35 +1,9 @@
 .form {
   display: grid;
-  gap: 8px;
-}
-
-.form label {
-  margin-top: 8px;
-  font-weight: 600;
-}
-
-.form input,
-.form textarea {
-  width: 100%;
-  padding: 12px 14px;
-  border: 1px solid var(--line-strong);
-  border-radius: 10px;
-  background: var(--background-default);
-  color: var(--text-default);
-  font: inherit;
-}
-
-.form input:focus-visible,
-.form textarea:focus-visible {
-  border-color: var(--button-primary-bg);
-}
-
-.form textarea {
-  resize: vertical;
-  scroll-margin-top: 140px;
+  gap: 16px;
 }
 
 .submit {
   justify-self: start;
-  margin: 12px 0 0;
+  margin: 4px 0 0;
 }

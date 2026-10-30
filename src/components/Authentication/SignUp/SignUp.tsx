@@ -8,7 +8,7 @@ import styles from '../Auth.module.css'
 import { useForm } from 'react-hook-form'
 import Button from '@/components/simple/Button'
 import { useAuthContext } from '@/utils/auth/auth-provider'
-import { PasswordInput } from '../PasswordInput'
+import { Input } from '@/components/simple/Input'
 
 type SignUpProps = {
   className?: string
@@ -54,54 +54,42 @@ export const SignUp: FC<SignUpProps> = ({ className }) => {
     >
       <div className={styles.nameRow}>
         {NAME_FIELDS.map(({ name, label, autoComplete }) => (
-          <div key={name} className={styles.field}>
-            <label htmlFor={`sign-up-${name}`}>{label}</label>
-            <input
-              id={`sign-up-${name}`}
-              autoComplete={autoComplete}
-              aria-invalid={Boolean(nameErrors[name])}
-              className={classnames(nameErrors[name] && styles.errorInput)}
-              {...register(name, { required: REQUIRED })}
-            />
-            {nameErrors[name] && <p className={styles.errorText}>{nameErrors[name]}</p>}
-          </div>
+          <Input
+            key={name}
+            label={label}
+            id={`sign-up-${name}`}
+            autoComplete={autoComplete}
+            isRequired
+            error={nameErrors[name]}
+            {...register(name, { required: REQUIRED })}
+          />
         ))}
       </div>
-      <div className={styles.field}>
-        <label htmlFor='sign-up-email'>Email</label>
-        <input
-          id='sign-up-email'
-          type='email'
-          autoComplete='email'
-          aria-invalid={Boolean(errors.email)}
-          className={classnames(errors.email && styles.errorInput)}
-          {...register('email', { required: REQUIRED })}
-        />
-        {errors.email && <p className={styles.errorText}>{errors.email.message}</p>}
-      </div>
-      <div className={styles.field}>
-        <label htmlFor='sign-up-password'>Password</label>
-        <PasswordInput
-          id='sign-up-password'
-          autoComplete='new-password'
-          aria-describedby='sign-up-password-hint'
-          hasError={Boolean(errors.password)}
-          {...register('password', {
-            required: REQUIRED,
-            pattern: {
-              value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z\d]).{8,}$/,
-              message: 'Your password does not follow these rules.',
-            },
-          })}
-        />
-        <p id='sign-up-password-hint' className={styles.hint}>
-          At least 8 characters, with an uppercase letter, a lowercase letter, a
-          number and a symbol.
-        </p>
-        {errors.password && (
-          <p className={styles.errorText}>{errors.password.message}</p>
-        )}
-      </div>
+      <Input
+        label='Email'
+        id='sign-up-email'
+        type='email'
+        autoComplete='email'
+        isRequired
+        error={errors.email?.message}
+        {...register('email', { required: REQUIRED })}
+      />
+      <Input
+        label='Password'
+        id='sign-up-password'
+        type='password'
+        autoComplete='new-password'
+        isRequired
+        hint='At least 8 characters, with an uppercase letter, a lowercase letter, a number and a symbol.'
+        error={errors.password?.message}
+        {...register('password', {
+          required: REQUIRED,
+          pattern: {
+            value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z\d]).{8,}$/,
+            message: 'Your password does not follow these rules.',
+          },
+        })}
+      />
       {errors.root && (
         <p role='alert' className={styles.formError}>
           {errors.root.message}
