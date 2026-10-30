@@ -13,13 +13,13 @@ interface FormData {
   message: string;
 }
 
-const ContactForm: FC = () => {
+const ContactForm: FC<{ message?: string }> = ({ message }) => {
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors, isSubmitting },
-  } = useForm<FormData>();
+  } = useForm<FormData>({ defaultValues: { message } });
   const onSubmit: SubmitHandler<FormData> = async ({
     name,
     email,
@@ -27,7 +27,7 @@ const ContactForm: FC = () => {
   }) => {
     try {
       await sendContactMessage(name, email, message);
-      reset();
+      reset({ name: '', email: '', message: '' });
       toast.success('Message sent. We reply by email.');
     } catch (error) {
       console.error('Error sending email:', error);

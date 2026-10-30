@@ -12,6 +12,7 @@ import styles from './contact.module.css';
 export const metadata: Metadata = {
   title: 'Contact - Discover Berat',
   description: 'Contact Discover Berat by WhatsApp, phone or email.',
+  alternates: { canonical: '/contact' },
 };
 
 const MAP_MARKER = '40.70531153266283, 19.95121384907549';
@@ -19,7 +20,12 @@ const MAP_BBOX = '19.9422,40.7008,19.9622,40.7108';
 const DIRECTIONS_URL =
   'https://www.google.com/maps/search/?api=1&query=Discover+Berat&query_place_id=ChIJQ1Y_cDuZWhMRu6CZ0pwtbwA';
 
-export default function ContactPage() {
+type Props = {
+  searchParams: Promise<{ transfer?: string }>;
+};
+
+export default async function ContactPage({ searchParams }: Props) {
+  const { transfer } = await searchParams;
   return (
     <div className={styles.page}>
       <header className={styles.header}>
@@ -77,7 +83,12 @@ export default function ContactPage() {
 
         <section className={styles.formCard}>
           <h2>Send a message</h2>
-          <ContactForm />
+          <ContactForm
+            message={
+              transfer &&
+              `Hi, I would like to book a transfer from ${transfer}.\nDate:\nTime:\nPassengers:\nPickup address:`
+            }
+          />
         </section>
       </div>
     </div>

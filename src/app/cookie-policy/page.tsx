@@ -4,6 +4,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Cookie Policy - Discover Berat',
   description: 'Cookie Policy for Discover Berat website.',
+  alternates: { canonical: '/cookie-policy' },
 };
 
 export default function CookiePolicyPage() {

@@ -4,6 +4,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Terms and Conditions - Discover Berat',
   description: 'Terms and Conditions for Discover Berat bookings.',
+  alternates: { canonical: '/terms' },
 };
 
 export default function TermsPage() {

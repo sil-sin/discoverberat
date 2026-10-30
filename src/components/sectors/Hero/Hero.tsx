@@ -13,20 +13,22 @@ export const Hero: FC = () => {
 
   return (
     <section className={styles.heroContainer}>
-      <h1 className={styles.title}>
+      <div className={styles.title}>
         <Image
           className={styles.heroImage}
           src={'/map-track-green.png'}
           alt="Discover Berat"
-          width={500}
-          height={500}
-          priority
+          width={1080}
+          height={582}
+          sizes="(min-width: 700px) 640px, 100vw"
+          preload
+          fetchPriority="high"
         />
-      </h1>
+      </div>
       <div className={styles.copy}>
-        <p className={styles.lead}>
-          Guided tours, wine tastings and transfers with local guides.
-        </p>
+        <h1 className={styles.lead}>
+          Tours in Berat: guided walks, wine tastings and transfers with local guides.
+        </h1>
         <div className={styles.actions}>
           <Button
             className={styles.primary}

@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Refund Policy - Discover Berat',
   description: 'Refund Policy for Discover Berat bookings.',
+  alternates: { canonical: '/refund-policy' },
 };
 
 export default function RefundPolicyPage() {

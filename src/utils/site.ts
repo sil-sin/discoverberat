@@ -9,7 +9,7 @@ export const summarize = (markdown = '', maxLength = 160) => {
     .replace(/[*_#>\\]/g, '')
     .replace(/\s+/g, ' ')
     .trim();
-  return text.length > maxLength
-    ? `${text.slice(0, text.lastIndexOf(' ', maxLength - 1))}…`
-    : text;
+  if (text.length <= maxLength) return text;
+  const sentences = text.slice(0, maxLength + 1).match(/^.{60,}[.!?](?=\s)/)?.[0];
+  return sentences ?? `${text.slice(0, text.lastIndexOf(' ', maxLength - 1))}…`;
 };

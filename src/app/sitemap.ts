@@ -7,6 +7,7 @@ export const revalidate = 43200; // 12 hours
 const PAGES = [
   '',
   '/tours',
+  '/services/transfers',
   '/about',
   '/contact',
   '/terms',

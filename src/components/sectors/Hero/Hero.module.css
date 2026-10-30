@@ -19,6 +19,9 @@
 
 .lead {
   margin: 4px 0 20px;
+  font-family: inherit;
+  font-weight: 400;
+  letter-spacing: normal;
   font-size: clamp(1.0625rem, 2.5vw, 1.25rem);
   line-height: 1.5;
   color: var(--muted);
