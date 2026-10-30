@@ -4,7 +4,6 @@
   align-items: center;
   background-color: var(--background-inverse);
   color: var(--text-inverse);
-  padding: 20px auto;
   width: 100vw;
 }
 
@@ -14,7 +13,6 @@
   align-items: center;
   gap: 10px;
 }
-
 
 .footerTop * {
   color: var(--text-inverse);

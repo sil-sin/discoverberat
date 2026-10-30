@@ -3,7 +3,9 @@ import { FaWhatsapp } from 'react-icons/fa';
 import { FiMail, FiMapPin, FiPhone } from 'react-icons/fi';
 import ContactForm from '@/components/ContactForm/ContactForm';
 import {
+  ADDRESS,
   EMAIL,
+  OPENING_HOURS,
   PHONE_NUMBER,
   WHATSAPP_URL,
 } from '@/components/sectors/Navigation/utils';
@@ -64,6 +66,11 @@ export default async function ContactPage({ searchParams }: Props) {
           </ul>
 
           <h2>Find us</h2>
+          <address className={styles.address}>
+            {ADDRESS}
+            <br />
+            {OPENING_HOURS}
+          </address>
           <iframe
             className={styles.map}
             title="Map of Discover Berat in Berat"

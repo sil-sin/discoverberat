@@ -45,6 +45,15 @@ const nextConfig = {
     }
     return [{ source: '/:path*', headers }]
   },
+  async redirects() {
+    return [
+      {
+        source: '/tours/wine-tour---pupa-winery',
+        destination: '/tours/pupa-winery-wine-tasting',
+        permanent: true,
+      },
+    ]
+  },
 }
 
 module.exports = nextConfig
