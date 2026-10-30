@@ -1,6 +1,6 @@
-import { bookingsCollection, markPaid, paypalFetch, releaseBooking } from '@/utils/payment/paypalServer';
-import { sendMail } from '@/utils/mail';
-import { renderEmail } from '@/utils/emailTemplate';
+import { bookingsCollection, markPaid, paypalFetch, releaseBooking } from '@/lib/payment/paypal-server';
+import { sendMail } from '@/lib/mail';
+import { renderEmail } from '@/lib/email-template';
 
 export async function POST(request: Request) {
   const rawEvent = await request.text();

@@ -1,9 +1,9 @@
 'use client';
 
-import Button from '@/components/simple/Button';
+import { Button } from '@/components/ui/Button';
 import React, { useRef, useState } from 'react';
 import styles from './new.module.css';
-import { useAuthContext } from '@/utils/auth/auth-provider';
+import { useAuthContext } from '@/lib/auth/auth-provider';
 import ReactCalendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import {
@@ -11,11 +11,11 @@ import {
   MIN_GUESTS,
   getStartTimes,
   toDateKey,
-} from '@/helpers/booking';
-import BookingForm from '@/components/sectors/BookingForm/BookingForm';
+} from '@/lib/booking';
+import { BookingForm } from '@/app/booking/new/_components/BookingForm';
 import { useRouter } from 'next/navigation';
 import useSaveLater from '@/hooks/useSaveLater';
-import { toast } from '@/components/simple/Toast';
+import { toast } from '@/components/ui/Toast';
 import Image from 'next/image';
 import Link from 'next/link';
 import { FiCheck } from 'react-icons/fi';

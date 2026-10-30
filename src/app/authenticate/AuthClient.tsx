@@ -1,10 +1,10 @@
 'use client';
 
-import { useAuthContext } from '@/utils/auth/auth-provider';
+import { useAuthContext } from '@/lib/auth/auth-provider';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect } from 'react';
-import { AuthForm } from '@/components/Authentication/AuthForm';
-import styles from '@/components/Authentication/Auth.module.css';
+import { AuthForm } from '@/components/auth/AuthForm';
+import styles from '@/components/auth/Auth.module.css';
 
 export function AuthClient() {
   const router = useRouter();

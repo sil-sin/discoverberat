@@ -1,4 +1,4 @@
-import styles from '@/components/Dashboard/Dashboard.module.css';
+import styles from '@/app/user/profile/[user]/_components/Dashboard.module.css';
 import userStyles from './user.module.css';
 
 const bar = (width: string, height = '1em') => (

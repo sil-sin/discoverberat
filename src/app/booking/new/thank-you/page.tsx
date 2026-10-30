@@ -1,8 +1,8 @@
 import { Suspense } from 'react';
-import Loader from '@/components/simple/Loader';
+import { Loader } from '@/components/ui/Loader';
 import { ThankYouClient } from './ThankYouClient';
 import type { Metadata } from 'next';
-import { adminSDK } from '@/utils/firebase/adminConfig';
+import { adminSDK } from '@/lib/firebase/admin';
 
 export const metadata: Metadata = {
   title: 'Thank You - Discover Berat',

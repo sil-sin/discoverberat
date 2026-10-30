@@ -1,14 +1,14 @@
 import type { Metadata } from 'next';
 import { FaWhatsapp } from 'react-icons/fa';
 import { FiMail, FiMapPin, FiPhone } from 'react-icons/fi';
-import ContactForm from '@/components/ContactForm/ContactForm';
+import { ContactForm } from '@/app/contact/_components/ContactForm';
 import {
   ADDRESS,
   EMAIL,
   OPENING_HOURS,
   PHONE_NUMBER,
   WHATSAPP_URL,
-} from '@/components/sectors/Navigation/utils';
+} from '@/lib/site';
 import styles from './contact.module.css';
 
 export const metadata: Metadata = {

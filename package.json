@@ -20,8 +20,7 @@
     "nodemailer": "^10.2.1",
     "nookies": "^2.5.2",
     "react-calendar": "^4.6.1",
-    "react-hook-form": "^7.48.2",
-    "swiper": "^14.3.0"
+    "react-hook-form": "^7.48.2"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.9.1",

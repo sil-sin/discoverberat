@@ -6,9 +6,9 @@ import Link from 'next/link';
 import { FaWhatsapp } from 'react-icons/fa';
 import { FiCheck, FiCheckCircle } from 'react-icons/fi';
 import styles from './thank-you.module.css';
-import { useAuthContext } from '@/utils/auth/auth-provider';
-import PaypalCheckoutButton from '@/utils/payment/paypal';
-import { WHATSAPP_URL } from '@/components/sectors/Navigation/utils';
+import { useAuthContext } from '@/lib/auth/auth-provider';
+import { PaypalCheckoutButton } from '@/components/payment/PaypalCheckoutButton';
+import { WHATSAPP_URL } from '@/lib/site';
 
 type Props = {
   getBooking: (idToken: string, id: string) => Promise<Record<string, any> | null>;
@@ -79,7 +79,7 @@ type ConfirmationProps = {
   onPaid: () => void;
 };
 
-export function BookingConfirmation({
+function BookingConfirmation({
   id,
   booking,
   profileHref,

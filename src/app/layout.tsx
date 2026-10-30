@@ -1,9 +1,9 @@
 import '@/styles/globals.css';
-import { AuthProvider } from '@/utils/auth/auth-provider';
-import Layout from '@/components/Layout';
+import { AuthProvider } from '@/lib/auth/auth-provider';
+import { Layout } from '@/components/layout/Layout';
 import type { Metadata } from 'next';
 import { Bricolage_Grotesque, Figtree } from 'next/font/google';
-import { SITE_URL, isProduction } from '@/utils/site';
+import { SITE_URL, isProduction } from '@/lib/site';
 
 const display = Bricolage_Grotesque({
   subsets: ['latin', 'latin-ext'],

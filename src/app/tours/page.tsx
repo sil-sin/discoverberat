@@ -1,6 +1,6 @@
 import styles from './page.module.css';
-import Tours from '@/components/sectors/Tours';
-import { getEntriesByType } from '@/utils/contentful/contentful';
+import { Tours } from '@/components/tours/Tours';
+import { getEntriesByType } from '@/lib/contentful';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {

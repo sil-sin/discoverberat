@@ -2,8 +2,8 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 import { FaWhatsapp } from 'react-icons/fa';
 import { FiArrowRight } from 'react-icons/fi';
-import { getEntriesByType } from '@/utils/contentful/contentful';
-import { WHATSAPP_URL } from '@/components/sectors/Navigation/utils';
+import { getEntriesByType } from '@/lib/contentful';
+import { WHATSAPP_URL } from '@/lib/site';
 import styles from './page.module.css';
 
 export const metadata: Metadata = {

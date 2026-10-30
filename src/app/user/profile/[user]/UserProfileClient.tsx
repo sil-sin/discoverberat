@@ -2,13 +2,13 @@
 
 import Image from 'next/image';
 import { useState } from 'react';
-import { toast } from '@/components/simple/Toast';
+import { toast } from '@/components/ui/Toast';
 import styles from './user.module.css';
-import Dashboard from '@/components/Dashboard/Dashboard';
-import AdminDashboard from '@/components/AdminDashboard/AdminDashboard';
-import Button from '@/components/simple/Button';
-import { deleteAccount } from '@/utils/auth/session';
-import { signOutUser } from '@/utils/auth/signOut';
+import { Dashboard } from '@/app/user/profile/[user]/_components/Dashboard';
+import { AdminDashboard } from '@/app/user/profile/[user]/_components/AdminDashboard';
+import { Button } from '@/components/ui/Button';
+import { deleteAccount } from '@/lib/auth/session';
+import { signOutUser } from '@/lib/auth/sign-out';
 import type { BookingHistory } from './page';
 
 type Props = {
