@@ -5,7 +5,7 @@ import classnames from 'classnames'
 import styles from './BookingForm.module.css'
 import Toast from '@/components/simple/Toast'
 import { REQUIRED } from '@/helpers/forms'
-import { MIN_GUESTS } from '@/helpers/booking'
+import { MAX_TEXT_LENGTH, MIN_GUESTS } from '@/helpers/booking'
 interface BookingFormProps {
   className?: string
   onSubmit: (formData: any) => void
@@ -82,6 +82,7 @@ const BookingForm: FC<BookingFormProps> = forwardRef((props, ref) => {
             placeholder='Name for the booking'
             type='text'
             id='booker'
+            maxLength={MAX_TEXT_LENGTH}
             aria-required
             aria-invalid={!!errors.booker}
             {...register('booker', {
@@ -104,6 +105,7 @@ const BookingForm: FC<BookingFormProps> = forwardRef((props, ref) => {
             placeholder='you@example.com'
             type='email'
             id='email'
+            readOnly
             aria-required
             aria-invalid={!!errors.email}
             {...register('email', {
@@ -150,6 +152,7 @@ const BookingForm: FC<BookingFormProps> = forwardRef((props, ref) => {
             placeholder='Hotel or address in Berat'
             type='text'
             id='pickup'
+            maxLength={MAX_TEXT_LENGTH}
             aria-required
             aria-invalid={!!errors.pickup}
             {...register('pickup', { required: REQUIRED })}

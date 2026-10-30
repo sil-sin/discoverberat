@@ -1,4 +1,9 @@
-import { getAuth, createUserWithEmailAndPassword, updateProfile } from 'firebase/auth'
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+  updateProfile,
+} from 'firebase/auth'
 import app from '../firebase/firebaseConfig'
 
 let profileReady: Promise<void> = Promise.resolve()
@@ -16,6 +21,8 @@ export const signUpWithEmail = async (
   try {
     const { user } = await createUserWithEmailAndPassword(getAuth(app), email, password);
     await updateProfile(user, { displayName });
+    // Booking needs a verified email; a failed send is retried from the booking page.
+    sendEmailVerification(user).catch(console.error);
     return user;
   } finally {
     markReady();

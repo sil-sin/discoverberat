@@ -15,8 +15,9 @@ export function AuthClient() {
   useEffect(() => {
     if (!user) return;
     const target = new URL(callbackUrl ?? '/', window.location.origin);
-    const isLocal = target.origin === window.location.origin;
-    router.replace(isLocal ? target.pathname + target.search + target.hash : '/');
+    const path = target.pathname + target.search + target.hash;
+    const isLocal = target.origin === window.location.origin && !path.startsWith('//');
+    router.replace(isLocal ? path : '/');
   }, [router, callbackUrl, user]);
 
   return (

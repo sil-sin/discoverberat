@@ -19,6 +19,7 @@ import { toast } from '@/components/simple/Toast';
 import Image from 'next/image';
 import Link from 'next/link';
 import { FiCheck } from 'react-icons/fi';
+import { sendEmailVerification } from 'firebase/auth';
 
 const getTomorrow = () => {
   const tomorrow = new Date();
@@ -99,8 +100,20 @@ export function BookingClient({
       if (isInvalid) return 'Check the highlighted booking fields.';
       if (isBookNow) return null;
 
+      // Email sign-ups verify before booking; reload picks up a link opened since sign-in.
+      const wasVerified = user.emailVerified;
+      if (!wasVerified) await user.reload();
+      if (!user.emailVerified) {
+        await sendEmailVerification(user);
+        toast.banner(
+          'info',
+          `Verify your email to book. We sent a link to ${user.email}. Open it, then press Reserve again.`,
+        );
+        return null;
+      }
+
       const result = await createBooking(
-        await user.getIdToken(),
+        await user.getIdToken(!wasVerified),
         toDateKey(selectedDate),
         { bookingId: id, ...formData, time: selectedTime },
       );
