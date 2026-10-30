@@ -31,7 +31,9 @@ export async function deleteAccount() {
     db.collection('savedBooking').where('uid', '==', uid).get(),
     db.collection('unavailableDates').where('uid', '==', uid).get(),
   ]);
-  if (bookings.docs.some((doc) => doc.data().date?.toDate() >= new Date())) {
+  // A day back, so tours that started today (or older bookings stored at midnight) still count as upcoming.
+  const since = new Date(Date.now() - 24 * 60 * 60 * 1000);
+  if (bookings.docs.some((doc) => doc.data().date?.toDate() >= since)) {
     return {
       error:
         'You have upcoming bookings. Contact us to cancel them before you delete your account.',

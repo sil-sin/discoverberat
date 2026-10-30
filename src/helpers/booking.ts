@@ -1,6 +1,7 @@
 import { getTimes } from './getTimes'
 
 export const MIN_GUESTS = 2
+export const MAX_TEXT_LENGTH = 100
 export const MAX_GUESTS_PER_SLOT = 20
 export const TIME_ZONE = 'Europe/Tirane'
 export const DATE_KEY_PATTERN = /^\d{2}\/\d{2}\/\d{4}, 00:00:00$/
@@ -15,6 +16,14 @@ export const toDateKey = (date: Date) => {
 export const parseDateKey = (dateKey: string) => {
   const [day, month, year] = dateKey.slice(0, 10).split('/').map(Number)
   return { day, month, year }
+}
+
+// The pattern alone lets "32/01/2027" through, which rolls over to 1 Feb under its own blocked-date and slot keys.
+export const isValidDateKey = (dateKey: string) => {
+  if (!DATE_KEY_PATTERN.test(dateKey)) return false
+  const { day, month, year } = parseDateKey(dateKey)
+  const date = new Date(Date.UTC(year, month - 1, day))
+  return date.getUTCDate() === day && date.getUTCMonth() === month - 1
 }
 
 export const fromDateKey = (dateKey: string) => {

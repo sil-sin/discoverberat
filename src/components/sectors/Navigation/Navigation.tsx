@@ -9,14 +9,13 @@ import { AiOutlineClose, AiOutlineMenu } from 'react-icons/ai';
 import classNames from 'classnames';
 import Link from 'next/link';
 import { useAuthContext } from '@/utils/auth/auth-provider';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { UserMenuDropDown } from './components/UserMenuDropDown';
 import { signOutUser } from '@/utils/auth/signOut';
 
 export const Navigation: FC<{ className?: string }> = ({ className }) => {
   const [isMenuShow, setIsMenuShow] = useState(false);
-  const { user, loading } = useAuthContext();
-  const router = useRouter();
+  const { user, loading, openAuth } = useAuthContext();
   const pathname = usePathname();
 
   const [prevPathname, setPrevPathname] = useState(pathname);
@@ -92,17 +91,18 @@ export const Navigation: FC<{ className?: string }> = ({ className }) => {
             onClick={
               user?.uid
                 ? undefined
-                : () => (router.push('/authenticate'), setIsMenuShow(false))
+                : () => (openAuth(), setIsMenuShow(false))
             }
+            isLoading={loading}
             text={
               loading
-                ? '...'
+                ? ''
                 : user
-                  ? (user?.displayName?.split(' ')[0] ?? '')
+                  ? (user.displayName?.split(' ')[0] || 'Account')
                   : 'Sign in'
             }
           />
-          {user?.uid && <UserMenuDropDown />}
+          {user?.uid && <UserMenuDropDown key={pathname} />}
         </li>
         {user?.uid && (
           <>
@@ -117,7 +117,7 @@ export const Navigation: FC<{ className?: string }> = ({ className }) => {
               <button
                 type="button"
                 className={styles.logout}
-                onClick={signOutUser}
+                onClick={() => (signOutUser(), setIsMenuShow(false))}
               >
                 Log out
               </button>

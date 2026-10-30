@@ -1,14 +1,16 @@
 import { REQUIRED } from '@/helpers/forms'
 import classnames from 'classnames'
-import { FC, useState } from 'react'
+import { FC } from 'react'
 import styles from '../Auth.module.css'
-import { SubmitHandler, useForm } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import Button from '@/components/simple/Button'
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth'
-import { useRouter } from 'next/navigation'
-import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai'
+import app from '@/utils/firebase/firebaseConfig'
+import { authErrorMessage } from '@/utils/auth/errors'
+import { useAuthContext } from '@/utils/auth/auth-provider'
+import { PasswordInput } from '../PasswordInput'
 
-type SignUpProps = {
+type SignInProps = {
   className?: string
 }
 
@@ -16,125 +18,73 @@ type Inputs = {
   email: string
   password: string
 }
-export const SignIn: FC<SignUpProps> = ({ className }) => {
-  const [showPassword, setShowPassword] = useState(false)
+
+export const SignIn: FC<SignInProps> = ({ className }) => {
+  const { closeAuth } = useAuthContext()
   const {
     register,
     handleSubmit,
     setError,
-    formState: { errors, isValid },
+    formState: { errors, isSubmitting },
   } = useForm<Inputs>()
-  const router = useRouter()
-  const auth = getAuth()
-  const firebaseErrorMap: any = {
-    'auth/invalid-login-credentials': 'password', // Map the Firebase error to the corresponding field
-  }
-  const inputRefs: any = {
-    email: register('email', { required: REQUIRED }),
-    password: register('password', {
-      required: REQUIRED,
-    }),
-  }
-  const onSubmit: SubmitHandler<Inputs> = async (data: any) => {
-    for (const fieldName in inputRefs) {
-      if (!data[fieldName]) {
-        setError(fieldName as keyof Inputs, {
-          type: 'manual',
-          message: REQUIRED,
-        })
 
-        // Focus on the current input field
-        if (inputRefs[fieldName].current) {
-          inputRefs[fieldName].current.focus()
-        }
-        return
-      }
-    }
-    signInWithEmailAndPassword(auth, data.email, data.password)
-      .catch((err) => {
-        const errorCode = err.code
-
-        // Check if there is a mapped field for the Firebase error code
-        const fieldName = firebaseErrorMap[errorCode]
-
-        if (fieldName) {
-          setError(fieldName as keyof Inputs, {
-            type: 'manual',
-            message: 'Invalid login credentials',
-          })
-        } else {
-          // If no mapping is found, set a general error
-          setError('email', {
-            type: 'manual',
-            message: 'Invalid login credentials',
-          })
-        }
-      })
-  }
+  const onSubmit = ({ email, password }: Inputs) =>
+    signInWithEmailAndPassword(getAuth(app), email, password).catch((error) =>
+      setError('root', { message: authErrorMessage(error) })
+    )
 
   return (
-    <div className={classnames(styles.formContainer, className)}>
-      <form
-        data-testid='sign-in-form'
-        className={classnames(styles.formContainer, className)}
-        action=''
-        method='post'
-        onSubmit={handleSubmit(onSubmit)}
-      >
-        {Object.keys(inputRefs).map((fieldName) => (
-          <div key={fieldName} className={styles.inputWrapper}>
-            <label htmlFor={fieldName} className='required'>
-              {fieldName.charAt(0).toUpperCase() + fieldName.slice(1)}
-            </label>
-            <div className={fieldName === 'password' ? styles.passwordWrapper : undefined}>
-              <input
-                aria-required
-                autoComplete={
-                  fieldName === 'password' ? 'current-password' : 'current-email'
-                }
-                className={errors[fieldName as keyof Inputs] && styles.errorInput}
-                type={fieldName === 'password' ? (showPassword ? 'text' : 'password') : 'text'}
-                id={fieldName}
-                placeholder={
-                  fieldName.charAt(0).toUpperCase() + fieldName.slice(1)
-                }
-                {...inputRefs[fieldName as keyof Inputs]}
-              />
-              {fieldName === 'password' && (
-                <button
-                  type='button'
-                  className={styles.passwordToggle}
-                  onClick={() => setShowPassword(!showPassword)}
-                  aria-label={showPassword ? 'Hide password' : 'Show password'}
-                >
-                  {showPassword ? <AiOutlineEyeInvisible size={20} /> : <AiOutlineEye size={20} />}
-                </button>
-              )}
-            </div>
-            {errors[fieldName as keyof Inputs] && (
-              <p data-testid='sign-in-error' className={styles.errorText}>
-                {(errors[fieldName as keyof Inputs] as any)?.message}
-              </p>
-            )}
-          </div>
-        ))}
-        <Button
-          data-testid='forgot-password-link'
-          className={styles.forgotPasswordLink}
-          variant='link'
-          text={'Forgot password'}
-          onClick={() => {
-            router.push('/authenticate/forgot-password')
-          }}
+    <form
+      data-testid='sign-in-form'
+      className={classnames(styles.form, className)}
+      noValidate
+      onSubmit={handleSubmit(onSubmit)}
+    >
+      <div className={styles.field}>
+        <label htmlFor='sign-in-email'>Email</label>
+        <input
+          id='sign-in-email'
+          type='email'
+          autoComplete='email'
+          aria-invalid={Boolean(errors.email)}
+          className={classnames(errors.email && styles.errorInput)}
+          {...register('email', { required: REQUIRED })}
         />
-        <Button
-          data-testid="sign-in-button"
-          type='submit'
-          text={'Sign in'}
-          className={styles.formButton}
-          variant='primary'
+        {errors.email && <p className={styles.errorText}>{errors.email.message}</p>}
+      </div>
+      <div className={styles.field}>
+        <div className={styles.labelRow}>
+          <label htmlFor='sign-in-password'>Password</label>
+          <Button
+            className={styles.forgotPasswordLink}
+            variant='link'
+            href='/authenticate/forgot-password'
+            text='Forgot password?'
+            onClick={closeAuth}
+          />
+        </div>
+        <PasswordInput
+          id='sign-in-password'
+          autoComplete='current-password'
+          hasError={Boolean(errors.password)}
+          {...register('password', { required: REQUIRED })}
         />
-      </form>
-    </div>
+        {errors.password && (
+          <p className={styles.errorText}>{errors.password.message}</p>
+        )}
+      </div>
+      {errors.root && (
+        <p data-testid='sign-in-error' role='alert' className={styles.formError}>
+          {errors.root.message}
+        </p>
+      )}
+      <Button
+        type='submit'
+        text={isSubmitting ? '' : 'Sign in'}
+        isLoading={isSubmitting}
+        className={styles.formButton}
+        variant='primary'
+      />
+    </form>
   )
 }

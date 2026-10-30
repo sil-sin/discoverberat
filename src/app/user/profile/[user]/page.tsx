@@ -5,7 +5,7 @@ import { getFirestore } from 'firebase-admin/firestore';
 import { UserProfileClient } from './UserProfileClient';
 import { CANCEL_DEADLINE_MS } from '@/utils/payment/paypalServer';
 import type { Metadata } from 'next';
-import { DATE_KEY_PATTERN, parseDateKey, tiraneMonth } from '@/helpers/booking';
+import { isValidDateKey, parseDateKey, tiraneMonth } from '@/helpers/booking';
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 
@@ -34,7 +34,7 @@ async function setDateBlocked(dateKey: string, isBlocked: boolean) {
   const token = (await cookies()).get('token')?.value;
   const { uid } = await adminSDK.auth().verifyIdToken(token ?? '');
   if (uid !== process.env.ADMIN_ID) throw new Error('Not allowed');
-  if (!DATE_KEY_PATTERN.test(dateKey)) {
+  if (!isValidDateKey(dateKey)) {
     throw new Error('Invalid date');
   }
   const ref = getFirestore()
