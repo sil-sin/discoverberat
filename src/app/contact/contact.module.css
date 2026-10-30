@@ -111,3 +111,9 @@
     top: 112px;
   }
 }
+
+.address {
+  margin-bottom: 12px;
+  font-style: normal;
+  line-height: 1.6;
+}
