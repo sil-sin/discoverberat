@@ -1,5 +1,6 @@
 import React, { KeyboardEvent, useState } from 'react'
 import classNames from 'classnames'
+import { FiBarChart2, FiCalendar, FiGrid, FiList, FiUser } from 'react-icons/fi'
 import ReactCalendar from 'react-calendar'
 import 'react-calendar/dist/Calendar.css'
 import { toast } from '@/components/simple/Toast'
@@ -9,6 +10,13 @@ import { fromDateKey, tiraneMonth, toDateKey } from '@/helpers/booking'
 
 const tabs = ['Overview', 'Bookings', 'History', 'Availability', 'Account'] as const
 type Tab = (typeof tabs)[number]
+const tabIcons = {
+  Overview: FiGrid,
+  Bookings: FiList,
+  History: FiBarChart2,
+  Availability: FiCalendar,
+  Account: FiUser,
+}
 
 const WEEK_MS = 7 * 24 * 60 * 60 * 1000
 
@@ -92,7 +100,7 @@ export default function AdminDashboard({ bookings, user, blockedDates = [], hist
   const stats = [
     { label: 'Upcoming', value: bookings.length },
     {
-      label: 'Guests next 7 days',
+      label: 'Guests, 7 days',
       value: nextWeek.reduce((sum: number, booking: any) => sum + booking.guestNumber, 0),
     },
     {
@@ -116,7 +124,7 @@ export default function AdminDashboard({ bookings, user, blockedDates = [], hist
   }
 
   const handleTabKeyDown = (event: KeyboardEvent<HTMLButtonElement>) => {
-    const step = { ArrowDown: 1, ArrowUp: -1 }[event.key]
+    const step = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 }[event.key]
     if (!step) return
     event.preventDefault()
     openTab(tabs[(tabs.indexOf(activeTab) + step + tabs.length) % tabs.length])
@@ -171,23 +179,29 @@ export default function AdminDashboard({ bookings, user, blockedDates = [], hist
         aria-orientation='vertical'
         className={styles.sidebar}
       >
-        {tabs.map((tab) => (
-          <button
-            key={tab}
-            type='button'
-            role='tab'
-            id={`admin-tab-${tab}`}
-            aria-controls={`admin-panel-${tab}`}
-            aria-selected={activeTab === tab}
-            tabIndex={activeTab === tab ? 0 : -1}
-            className={styles.tab}
-            onClick={() => setActiveTab(tab)}
-            onKeyDown={handleTabKeyDown}
-          >
-            {tab}
-            {tab === 'Bookings' && <span className={styles.count}>{bookings.length}</span>}
-          </button>
-        ))}
+        {tabs.map((tab) => {
+          const Icon = tabIcons[tab]
+          return (
+            <button
+              key={tab}
+              type='button'
+              role='tab'
+              id={`admin-tab-${tab}`}
+              aria-controls={`admin-panel-${tab}`}
+              aria-selected={activeTab === tab}
+              tabIndex={activeTab === tab ? 0 : -1}
+              className={styles.tab}
+              onClick={() => setActiveTab(tab)}
+              onKeyDown={handleTabKeyDown}
+            >
+              <Icon className={styles.tabIcon} aria-hidden />
+              <span className={styles.tabLabel}>{tab}</span>
+              {tab === 'Bookings' && bookings.length > 0 && (
+                <span className={styles.count}>{bookings.length}</span>
+              )}
+            </button>
+          )
+        })}
       </nav>
       <main className={styles.panels}>
         <section {...panelProps('Overview')} className={styles.overview}>

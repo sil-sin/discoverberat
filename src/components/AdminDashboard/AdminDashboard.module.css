@@ -19,29 +19,41 @@
 }
 
 .tab {
+    position: relative;
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    padding: 10px 14px;
+    gap: 12px;
+    min-height: 44px;
+    padding: 0 12px;
     border: 0;
-    border-left: 3px solid transparent;
-    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    border-radius: var(--radius-sm);
     background: transparent;
-    color: var(--ink);
+    color: var(--muted);
     font: inherit;
-    font-weight: 600;
+    font-weight: 500;
     text-align: left;
     cursor: pointer;
 }
 
+.tabIcon {
+    flex: none;
+    width: 18px;
+    height: 18px;
+}
+
 .tab:hover {
-    background-color: var(--brand-soft);
+    background-color: #f3f5f4;
+    color: var(--ink);
 }
 
 .tab[aria-selected="true"] {
-    border-left-color: var(--brand);
-    background-color: var(--brand-soft);
-    color: var(--brand-strong);
+    background-color: #eceeed;
+    color: var(--ink);
+    font-weight: 600;
+}
+
+.tab[aria-selected="true"] .tabIcon {
+    color: var(--brand);
 }
 
 .tab:focus-visible,
@@ -51,12 +63,17 @@
 }
 
 .count {
-    min-width: 24px;
-    padding: 0 8px;
+    min-width: 22px;
+    margin-left: auto;
+    padding: 0 7px;
     border-radius: 999px;
-    background-color: var(--background-default);
-    font-size: 0.8125rem;
+    background-color: var(--brand);
+    color: var(--text-inverse);
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: 20px;
     text-align: center;
+    font-variant-numeric: tabular-nums;
 }
 
 .panels {
@@ -491,20 +508,70 @@
     }
 
     .sidebar {
-        position: static;
-        flex-direction: row;
-        flex-wrap: wrap;
+        position: fixed;
+        inset: auto 0 0;
+        z-index: 4;
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 0;
+        padding: 6px 4px calc(6px + env(safe-area-inset-bottom));
+        border-top: 1px solid var(--line);
+        background: var(--background-default);
     }
 
     .tab {
-        gap: 8px;
-        border-left: 0;
-        border-bottom: 3px solid transparent;
-        border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+        flex-direction: column;
+        justify-content: center;
+        gap: 4px;
+        min-height: 56px;
+        padding: 0 2px;
+        font-size: 0.75rem;
+        line-height: 1.1;
+        text-align: center;
     }
 
+    .tab:hover,
     .tab[aria-selected="true"] {
-        border-bottom-color: var(--brand);
+        background: transparent;
+    }
+
+    .tabIcon {
+        box-sizing: content-box;
+        width: 20px;
+        height: 20px;
+        padding: 4px 18px;
+        border-radius: 999px;
+    }
+
+    .tab[aria-selected="true"] .tabIcon {
+        background: var(--brand-soft);
+        color: var(--brand-strong);
+    }
+
+    .tabLabel {
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .count {
+        position: absolute;
+        top: 2px;
+        left: calc(50% + 6px);
+        min-width: 18px;
+        margin: 0;
+        padding: 0 5px;
+        font-size: 0.6875rem;
+        line-height: 18px;
+    }
+
+    :global(body):has(.sidebar) :global(footer) {
+        margin-bottom: calc(69px + env(safe-area-inset-bottom));
+    }
+
+    :global(body):has(.sidebar) :global(.whatsapp-button) {
+        bottom: calc(84px + env(safe-area-inset-bottom));
     }
 
     .availability {
