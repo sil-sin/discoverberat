@@ -56,7 +56,6 @@ export const Card: FC<Props> = ({
         <span className={styles.title}>{title}</span>
         {price && (
           <span className={styles.price}>
-            From{' '}
             <strong>
               {currency}
               {price}

@@ -3,10 +3,12 @@
 import React, { useEffect, useState, useSyncExternalStore } from 'react';
 import styles from './CookieBanner.module.css'; // Import CSS module
 import Link from 'next/link';
-import { parseCookies, setCookie } from 'nookies';
 import { Button } from '@/components/ui/Button';
 
 const subscribe = () => () => {};
+
+const parseCookies = () =>
+  Object.fromEntries(document.cookie.split('; ').map((pair) => pair.split('=')));
 
 const getShouldShow = () => {
   const cookies = parseCookies();
@@ -26,15 +28,12 @@ export const CookieBanner = () => {
   useEffect(() => {
     const cookies = parseCookies();
     if (cookies.visitedBefore !== 'true') {
-      setCookie(null, 'visitedBefore', 'true', { path: '/' });
+      document.cookie = 'visitedBefore=true; path=/';
     }
   }, []);
 
   const hideBanner = () => {
-    setCookie(null, 'lastHideTimestamp', String(Date.now()), {
-      path: '/',
-      maxAge: 90 * 24 * 60 * 60,
-    });
+    document.cookie = `lastHideTimestamp=${Date.now()}; path=/; max-age=${90 * 24 * 60 * 60}`;
     setIsHidden(true);
   };
 

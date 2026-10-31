@@ -138,32 +138,6 @@
   font-weight: 600;
 }
 
-.mobileBar {
-  position: fixed;
-  left: 12px;
-  right: 88px;
-  bottom: max(12px, env(safe-area-inset-bottom));
-  z-index: 4;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 8px 8px 8px 16px;
-  border: 1px solid var(--line);
-  border-radius: 16px;
-  background: var(--surface);
-  box-shadow: var(--shadow-soft);
-}
-
-.mobileBar .price strong {
-  font-size: 1.25rem;
-}
-
-.mobileBar button {
-  margin: 0;
-  min-height: 44px;
-}
-
 @media (max-width: 899px) {
   .container {
     padding-bottom: 96px;
@@ -171,10 +145,6 @@
 }
 
 @media (min-width: 900px) {
-  .mobileBar {
-    display: none;
-  }
-
   .layout {
     grid-template-columns: 1fr 340px;
     gap: 56px;

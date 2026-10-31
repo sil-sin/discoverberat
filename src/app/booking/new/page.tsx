@@ -168,7 +168,7 @@ async function createBooking(
       }),
     ),
     sendMail(
-      process.env.NEXT_PUBLIC_ADMIN,
+      process.env.ADMIN_EMAIL,
       `New booking: ${title}, ${when}, ${guestNumber} guests`,
       renderEmail({
         heading: 'New booking',

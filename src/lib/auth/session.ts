@@ -4,12 +4,8 @@ import { cookies } from 'next/headers';
 import { FieldValue, getFirestore } from 'firebase-admin/firestore';
 import { adminSDK } from '@/lib/firebase/admin';
 
-export async function setSessionToken(token: string | null) {
+export async function setSessionToken(token: string) {
   const cookieStore = await cookies();
-  if (!token) {
-    cookieStore.delete('token');
-    return;
-  }
   cookieStore.set('token', token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',

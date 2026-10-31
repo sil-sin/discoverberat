@@ -32,7 +32,7 @@ export async function POST(request: Request) {
     await markPaid(bookingId, resource).catch(async (error) => {
       console.error('Webhook capture not matched:', bookingId, resource?.id, error);
       await sendMail(
-        process.env.NEXT_PUBLIC_ADMIN,
+        process.env.ADMIN_EMAIL,
         `Check PayPal capture ${resource?.id}`,
         renderEmail({
           heading: 'Payment needs a check',

@@ -80,7 +80,7 @@ export async function cancelBooking(idToken: string, bookingId: string) {
       }),
     ),
     sendMail(
-      process.env.NEXT_PUBLIC_ADMIN,
+      process.env.ADMIN_EMAIL,
       `${booking.isPaid ? 'Refund needed' : 'Booking cancelled'}: ${booking.booker}, ${date}`,
       renderEmail({
         heading: booking.isPaid ? 'Refund needed' : 'Booking cancelled',
