@@ -10,6 +10,7 @@ import {
 import { User, getAuth, onIdTokenChanged } from 'firebase/auth';
 import app from '@/lib/firebase/client';
 import { setSessionToken } from './session';
+import { clearSession } from './sign-out';
 import { waitForProfile } from './email-sign-up';
 
 export type AuthReason = 'signIn' | 'save' | 'book';
@@ -55,7 +56,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       uid = user?.uid;
       queue = queue.then(async () => {
         try {
-          if (shouldSync) await setSessionToken(user && (await user.getIdToken()));
+          if (shouldSync) await (user ? setSessionToken(await user.getIdToken()) : clearSession());
         } catch (error) {
           console.error('Session cookie update failed:', error);
         }

@@ -1,6 +1,7 @@
 'use client';
 
 import { Button } from '@/components/ui/Button';
+import { MobileBar } from '@/components/ui/MobileBar';
 import React, { useRef, useState } from 'react';
 import styles from './new.module.css';
 import { useAuthContext } from '@/lib/auth/auth-provider';
@@ -14,7 +15,6 @@ import {
 } from '@/lib/booking';
 import { BookingForm } from '@/app/booking/new/_components/BookingForm';
 import { useRouter } from 'next/navigation';
-import useSaveLater from '@/hooks/useSaveLater';
 import { toast } from '@/components/ui/Toast';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -84,7 +84,6 @@ export function BookingClient({
   const bookingFormRef = useRef<any>(null);
   const { user, openAuth } = useAuthContext();
 
-  const { handleSaveLater, isSaving } = useSaveLater(booking);
   const currentDay = new Date().setDate(new Date().getDate() + 1);
 
   const availableTimes = isDayTrip && !tourTime ? [] : startTimes;
@@ -115,7 +114,7 @@ export function BookingClient({
       const result = await createBooking(
         await user.getIdToken(!wasVerified),
         toDateKey(selectedDate),
-        { bookingId: id, ...formData, time: selectedTime },
+        { bookingId: id, ...formData, guestNumber: guestCount, time: selectedTime },
       );
       if (result.error) return result.error;
       router.push('new/thank-you?id=' + result.bookingId);
@@ -135,8 +134,14 @@ export function BookingClient({
 
   const nextDay = new Date(currentDay);
 
+  const maxGuests = seatsAt(selectedDate, selectedTime) ?? MAX_GUESTS_PER_SLOT;
+  const guestCount = Math.max(MIN_GUESTS, Math.min(guests, maxGuests));
+  const reserve = () => {
+    setIsPrivate(false);
+    handleBookNow(false);
+  };
   const imageUrl = booking.image?.fields?.file?.url;
-  const total = price * guests;
+  const total = price * guestCount;
   const formattedDate = selectedDate.toLocaleDateString('en-GB', {
     weekday: 'short',
     day: 'numeric',
@@ -168,6 +173,8 @@ export function BookingClient({
                 }
                 value={selectedDate}
                 minDate={nextDay}
+                prev2Label={null}
+                next2Label={null}
                 onClickDay={handleAvailability}
               />
             </div>
@@ -204,6 +211,32 @@ export function BookingClient({
                 </ul>
               </div>
             ) : null}
+            <div>
+              <p id="guests-label" className={styles.timesLabel}>
+                Guests
+              </p>
+              <div className={styles.stepper} role="group" aria-labelledby="guests-label">
+                <Button
+                  className={styles.timeButton}
+                  variant="tertiary"
+                  buttonName="Fewer guests"
+                  isDisabled={guestCount <= MIN_GUESTS}
+                  onClick={() => setGuests(guestCount - 1)}
+                >
+                  −
+                </Button>
+                <output aria-live="polite">{guestCount}</output>
+                <Button
+                  className={styles.timeButton}
+                  variant="tertiary"
+                  buttonName="More guests"
+                  isDisabled={guestCount >= maxGuests}
+                  onClick={() => setGuests(guestCount + 1)}
+                >
+                  +
+                </Button>
+              </div>
+            </div>
           </section>
 
           <section className={styles.step} aria-labelledby="step-details">
@@ -215,9 +248,6 @@ export function BookingClient({
               ref={bookingFormRef}
               booker={user?.displayName ?? ''}
               onSubmit={handleBookNow}
-              onGuestsChange={setGuests}
-              maxGuests={seatsAt(selectedDate, selectedTime) ?? MAX_GUESTS_PER_SLOT}
-              guestNumber={0}
               isValid={false}
               isPrivate={isPrivate}
               email={user?.email ?? ''}
@@ -248,7 +278,7 @@ export function BookingClient({
             <div>
               <dt>Guests</dt>
               <dd>
-                {guests} × {currency}
+                {guestCount} × {currency}
                 {price}
               </dd>
             </div>
@@ -278,20 +308,9 @@ export function BookingClient({
             isDisabled={isFull(selectedDate, selectedTime)}
             isLoading={isBooking}
             variant="primary"
-            onClick={() => {
-              setIsPrivate(false);
-              handleBookNow(false);
-            }}
+            onClick={reserve}
           >
             Reserve now
-          </Button>
-          <Button
-            className={styles.summaryButton}
-            onClick={handleSaveLater}
-            isLoading={isSaving}
-            variant="secondary"
-          >
-            Save for later
           </Button>
           <p className={styles.terms}>
             By booking, you accept our{' '}
@@ -299,6 +318,26 @@ export function BookingClient({
           </p>
         </aside>
       </div>
+      <MobileBar
+        label={
+          <>
+            Total{' '}
+            <strong>
+              {currency}
+              {total}
+            </strong>
+          </>
+        }
+      >
+        <Button
+          isDisabled={isFull(selectedDate, selectedTime)}
+          isLoading={isBooking}
+          variant="primary"
+          onClick={reserve}
+        >
+          Reserve now
+        </Button>
+      </MobileBar>
     </div>
   );
 }

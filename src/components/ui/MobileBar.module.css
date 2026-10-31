@@ -1,0 +1,37 @@
+.bar {
+  position: fixed;
+  left: 12px;
+  right: 88px;
+  bottom: max(12px, env(safe-area-inset-bottom));
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 8px 8px 16px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface);
+  box-shadow: var(--shadow-soft);
+}
+
+.label {
+  margin: 0;
+  color: var(--muted);
+}
+
+.label strong {
+  font-size: 1.25rem;
+  color: var(--text-default);
+}
+
+.bar button {
+  margin: 0;
+  min-height: 44px;
+}
+
+@media (min-width: 900px) {
+  .bar {
+    display: none;
+  }
+}

@@ -153,7 +153,7 @@ async function sendReceipt(bookingId: string, booking: DocumentData, captureId: 
       }),
     ),
     sendMail(
-      process.env.NEXT_PUBLIC_ADMIN,
+      process.env.ADMIN_EMAIL,
       `Payment received: €${amount} from ${booking.booker}`,
       renderEmail({
         heading: 'Payment received',

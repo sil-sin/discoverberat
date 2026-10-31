@@ -24,7 +24,6 @@ describe('BookingForm component', () => {
     render(
       <BookingForm
         onSubmit={mockSubmit}
-        guestNumber={2}
         email={mockUser.email}
         booker={mockUser.displayName}
       />
@@ -32,7 +31,6 @@ describe('BookingForm component', () => {
 
     expect(screen.getByTestId('booker')).toHaveValue(mockUser.displayName)
     expect(screen.getByTestId('email')).toHaveValue(mockUser.email)
-    expect(screen.getByLabelText(/guests/i)).toHaveValue(2)
     expect(screen.getByLabelText(/pickup place/i)).toHaveValue(
       'Discover Berat office'
     )
@@ -42,7 +40,6 @@ describe('BookingForm component', () => {
     render(
       <BookingForm
         onSubmit={mockSubmit}
-        guestNumber={2}
         email={mockUser.email}
       />
     )
@@ -60,14 +57,12 @@ describe('BookingForm component', () => {
     fireEvent.change(screen.getByLabelText(/pickup place/i), {
       target: { value: '' },
     })
-    fireEvent.change(screen.getByLabelText(/guests/i), { target: { value: 1 } })
 
     fireEvent.submit(screen.getByTestId('booking-form'))
 
     await waitFor(() => {
       expect(screen.getAllByText('This field is mandatory.')).toHaveLength(3)
       expect(screen.getByText('Enter a valid phone number')).toBeInTheDocument()
-      expect(screen.getByText('Guests must be at least 2')).toBeInTheDocument()
     })
   })
 
@@ -75,7 +70,6 @@ describe('BookingForm component', () => {
     render(
       <BookingForm
         onSubmit={mockSubmit}
-        guestNumber={2}
         email={mockUser.email}
       />
     )
@@ -92,7 +86,6 @@ describe('BookingForm component', () => {
     fireEvent.change(screen.getByLabelText(/pickup place/i), {
       target: { value: 'Hotel' },
     })
-    fireEvent.change(screen.getByLabelText(/guests/i), { target: { value: 3 } })
 
     fireEvent.submit(screen.getByTestId('booking-form'))
 
@@ -100,7 +93,6 @@ describe('BookingForm component', () => {
       expect(mockSubmit).toHaveBeenCalledWith(
         {
           booker: 'Jane Doe',
-          guestNumber: 3,
           isPrivate: false,
           pickup: 'Hotel',
           email: 'jane@example.com',

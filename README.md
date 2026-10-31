@@ -78,7 +78,7 @@ Create `.env.local` with these values. Never commit them.
 | `NEXT_PUBLIC_FIREBASE_API_KEY`, `NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN`, `NEXT_PUBLIC_FIREBASE_PROJECT_ID`, `NEXT_PUBLIC_FIRESTORE_STORAGE_BUCKET`, `NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID`, `NEXT_PUBLIC_FIREBASE_APP_ID` | Firebase web app |
 | `FIREBASE_PRIVATE_KEY`, `FIREBASE_PRIVATE_KEY_ID`, `FIREBASE_CLIENT_EMAIL`, `FIREBASE_CLIENT_ID`, `FIREBASE_CLIENT_X509_CERT_URL` | Firebase Admin service account |
 | `ADMIN_ID` | Firebase user ID of the admin |
-| `NEXT_PUBLIC_ADMIN` | Admin email that gets booking notifications |
+| `ADMIN_EMAIL` | Admin email that gets booking notifications |
 | `CONTENTFUL_SPACE_ID`, `CONTENTFUL_ACCESS_TOKEN` | Contentful Delivery API |
 | `NEXT_PUBLIC_PAYPAL_CLIENT_ID`, `PAYPAL_CLIENT_SECRET`, `PAYPAL_WEBHOOK_ID` | PayPal |
 | `SMTP_CONNECTION_URI`, `DEFAULT_FROM` | Outgoing email |

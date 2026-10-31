@@ -21,7 +21,8 @@ async function getBooking(idToken: string, id: string) {
   if (!booking || (booking.uid !== uid && uid !== process.env.ADMIN_ID)) {
     return null;
   }
-  return { ...booking, date: booking.date.toDate() as Date };
+  const { title, email, guestNumber, pickup, price, currency, isPaid } = booking;
+  return { title, email, guestNumber, pickup, price, currency, isPaid, date: booking.date.toDate() as Date };
 }
 
 export default function ThankYouPage() {

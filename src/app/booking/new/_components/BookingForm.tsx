@@ -5,23 +5,20 @@ import classnames from 'classnames'
 import styles from './BookingForm.module.css'
 import { Input } from '@/components/ui/Input'
 import { REQUIRED } from '@/lib/forms'
-import { MAX_TEXT_LENGTH, MIN_GUESTS } from '@/lib/booking'
+import { MAX_TEXT_LENGTH } from '@/lib/booking'
 interface BookingFormProps {
   className?: string
   onSubmit: (formData: any) => void
-  onGuestsChange?: (guests: number) => void
   isLoading?: boolean
   booker?: string
-  guestNumber: number
   pickup?: string
   email: string | null
   phone?: string
   isPrivate?: boolean
-  maxGuests?: number
 }
 
 export const BookingForm: FC<BookingFormProps> = forwardRef((props, ref) => {
-  const { className, onSubmit, onGuestsChange, isPrivate, maxGuests } = props
+  const { className, onSubmit, isPrivate } = props
   const { user } = useAuthContext()
 
   const {
@@ -35,7 +32,6 @@ export const BookingForm: FC<BookingFormProps> = forwardRef((props, ref) => {
     mode: 'onChange',
     defaultValues: {
       booker: user?.displayName ?? '',
-      guestNumber: 2,
       email: user?.email ?? '',
       phone: '',
       isPrivate: isPrivate || false,
@@ -43,9 +39,8 @@ export const BookingForm: FC<BookingFormProps> = forwardRef((props, ref) => {
     },
   })
 
-  const [booker, guestNumber, pickup, email, phone] = watch([
+  const [booker, pickup, email, phone] = watch([
     'booker',
-    'guestNumber',
     'pickup',
     'email',
     'phone',
@@ -60,7 +55,6 @@ export const BookingForm: FC<BookingFormProps> = forwardRef((props, ref) => {
 
   const getFormData = () => ({
     booker,
-    guestNumber,
     isPrivate,
     pickup,
     email,
@@ -92,6 +86,7 @@ export const BookingForm: FC<BookingFormProps> = forwardRef((props, ref) => {
           type='email'
           id='email'
           readOnly
+          placeholder={user ? undefined : 'Filled in when you sign in'}
           hint='From your account. We send your booking confirmation here.'
           error={errors.email?.message}
           {...register('email', { required: REQUIRED })}
@@ -121,37 +116,6 @@ export const BookingForm: FC<BookingFormProps> = forwardRef((props, ref) => {
           error={errors.pickup?.message}
           {...register('pickup', { required: REQUIRED })}
         />
-        <Input
-          label='Guests'
-          placeholder='2'
-          min={MIN_GUESTS}
-          max={maxGuests}
-          type='number'
-          list='guestNumbers'
-          id='guestNumber'
-          isRequired
-          error={errors.guestNumber?.message}
-          {...register('guestNumber', {
-            valueAsNumber: true,
-            required: REQUIRED,
-            min: { value: MIN_GUESTS, message: `Guests must be at least ${MIN_GUESTS}` },
-            ...(maxGuests && {
-              max: { value: maxGuests, message: `Only ${maxGuests} places are left at this time` },
-            }),
-            onChange: (event) => {
-              const guests = event.target.valueAsNumber
-              if (guests >= MIN_GUESTS) onGuestsChange?.(guests)
-            },
-          })}
-        />
-        <datalist id='guestNumbers'>
-          {!isPrivate && <option value={2} />}
-          {[...Array(isPrivate ? 9 : 8)].map((_, index) => (
-            <option key={index + 3} value={index + 3}>
-              {index + 3}
-            </option>
-          ))}
-        </datalist>
       </form>
     </div>
   )

@@ -10,6 +10,7 @@ import { FaWhatsapp } from 'react-icons/fa';
 import { FiCheck } from 'react-icons/fi';
 import styles from './Tour.module.css';
 import { Button } from '@/components/ui/Button';
+import { MobileBar } from '@/components/ui/MobileBar';
 import useSaveLater from '@/hooks/useSaveLater';
 import { WHATSAPP_URL } from '@/lib/site';
 import { useAuthContext } from '@/lib/auth/auth-provider';
@@ -117,18 +118,21 @@ export const Tour: FC<{ tour: any }> = ({ tour }) => {
         </aside>
       </div>
 
-      <div className={styles.mobileBar}>
-        <p className={styles.price}>
-          From{' '}
-          <strong>
-            {currency}
-            {price}
-          </strong>
-        </p>
+      <MobileBar
+        label={
+          <>
+            <strong>
+              {currency}
+              {price}
+            </strong>{' '}
+            per person
+          </>
+        }
+      >
         <Button onClick={book} variant="primary">
           Book tour
         </Button>
-      </div>
+      </MobileBar>
     </article>
   );
 };

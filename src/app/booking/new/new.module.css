@@ -145,6 +145,23 @@
   list-style: none;
 }
 
+.stepper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.stepper .timeButton {
+  min-width: 44px;
+}
+
+.stepper output {
+  min-width: 2ch;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+
 .timeButton {
   min-width: 76px;
   min-height: 40px;
@@ -278,6 +295,12 @@
   color: var(--muted);
   font-size: 0.875rem;
   text-align: center;
+}
+
+@media (max-width: 899px) {
+  .page {
+    padding-bottom: 96px;
+  }
 }
 
 @media (min-width: 900px) {
