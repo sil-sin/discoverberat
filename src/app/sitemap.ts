@@ -1,6 +1,6 @@
 import type { MetadataRoute } from 'next';
-import { getEntriesByType } from '@/utils/contentful/contentful';
-import { SITE_URL } from '@/utils/site';
+import { getEntriesByType } from '@/lib/contentful';
+import { SITE_URL } from '@/lib/site';
 
 export const revalidate = 43200; // 12 hours
 

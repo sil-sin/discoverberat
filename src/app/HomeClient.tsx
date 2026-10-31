@@ -1,6 +1,6 @@
 'use client';
 
-import Button from '@/components/simple/Button';
+import { Button } from '@/components/ui/Button';
 import { useRouter } from 'next/navigation';
 
 export function HomeClient() {

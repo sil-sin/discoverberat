@@ -1,15 +1,14 @@
-import Hero from '@/components/sectors/Hero/index';
-import OurServices from '@/components/sectors/OurServices';
-import Tours from '@/components/sectors/Tours';
-import { getEntriesByType } from '@/utils/contentful/contentful';
+import { Hero } from '@/app/_components/Hero';
+import { OurServices } from '@/app/_components/OurServices';
+import { Tours } from '@/components/tours/Tours';
+import { getEntriesByType } from '@/lib/contentful';
 import { FaWhatsapp } from 'react-icons/fa';
 import { FiCalendar, FiCreditCard, FiMapPin, FiUsers } from 'react-icons/fi';
-import { WHATSAPP_URL } from '@/components/sectors/Navigation/utils';
+import { WHATSAPP_URL } from '@/lib/site';
 import styles from './page.module.css';
-// import { TestimonialContainer } from '@/components/sectors/Testimonials/TestimonialsContainer';
 import type { Metadata } from 'next';
 import { HomeClient } from './HomeClient';
-import { SITE_URL } from '@/utils/site';
+import { SITE_URL } from '@/lib/site';
 
 
 const TITLE = 'Berat Tours & Day Trips with Local Guides | Discover Berat';
@@ -36,22 +35,6 @@ export const metadata: Metadata = {
 };
 
 export const revalidate = 43200; // 12 hours
-
-// TODO: re-enable reviews once the Google Places call works again; it currently rejects and slows the page load.
-// async function getReviews() {
-//   try {
-//     const res = await fetch(
-//       `https://maps.googleapis.com/maps/api/place/details/json?place_id=ChIJQ1Y_cDuZWhMRu6CZ0pwtbwA&key=${process.env.GOOGLE_PLACES_KEY}`,
-//       { next: { revalidate: 43200 } },
-//     );
-//     const data = await res.json();
-//     if (data.status !== 'OK')
-//       console.error('Google Places reviews:', data.status, data.error_message);
-//     return data.result?.reviews?.map((item: any) => item) || null;
-//   } catch {
-//     return null;
-//   }
-// }
 
 const REASONS = [
   { Icon: FiUsers, title: 'Local guides', text: 'Led by our team of Berat guides.' },
@@ -147,7 +130,6 @@ export default async function Home() {
           Message us on WhatsApp
         </a>
       </section>
-      {/* {reviews && <TestimonialContainer reviews={reviews} />} */}
     </div>
   );
 }

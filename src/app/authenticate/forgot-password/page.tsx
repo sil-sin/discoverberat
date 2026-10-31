@@ -1,10 +1,10 @@
 'use client';
 
-import ResetPassword from '@/components/Authentication/ResetPassword';
-import styles from '@/components/Authentication/Auth.module.css';
-import { authErrorMessage } from '@/utils/auth/errors';
+import { ResetPassword } from '@/components/auth/ResetPassword';
+import styles from '@/components/auth/Auth.module.css';
+import { authErrorMessage } from '@/lib/auth/errors';
 import { getAuth, sendPasswordResetEmail } from 'firebase/auth';
-import app from '@/utils/firebase/firebaseConfig';
+import app from '@/lib/firebase/client';
 import { useRef, useState } from 'react';
 
 export default function ForgotPassword() {

@@ -1,4 +1,4 @@
-import { getEntriesByType, getEntry } from '@/utils/contentful/contentful';
+import { getEntriesByType, getEntry } from '@/lib/contentful';
 import { FieldValue, getFirestore as getFirestoreAdmin } from 'firebase-admin/firestore';
 import {
   isValidDateKey,
@@ -7,13 +7,13 @@ import {
   MIN_GUESTS,
   getStartTimes,
   tiraneDateTime,
-} from '@/helpers/booking';
-import { adminSDK } from '@/utils/firebase/adminConfig';
+} from '@/lib/booking';
+import { adminSDK } from '@/lib/firebase/admin';
 
 import type { Metadata } from 'next';
-import { sendMail } from '@/utils/mail';
-import { formatTourDate, renderEmail } from '@/utils/emailTemplate';
-import { SITE_URL } from '@/utils/site';
+import { sendMail } from '@/lib/mail';
+import { formatTourDate, renderEmail } from '@/lib/email-template';
+import { SITE_URL } from '@/lib/site';
 import { BookingClient } from './BookingClient';
 
 export const metadata: Metadata = {

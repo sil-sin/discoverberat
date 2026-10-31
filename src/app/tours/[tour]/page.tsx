@@ -1,9 +1,9 @@
-import { getEntriesByType } from '@/utils/contentful/contentful';
-import Tour from '@/components/Tour';
-import Tours from '@/components/sectors/Tours';
+import { getEntriesByType } from '@/lib/contentful';
+import { Tour } from '@/app/tours/[tour]/_components/Tour';
+import { Tours } from '@/components/tours/Tours';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { SITE_URL, summarize } from '@/utils/site';
+import { SITE_URL, summarize } from '@/lib/site';
 
 export const revalidate = 43200; // 12 hours
 
