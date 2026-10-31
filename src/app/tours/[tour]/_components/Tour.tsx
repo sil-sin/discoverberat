@@ -12,6 +12,7 @@ import styles from './Tour.module.css';
 import { Button } from '@/components/ui/Button';
 import useSaveLater from '@/hooks/useSaveLater';
 import { WHATSAPP_URL } from '@/lib/site';
+import { useAuthContext } from '@/lib/auth/auth-provider';
 
 export const Tour: FC<{ tour: any }> = ({ tour }) => {
   const {
@@ -27,7 +28,11 @@ export const Tour: FC<{ tour: any }> = ({ tour }) => {
   } = tour;
   const router = useRouter();
   const { handleSaveLater, isSaving } = useSaveLater({ id, title, price, currency, url });
-  const book = () => router.push(`/booking/new?tour=${url}`);
+  const { user, loading, openAuth } = useAuthContext();
+  const book = () => {
+    router.push(`/booking/new?tour=${url}`);
+    if (!user && !loading) openAuth('book');
+  };
   const imageUrl = imgUrl.startsWith('https://') ? imgUrl : `https:${imgUrl}`;
   // The page title is the only h1, so headings inside the description start at h2.
   const descriptionHtml = marked((description ?? '').replace(/^# /gm, '## '), {
