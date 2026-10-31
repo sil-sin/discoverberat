@@ -1,0 +1,166 @@
+.doodle {
+  justify-self: center;
+  width: min(100%, 480px);
+  height: auto;
+  overflow: visible;
+  color: var(--ink);
+}
+
+.line {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.detail {
+  stroke-width: 1.5;
+}
+
+.fill {
+  fill: var(--background-default);
+}
+
+.faint {
+  stroke: var(--line-strong);
+}
+
+.ink {
+  fill: currentColor;
+}
+
+.shirt {
+  fill: var(--brand);
+}
+
+.soft {
+  fill: var(--brand-soft);
+}
+
+.route {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1.5;
+  stroke-dasharray: 3 3;
+}
+
+.label {
+  fill: var(--brand);
+  font: 700 14px var(--font-display), sans-serif;
+}
+
+.window {
+  fill: var(--line);
+  animation: light 4s steps(1) infinite;
+}
+
+.tilt,
+.turn,
+.puff,
+.bob {
+  transform-box: fill-box;
+}
+
+.tilt {
+  transform-origin: 50% 100%;
+  animation: tilt 2.6s ease-in-out infinite;
+}
+
+.turn {
+  transform-origin: center;
+  animation: turn 4s ease-in-out infinite;
+}
+
+.sag {
+  transform-box: view-box;
+  transform-origin: 252px 162px;
+  transform: rotate(-3deg);
+  animation: sag 2.4s ease-in-out infinite;
+}
+
+.puff {
+  transform-origin: center;
+  animation: puff 2.4s ease-out infinite;
+}
+
+.bob {
+  animation: bob 1.3s ease-in-out infinite alternate;
+}
+
+.water {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-dasharray: 22 14;
+  animation: flow 1.8s linear infinite;
+}
+
+@keyframes light {
+  50% {
+    fill: var(--accent);
+  }
+}
+
+@keyframes tilt {
+  0%,
+  40%,
+  100% {
+    transform: rotate(0);
+  }
+  55%,
+  80% {
+    transform: rotate(-12deg);
+  }
+}
+
+@keyframes bob {
+  to {
+    transform: translateY(-6px) rotate(10deg);
+  }
+}
+
+@keyframes turn {
+  0%,
+  35%,
+  100% {
+    transform: rotate(0);
+  }
+  50%,
+  85% {
+    transform: rotate(180deg);
+  }
+}
+
+@keyframes sag {
+  50% {
+    transform: rotate(-4.5deg);
+  }
+}
+
+@keyframes puff {
+  from {
+    transform: scale(0.6);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  to {
+    transform: translate(-10px, -40px) scale(1.6);
+    opacity: 0;
+  }
+}
+
+@keyframes flow {
+  to {
+    stroke-dashoffset: -36;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .doodle * {
+    animation: none !important;
+  }
+}

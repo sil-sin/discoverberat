@@ -33,11 +33,14 @@ export const Button: FC<Props> = ({
   buttonName,
   popoverTarget,
 }) => {
-  return variant === 'link' ? (
+  return href ? (
     <Link
-      href={href ?? ''}
+      href={href}
       onClick={onClick}
-      className={classnames(styles.link, className)}
+      className={classnames(
+        className,
+        variant === 'link' ? styles.link : [styles.button, styles[`${variant}`]]
+      )}
     >
       {text || children}
     </Link>

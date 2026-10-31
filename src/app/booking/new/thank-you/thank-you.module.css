@@ -194,7 +194,8 @@
   background: var(--brand-soft);
 }
 
-.card > .primaryLink {
+.card > .primaryLink,
+.signInButton {
   justify-self: start;
 }
 
