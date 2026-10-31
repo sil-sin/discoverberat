@@ -9,6 +9,7 @@ import styles from './thank-you.module.css';
 import { useAuthContext } from '@/lib/auth/auth-provider';
 import { PaypalCheckoutButton } from '@/components/payment/PaypalCheckoutButton';
 import { WHATSAPP_URL } from '@/lib/site';
+import { Button } from '@/components/ui/Button';
 
 type Props = {
   getBooking: (idToken: string, id: string) => Promise<Record<string, any> | null>;
@@ -19,7 +20,7 @@ export function ThankYouClient({ getBooking }: Props) {
   const id = searchParams.get('id') || '';
   const [booking, setBooking] = useState<Record<string, any> | null>(null);
   const [isMissing, setIsMissing] = useState(false);
-  const { user } = useAuthContext();
+  const { user, loading, openAuth } = useAuthContext();
 
   useEffect(() => {
     if (!user || !id) return;
@@ -44,6 +45,20 @@ export function ThankYouClient({ getBooking }: Props) {
           <Link className={styles.primaryLink} href={profileHref}>
             See my bookings
           </Link>
+        </div>
+      </div>
+    );
+  }
+
+  if (!loading && !user) {
+    return (
+      <div className={styles.page}>
+        <div className={styles.card}>
+          <h1 className={styles.title}>Sign in to see your booking</h1>
+          <p className={styles.lead}>Use the account you booked with.</p>
+          <Button className={styles.signInButton} variant="primary" onClick={() => openAuth()}>
+            Sign in
+          </Button>
         </div>
       </div>
     );
