@@ -13,10 +13,6 @@ jest.mock('next/image', () => ({
   ) => <img {...props} />, // Mock Next.js Image component
 }))
 
-jest.mock('next/navigation', () => ({
-  useRouter: jest.fn(),
-}))
-
 describe('Hero component', () => {
   it('renders Hero component correctly', () => {
     render(<Hero />)
@@ -28,8 +24,6 @@ describe('Hero component', () => {
     expect(image).toHaveAttribute('width', '1080')
     expect(image).toHaveAttribute('height', '582')
 
-    // Check if the button is rendered
-    const button = screen.getByRole('button')
-    expect(button).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Browse tours' })).toHaveAttribute('href', '/tours')
   })
 })

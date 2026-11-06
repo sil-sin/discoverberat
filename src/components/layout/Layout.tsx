@@ -8,7 +8,6 @@ import Image from 'next/image'
 import { CookieBanner } from './CookieBanner'
 import { WHATSAPP_URL } from '@/lib/site'
 import { Banner, Toaster } from '@/components/ui/Toast'
-import { AuthDialog } from '@/components/auth/AuthForm'
 
 type Props = {
   children: ReactNode
@@ -42,7 +41,6 @@ export const Layout: FC<Props> = ({ children }) => {
       </Link>
       <CookieBanner />
       <Toaster />
-      <AuthDialog />
       <Footer />
     </main>
   )

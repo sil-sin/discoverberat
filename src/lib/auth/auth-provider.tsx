@@ -7,11 +7,14 @@ import {
   useEffect,
   useState,
 } from 'react';
-import { User, getAuth, onIdTokenChanged } from 'firebase/auth';
-import app from '@/lib/firebase/client';
+import dynamic from 'next/dynamic';
+import type { User } from 'firebase/auth';
 import { setSessionToken } from './session';
 import { clearSession } from './sign-out';
-import { waitForProfile } from './email-sign-up';
+
+const AuthDialog = dynamic(() =>
+  import('@/components/auth/AuthForm').then((m) => m.AuthDialog),
+);
 
 export type AuthReason = 'signIn' | 'save' | 'book';
 
@@ -44,28 +47,43 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [authReason, setAuthReason] = useState<AuthReason | null>(null);
 
   useEffect(() => {
-    const auth = getAuth(app);
-    if (!auth) return;
+    let unsubscribe: (() => void) | undefined;
+    let cancelled = false;
 
-    // Queued so a slow earlier call can't overwrite the cookie set by a later event, such as a sign-out.
-    let queue = Promise.resolve();
-    let uid: string | undefined;
-    return onIdTokenChanged(auth, (user) => {
-      const shouldSync = Boolean(user || uid);
-      if (user?.uid !== uid) setLoading(true);
-      uid = user?.uid;
-      queue = queue.then(async () => {
-        try {
-          if (shouldSync) await (user ? setSessionToken(await user.getIdToken()) : clearSession());
-        } catch (error) {
-          console.error('Session cookie update failed:', error);
-        }
-        await waitForProfile();
-        setUser(user);
-        setLoading(false);
-        if (user) setAuthReason(null);
+    Promise.all([
+      import('firebase/auth'),
+      import('@/lib/firebase/client'),
+      import('./email-sign-up'),
+    ]).then(([{ getAuth, onIdTokenChanged }, { default: app }, { waitForProfile }]) => {
+      if (cancelled) return;
+      // Queued so a slow earlier call can't overwrite the cookie set by a later event, such as a sign-out.
+      let queue = Promise.resolve();
+      let uid: string | undefined;
+      unsubscribe = onIdTokenChanged(getAuth(app), (user) => {
+        const shouldSync = Boolean(user || uid);
+        if (user?.uid !== uid) setLoading(true);
+        uid = user?.uid;
+        queue = queue.then(async () => {
+          try {
+            if (shouldSync) await (user ? setSessionToken(await user.getIdToken()) : clearSession());
+          } catch (error) {
+            console.error('Session cookie update failed:', error);
+          }
+          await waitForProfile();
+          setUser(user);
+          setLoading(false);
+          if (user) setAuthReason(null);
+        });
       });
+    }).catch((error) => {
+      console.error('Auth failed to load:', error);
+      setLoading(false);
     });
+
+    return () => {
+      cancelled = true;
+      unsubscribe?.();
+    };
   }, []);
 
   return (
@@ -79,6 +97,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       }}
     >
       {children}
+      {authReason && <AuthDialog />}
     </AuthContext.Provider>
   );
 }
