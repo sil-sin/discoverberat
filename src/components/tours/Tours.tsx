@@ -39,7 +39,7 @@ export const Tours: FC<any> = (props: {
         <li key={title}>
           <Card
             title={title}
-            imageSrc={imgUrl ? 'https:' + imgUrl : '/berat.svg'}
+            imageSrc={imgUrl ? 'https:' + imgUrl : '/berat.webp'}
             blurDataURL={image?.fields?.file?.blurDataURL}
             preload={preloadFirst && index < 2}
             price={price}

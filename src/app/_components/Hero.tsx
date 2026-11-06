@@ -1,16 +1,11 @@
-'use client';
-
 import { FC } from 'react';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
 import { FaWhatsapp } from 'react-icons/fa';
 import styles from './Hero.module.css';
 import { Button } from '@/components/ui/Button';
 import { WHATSAPP_URL } from '@/lib/site';
 
 export const Hero: FC = () => {
-  const router = useRouter();
-
   return (
     <section className={styles.heroContainer}>
       <div className={styles.title}>
@@ -33,7 +28,7 @@ export const Hero: FC = () => {
           <Button
             className={styles.primary}
             variant="primary"
-            onClick={() => router.push('/tours')}
+            href="/tours"
           >
             Browse tours
           </Button>

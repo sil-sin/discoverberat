@@ -45,8 +45,8 @@ const REASONS = [
   },
   {
     Icon: FiCreditCard,
-    title: 'Pay your way',
-    text: 'Online with PayPal or on the day.',
+    title: 'Instant booking',
+    text: 'Pick a time, pay online with PayPal or on the day. Confirmed at once.',
   },
   { Icon: FiMapPin, title: 'Pickup', text: 'Choose where we meet you.' },
 ];

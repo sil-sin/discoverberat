@@ -39,7 +39,7 @@ export const Navigation: FC<{ className?: string }> = ({ className }) => {
             priority
             src="/main_logo.png"
             width={200}
-            height={100}
+            height={70}
             className={styles.logoImage}
             alt="Discover Berat"
           />
