@@ -33,7 +33,7 @@ export const Footer: FC = () => {
         </div>
       </div>
       <p>
-        &copy; {new Date().getFullYear()} Discover Berat. All rights reserved.
+        &copy; 2023–{new Date().getFullYear()} Discover Berat. All rights reserved.
       </p>
     </footer>
   )
