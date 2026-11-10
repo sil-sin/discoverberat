@@ -68,6 +68,11 @@ const nextConfig = {
         destination: '/tours/pupa-winery-wine-tasting',
         permanent: true,
       },
+      {
+        source: '/services/transport',
+        destination: '/services/transfers',
+        permanent: true,
+      },
     ]
   },
 }
